@@ -39,6 +39,17 @@ public final class NumericCodecs {
 
 	public static final CodecRegistry NUMERIC_CODEC_REGISTRY = new CodecRegistryBuilder()
 		.codec(BYTE_CODEC, byte.class)
+		.codec(BYTE_CODEC, Byte.class)
+		.codec(SHORT_CODEC, short.class)
+		.codec(SHORT_CODEC, Short.class)
+		.codec(INTEGER_CODEC, int.class)
+		.codec(INTEGER_CODEC, Integer.class)
+		.codec(LONG_CODEC, long.class)
+		.codec(LONG_CODEC, Long.class)
+		.codec(FLOAT_CODEC, float.class)
+		.codec(FLOAT_CODEC, Float.class)
+		.codec(DOUBLE_CODEC, double.class)
+		.codec(DOUBLE_CODEC, Double.class)
 		.build();
 
 	private NumericCodecs() {
