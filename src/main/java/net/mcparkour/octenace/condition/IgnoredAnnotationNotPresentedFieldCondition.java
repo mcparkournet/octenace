@@ -22,7 +22,15 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace;
+package net.mcparkour.octenace.condition;
 
-public class Octenace {
+import java.lang.reflect.Field;
+import net.mcparkour.octenace.annotation.Ignored;
+
+public class IgnoredAnnotationNotPresentedFieldCondition implements FieldCondition {
+
+	@Override
+	public boolean check(Field field) {
+		return !field.isAnnotationPresent(Ignored.class);
+	}
 }
