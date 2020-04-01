@@ -24,13 +24,13 @@
 
 package net.mcparkour.octenace.converter;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.List;
 import net.mcparkour.common.reflection.Reflections;
 import net.mcparkour.common.reflection.type.Types;
-import net.mcparkour.octenace.annotation.Property;
 import net.mcparkour.octenace.codec.Codec;
 import net.mcparkour.octenace.codec.registry.CodecRegistry;
 import net.mcparkour.octenace.condition.FieldCondition;
@@ -50,14 +50,16 @@ public class BasicConverter<O, A, V> implements Converter<O, A, V> {
 	private LetterCase defaultKeysLetterCase;
 	private List<FieldCondition> fieldConditions;
 	private CodecRegistry codecRegistry;
+	private NameAnnotationSupplier<Annotation> nameAnnotationSupplier;
 
-	public BasicConverter(ModelObjectFactory<O, A, V> modelObjectFactory, ModelArrayFactory<O, A, V> modelArrayFactory, ModelValueFactory<O, A, V> modelValueFactory, LetterCase defaultKeysLetterCase, List<FieldCondition> fieldConditions, CodecRegistry codecRegistry) {
+	public BasicConverter(ModelObjectFactory<O, A, V> modelObjectFactory, ModelArrayFactory<O, A, V> modelArrayFactory, ModelValueFactory<O, A, V> modelValueFactory, LetterCase defaultKeysLetterCase, List<FieldCondition> fieldConditions, CodecRegistry codecRegistry, NameAnnotationSupplier<Annotation> nameAnnotationSupplier) {
 		this.modelObjectFactory = modelObjectFactory;
 		this.modelArrayFactory = modelArrayFactory;
 		this.modelValueFactory = modelValueFactory;
 		this.defaultKeysLetterCase = defaultKeysLetterCase;
 		this.fieldConditions = fieldConditions;
 		this.codecRegistry = codecRegistry;
+		this.nameAnnotationSupplier = nameAnnotationSupplier;
 	}
 
 	@Override
@@ -137,9 +139,10 @@ public class BasicConverter<O, A, V> implements Converter<O, A, V> {
 
 	@Override
 	public String getFieldName(Field field) {
-		Property property = field.getAnnotation(Property.class);
-		if (property != null) {
-			return property.value();
+		Class<Annotation> annotationType = this.nameAnnotationSupplier.getAnnotationType();
+		Annotation annotation = field.getAnnotation(annotationType);
+		if (annotation != null) {
+			return this.nameAnnotationSupplier.supply(annotation);
 		}
 		String name = field.getName();
 		if (this.defaultKeysLetterCase == LetterCase.KEBAB) {

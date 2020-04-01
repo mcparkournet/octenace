@@ -30,8 +30,7 @@ public final class FieldConditions {
 
 	public static final List<FieldCondition> BASIC_FIELD_CONDITIONS = List.of(
 		new NonStaticFieldCondition(),
-		new NonTransientFieldCondition(),
-		new IgnoredAnnotationNotPresentedFieldCondition()
+		new NonTransientFieldCondition()
 	);
 
 	private FieldConditions() {

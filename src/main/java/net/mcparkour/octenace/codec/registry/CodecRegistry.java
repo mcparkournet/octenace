@@ -30,9 +30,9 @@ import org.jetbrains.annotations.Nullable;
 
 public class CodecRegistry {
 
-	private List<? extends TypedCodec> codecs;
+	private List<TypedCodec> codecs;
 
-	public CodecRegistry(List<? extends TypedCodec> codecs) {
+	public CodecRegistry(List<TypedCodec> codecs) {
 		this.codecs = codecs;
 	}
 
@@ -46,7 +46,7 @@ public class CodecRegistry {
 			.orElse(null);
 	}
 
-	List<? extends TypedCodec> getCodecs() {
+	List<TypedCodec> getCodecs() {
 		return List.copyOf(this.codecs);
 	}
 }

@@ -33,11 +33,7 @@ public class CodecRegistryBuilder {
 	private List<TypedCodec> codecs;
 
 	public CodecRegistryBuilder() {
-		this(new ArrayList<>(0));
-	}
-
-	private CodecRegistryBuilder(List<TypedCodec> codecs) {
-		this.codecs = codecs;
+		this.codecs = new ArrayList<>(0);
 	}
 
 	public CodecRegistryBuilder registry(CodecRegistry registry) {
@@ -46,7 +42,7 @@ public class CodecRegistryBuilder {
 		return this;
 	}
 
-	public CodecRegistryBuilder codec(Codec<?> codec, Class<?> type) {
+	public <T> CodecRegistryBuilder codec(Codec<?> codec, Class<?> type) {
 		TypedCodec typedCodec = new TypedCodec(type, codec);
 		this.codecs.add(typedCodec);
 		return this;
