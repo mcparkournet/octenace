@@ -50,9 +50,9 @@ public class BasicConverter<O, A, V> implements Converter<O, A, V> {
 	private LetterCase defaultKeysLetterCase;
 	private List<FieldCondition> fieldConditions;
 	private CodecRegistry codecRegistry;
-	private NameAnnotationSupplier<Annotation> nameAnnotationSupplier;
+	private NameAnnotationSupplier<? extends Annotation> nameAnnotationSupplier;
 
-	public BasicConverter(ModelObjectFactory<O, A, V> modelObjectFactory, ModelArrayFactory<O, A, V> modelArrayFactory, ModelValueFactory<O, A, V> modelValueFactory, LetterCase defaultKeysLetterCase, List<FieldCondition> fieldConditions, CodecRegistry codecRegistry, NameAnnotationSupplier<Annotation> nameAnnotationSupplier) {
+	public BasicConverter(ModelObjectFactory<O, A, V> modelObjectFactory, ModelArrayFactory<O, A, V> modelArrayFactory, ModelValueFactory<O, A, V> modelValueFactory, LetterCase defaultKeysLetterCase, List<FieldCondition> fieldConditions, CodecRegistry codecRegistry, NameAnnotationSupplier<? extends Annotation> nameAnnotationSupplier) {
 		this.modelObjectFactory = modelObjectFactory;
 		this.modelArrayFactory = modelArrayFactory;
 		this.modelValueFactory = modelValueFactory;
@@ -139,10 +139,9 @@ public class BasicConverter<O, A, V> implements Converter<O, A, V> {
 
 	@Override
 	public String getFieldName(Field field) {
-		Class<Annotation> annotationType = this.nameAnnotationSupplier.getAnnotationType();
-		Annotation annotation = field.getAnnotation(annotationType);
-		if (annotation != null) {
-			return this.nameAnnotationSupplier.supply(annotation);
+		Class<? extends Annotation> annotationType = this.nameAnnotationSupplier.getAnnotationType();
+		if (field.isAnnotationPresent(annotationType)) {
+			return this.nameAnnotationSupplier.supply(field);
 		}
 		String name = field.getName();
 		if (this.defaultKeysLetterCase == LetterCase.KEBAB) {

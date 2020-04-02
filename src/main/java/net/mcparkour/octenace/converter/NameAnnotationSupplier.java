@@ -25,6 +25,7 @@
 package net.mcparkour.octenace.converter;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.util.function.Function;
 
 public class NameAnnotationSupplier<T extends Annotation> {
@@ -41,7 +42,8 @@ public class NameAnnotationSupplier<T extends Annotation> {
 		return this.annotationType;
 	}
 
-	public String supply(T annotation) {
+	public String supply(Field field) {
+		T annotation = field.getAnnotation(this.annotationType);
 		return this.nameExtractor.apply(annotation);
 	}
 }
