@@ -24,6 +24,12 @@
 
 package net.mcparkour.octenace.codec.common.collection;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,15 +40,22 @@ import net.mcparkour.octenace.codec.registry.CodecRegistryBuilder;
 public final class CollectionCodecs {
 
 	public static final CommonCodec<Object[]> ARRAY_CODEC = new ArrayCodec();
-	public static final CommonCodec<List<?>> LIST_CODEC = new ListCodec();
-	public static final CommonCodec<Set<?>> SET_CODEC = new SetCodec();
-	public static final CommonCodec<Map<?, ?>> MAP_CODEC = new MapCodec();
+	public static final CommonCodec<Collection<?>> ARRAY_LIST_CODEC = new CollectionCodec(ArrayList::new);
+	public static final CommonCodec<Collection<?>> HASH_SET_CODEC = new CollectionCodec(HashSet::new);
+	public static final CommonCodec<Collection<?>> LINKED_HASH_SET_CODEC = new CollectionCodec(LinkedHashSet::new);
+	public static final CommonCodec<Map<?, ?>> HASH_MAP_CODEC = new MapCodec(HashMap::new);
+	public static final CommonCodec<Map<?, ?>> LINKED_HASH_MAP_CODEC = new MapCodec(LinkedHashMap::new);
 
 	public static final CodecRegistry COLLECTION_CODEC_REGISTRY = new CodecRegistryBuilder()
 		.codec(ARRAY_CODEC, Object[].class)
-		.codec(LIST_CODEC, List.class)
-		.codec(SET_CODEC, Set.class)
-		.codec(MAP_CODEC, Map.class)
+		.codec(ARRAY_LIST_CODEC, ArrayList.class)
+		.codec(ARRAY_LIST_CODEC, List.class)
+		.codec(LINKED_HASH_SET_CODEC, LinkedHashSet.class)
+		.codec(HASH_SET_CODEC, HashSet.class)
+		.codec(HASH_SET_CODEC, Set.class)
+		.codec(LINKED_HASH_MAP_CODEC, LinkedHashMap.class)
+		.codec(HASH_MAP_CODEC, HashMap.class)
+		.codec(HASH_MAP_CODEC, Map.class)
 		.build();
 
 	private CollectionCodecs() {

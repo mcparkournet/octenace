@@ -26,8 +26,7 @@ package net.mcparkour.octenace.codec.common.collection;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import net.mcparkour.common.reflection.type.Types;
 import net.mcparkour.octenace.codec.CommonCodec;
 import net.mcparkour.octenace.mapper.Mapper;
@@ -37,10 +36,16 @@ import net.mcparkour.octenace.model.value.ModelValue;
 import net.mcparkour.octenace.model.value.ModelValueFactory;
 import org.jetbrains.annotations.Nullable;
 
-public class ListCodec implements CommonCodec<List<?>> {
+public class CollectionCodec implements CommonCodec<Collection<?>> {
+
+	private CollectionSupplier<? extends Collection<Object>> collectionSupplier;
+
+	public CollectionCodec(CollectionSupplier<? extends Collection<Object>> collectionSupplier) {
+		this.collectionSupplier = collectionSupplier;
+	}
 
 	@Override
-	public <O, A, V> ModelValue<O, A, V> encode(List<?> value, Type type, Mapper<O, A, V> mapper) {
+	public <O, A, V> ModelValue<O, A, V> encode(Collection<?> value, Type type, Mapper<O, A, V> mapper) {
 		ModelArrayFactory<O, A, V> arrayFactory = mapper.getArrayFactory();
 		ModelArray<O, A, V> array = arrayFactory.createEmptyArray();
 		for (Object element : value) {
@@ -54,18 +59,18 @@ public class ListCodec implements CommonCodec<List<?>> {
 
 	@Override
 	@Nullable
-	public <O, A, V> List<?> decode(ModelValue<O, A, V> value, Type type, Mapper<O, A, V> mapper) {
+	public <O, A, V> Collection<?> decode(ModelValue<O, A, V> value, Type type, Mapper<O, A, V> mapper) {
 		ModelArrayFactory<O, A, V> arrayFactory = mapper.getArrayFactory();
 		A rawArray = value.asArray();
 		ModelArray<O, A, V> array = arrayFactory.createArray(rawArray);
 		Type genericType = getGenericType(type);
 		int size = array.getSize();
-		List<Object> list = new ArrayList<>(size);
+		Collection<Object> collection = this.collectionSupplier.supply(size);
 		for (ModelValue<O, A, V> elementValue : array) {
 			Object object = mapper.toDocument(elementValue, genericType);
-			list.add(object);
+			collection.add(object);
 		}
-		return list;
+		return collection;
 	}
 
 	private Type getGenericType(Type type) {

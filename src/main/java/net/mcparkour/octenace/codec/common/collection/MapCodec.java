@@ -26,7 +26,6 @@ package net.mcparkour.octenace.codec.common.collection;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.LinkedHashMap;
 import java.util.Map;
 import net.mcparkour.common.reflection.type.Types;
 import net.mcparkour.octenace.codec.CommonCodec;
@@ -38,6 +37,12 @@ import net.mcparkour.octenace.model.value.ModelValueFactory;
 import org.jetbrains.annotations.Nullable;
 
 public class MapCodec implements CommonCodec<Map<?, ?>> {
+
+	private CollectionSupplier<? extends Map<Object, Object>> mapSupplier;
+
+	public MapCodec(CollectionSupplier<? extends Map<Object, Object>> mapSupplier) {
+		this.mapSupplier = mapSupplier;
+	}
 
 	@Override
 	public <O, A, V> ModelValue<O, A, V> encode(Map<?, ?> value, Type type, Mapper<O, A, V> mapper) {
@@ -76,7 +81,7 @@ public class MapCodec implements CommonCodec<Map<?, ?>> {
 		Type keyType = genericTypes[0];
 		Type valueType = genericTypes[1];
 		int size = object.getSize();
-		Map<Object, Object> map = new LinkedHashMap<>(size);
+		Map<Object, Object> map = this.mapSupplier.supply(size);
 		for (Map.Entry<String, ModelValue<O, A, V>> entry : object) {
 			String key = entry.getKey();
 			ModelValue<O, A, V> keyModelValue = valueFactory.createValue(key);
