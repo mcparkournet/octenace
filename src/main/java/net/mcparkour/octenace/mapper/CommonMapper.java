@@ -66,13 +66,13 @@ public class CommonMapper<O, A, V> implements Mapper<O, A, V> {
 	@Override
 	public ModelObject<O, A, V> fromDocument(Object document) {
 		ModelObject<O, A, V> object = this.objectFactory.createEmptyObject();
-		Class<?> configurationType = object.getClass();
+		Class<?> configurationType = document.getClass();
 		Field[] fields = configurationType.getDeclaredFields();
 		for (Field field : fields) {
 			if (isFieldValid(field)) {
 				field.trySetAccessible();
 				String fieldName = getFieldName(field);
-				Object fieldValue = Reflections.getFieldValue(field, object);
+				Object fieldValue = Reflections.getFieldValue(field, document);
 				Type fieldType = field.getGenericType();
 				ModelValue<O, A, V> value = fromDocument(fieldValue, fieldType);
 				object.set(fieldName, value);
