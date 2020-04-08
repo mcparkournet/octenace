@@ -22,31 +22,17 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.codec.registry;
+package net.mcparkour.octenace.codec;
 
-import java.util.List;
-import net.mcparkour.octenace.codec.Codec;
+import java.lang.reflect.Type;
+import net.mcparkour.octenace.converter.Converter;
+import net.mcparkour.octenace.model.value.ModelValue;
 import org.jetbrains.annotations.Nullable;
 
-public class CodecRegistry {
+public interface CommonCodec<T> {
 
-	private List<TypedCodec> codecs;
+	<O, A, V> ModelValue<O, A, V> encode(T object, Type type, Converter<O, A, V> converter);
 
-	public CodecRegistry(List<TypedCodec> codecs) {
-		this.codecs = codecs;
-	}
-
-	@SuppressWarnings("unchecked")
 	@Nullable
-	public <T> Codec<?, ?, ?, T> get(Class<T> type) {
-		return (Codec<?, ?, ?, T>) this.codecs.stream()
-			.filter(codec -> codec.isAssignableFrom(type))
-			.findFirst()
-			.map(TypedCodec::getCodec)
-			.orElse(null);
-	}
-
-	List<TypedCodec> getCodecs() {
-		return List.copyOf(this.codecs);
-	}
+	<O, A, V> T decode(ModelValue<O, A, V> value, Type type, Converter<O, A, V> converter);
 }

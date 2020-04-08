@@ -29,9 +29,9 @@ import net.mcparkour.octenace.codec.Codec;
 public class TypedCodec {
 
 	private Class<?> type;
-	private Codec<?> codec;
+	private Codec<?, ?, ?, ?> codec;
 
-	public TypedCodec(Class<?> type, Codec<?> codec) {
+	public TypedCodec(Class<?> type, Codec<?, ?, ?, ?> codec) {
 		this.codec = codec;
 		this.type = type;
 	}
@@ -44,7 +44,7 @@ public class TypedCodec {
 		return this.type;
 	}
 
-	public Codec<?> getCodec() {
+	public Codec<?, ?, ?, ?> getCodec() {
 		return this.codec;
 	}
 }

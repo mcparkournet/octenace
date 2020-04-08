@@ -27,7 +27,7 @@ package net.mcparkour.octenace.codec.basic.collection;
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import net.mcparkour.common.reflection.type.Types;
-import net.mcparkour.octenace.codec.Codec;
+import net.mcparkour.octenace.codec.CommonCodec;
 import net.mcparkour.octenace.converter.Converter;
 import net.mcparkour.octenace.model.array.ModelArray;
 import net.mcparkour.octenace.model.array.ModelArrayFactory;
@@ -35,7 +35,7 @@ import net.mcparkour.octenace.model.value.ModelValue;
 import net.mcparkour.octenace.model.value.ModelValueFactory;
 import org.jetbrains.annotations.Nullable;
 
-public class ArrayCodec implements Codec<Object[]> {
+public class ArrayCodec implements CommonCodec<Object[]> {
 
 	@Override
 	public <O, A, V> ModelValue<O, A, V> encode(Object[] object, Type type, Converter<O, A, V> converter) {

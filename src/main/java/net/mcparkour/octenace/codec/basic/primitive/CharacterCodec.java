@@ -25,14 +25,14 @@
 package net.mcparkour.octenace.codec.basic.primitive;
 
 import java.lang.reflect.Type;
-import net.mcparkour.octenace.codec.Codec;
+import net.mcparkour.octenace.codec.CommonCodec;
 import net.mcparkour.octenace.codec.CodecDecodeException;
 import net.mcparkour.octenace.converter.Converter;
 import net.mcparkour.octenace.model.value.ModelValue;
 import net.mcparkour.octenace.model.value.ModelValueFactory;
 import org.jetbrains.annotations.Nullable;
 
-public class CharacterCodec implements Codec<Character> {
+public class CharacterCodec implements CommonCodec<Character> {
 
 	@Override
 	public <O, A, V> ModelValue<O, A, V> encode(Character object, Type type, Converter<O, A, V> converter) {

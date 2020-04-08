@@ -24,18 +24,18 @@
 
 package net.mcparkour.octenace.codec.basic.primitive.numeric;
 
-import net.mcparkour.octenace.codec.Codec;
+import net.mcparkour.octenace.codec.CommonCodec;
 import net.mcparkour.octenace.codec.registry.CodecRegistry;
 import net.mcparkour.octenace.codec.registry.CodecRegistryBuilder;
 
 public final class NumericCodecs {
 
-	public static final Codec<Byte> BYTE_CODEC = new ByteCodec();
-	public static final Codec<Short> SHORT_CODEC = new ShortCodec();
-	public static final Codec<Integer> INTEGER_CODEC = new IntegerCodec();
-	public static final Codec<Long> LONG_CODEC = new LongCodec();
-	public static final Codec<Float> FLOAT_CODEC = new FloatCodec();
-	public static final Codec<Double> DOUBLE_CODEC = new DoubleCodec();
+	public static final CommonCodec<Byte> BYTE_CODEC = new ByteCodec();
+	public static final CommonCodec<Short> SHORT_CODEC = new ShortCodec();
+	public static final CommonCodec<Integer> INTEGER_CODEC = new IntegerCodec();
+	public static final CommonCodec<Long> LONG_CODEC = new LongCodec();
+	public static final CommonCodec<Float> FLOAT_CODEC = new FloatCodec();
+	public static final CommonCodec<Double> DOUBLE_CODEC = new DoubleCodec();
 
 	public static final CodecRegistry NUMERIC_CODEC_REGISTRY = new CodecRegistryBuilder()
 		.codec(BYTE_CODEC, byte.class)

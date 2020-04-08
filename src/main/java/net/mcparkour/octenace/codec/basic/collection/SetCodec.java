@@ -29,7 +29,7 @@ import java.lang.reflect.Type;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import net.mcparkour.common.reflection.type.Types;
-import net.mcparkour.octenace.codec.Codec;
+import net.mcparkour.octenace.codec.CommonCodec;
 import net.mcparkour.octenace.converter.Converter;
 import net.mcparkour.octenace.model.array.ModelArray;
 import net.mcparkour.octenace.model.array.ModelArrayFactory;
@@ -37,7 +37,7 @@ import net.mcparkour.octenace.model.value.ModelValue;
 import net.mcparkour.octenace.model.value.ModelValueFactory;
 import org.jetbrains.annotations.Nullable;
 
-public class SetCodec implements Codec<Set<?>> {
+public class SetCodec implements CommonCodec<Set<?>> {
 
 	@Override
 	public <O, A, V> ModelValue<O, A, V> encode(Set<?> object, Type type, Converter<O, A, V> converter) {

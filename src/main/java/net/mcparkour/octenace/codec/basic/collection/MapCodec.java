@@ -29,7 +29,7 @@ import java.lang.reflect.Type;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import net.mcparkour.common.reflection.type.Types;
-import net.mcparkour.octenace.codec.Codec;
+import net.mcparkour.octenace.codec.CommonCodec;
 import net.mcparkour.octenace.converter.Converter;
 import net.mcparkour.octenace.model.object.ModelObject;
 import net.mcparkour.octenace.model.object.ModelObjectFactory;
@@ -37,7 +37,7 @@ import net.mcparkour.octenace.model.value.ModelValue;
 import net.mcparkour.octenace.model.value.ModelValueFactory;
 import org.jetbrains.annotations.Nullable;
 
-public class MapCodec implements Codec<Map<?, ?>> {
+public class MapCodec implements CommonCodec<Map<?, ?>> {
 
 	@Override
 	public <O, A, V> ModelValue<O, A, V> encode(Map<?, ?> object, Type type, Converter<O, A, V> converter) {

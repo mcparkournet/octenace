@@ -26,6 +26,7 @@ package net.mcparkour.octenace.codec.registry;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.mcparkour.octenace.codec.CommonCodec;
 import net.mcparkour.octenace.codec.Codec;
 
 public class CodecRegistryBuilder {
@@ -42,9 +43,13 @@ public class CodecRegistryBuilder {
 		return this;
 	}
 
-	public <T> CodecRegistryBuilder codec(Codec<?> codec, Class<?> type) {
-		TypedCodec typedCodec = new TypedCodec(type, codec);
-		this.codecs.add(typedCodec);
+	public CodecRegistryBuilder codec(CommonCodec<?> codec, Class<?> type) {
+		CommonCodecWrapper<?, ?, ?, ?> wrapper = new CommonCodecWrapper<>(codec);
+		return codec(wrapper, type);
+	}
+
+	public CodecRegistryBuilder codec(Codec<?, ?, ?, ?> codec, Class<?> type) {
+		this.codecs.add(new TypedCodec(type, codec));
 		return this;
 	}
 

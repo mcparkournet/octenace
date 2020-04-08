@@ -29,13 +29,13 @@ import java.lang.reflect.Type;
 import java.util.Arrays;
 import net.mcparkour.common.reflection.Reflections;
 import net.mcparkour.common.reflection.type.Types;
-import net.mcparkour.octenace.codec.Codec;
+import net.mcparkour.octenace.codec.CommonCodec;
 import net.mcparkour.octenace.converter.Converter;
 import net.mcparkour.octenace.model.value.ModelValue;
 import net.mcparkour.octenace.model.value.ModelValueFactory;
 import org.jetbrains.annotations.Nullable;
 
-public class EnumCodec implements Codec<Enum<?>> {
+public class EnumCodec implements CommonCodec<Enum<?>> {
 
 	@Override
 	public <O, A, V> ModelValue<O, A, V> encode(Enum<?> object, Type type, Converter<O, A, V> converter) {

@@ -29,7 +29,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import net.mcparkour.common.reflection.type.Types;
-import net.mcparkour.octenace.codec.Codec;
+import net.mcparkour.octenace.codec.CommonCodec;
 import net.mcparkour.octenace.converter.Converter;
 import net.mcparkour.octenace.model.array.ModelArray;
 import net.mcparkour.octenace.model.array.ModelArrayFactory;
@@ -37,7 +37,7 @@ import net.mcparkour.octenace.model.value.ModelValue;
 import net.mcparkour.octenace.model.value.ModelValueFactory;
 import org.jetbrains.annotations.Nullable;
 
-public class ListCodec implements Codec<List<?>> {
+public class ListCodec implements CommonCodec<List<?>> {
 
 	@Override
 	public <O, A, V> ModelValue<O, A, V> encode(List<?> object, Type type, Converter<O, A, V> converter) {

@@ -26,13 +26,13 @@ package net.mcparkour.octenace.codec.basic;
 
 import java.lang.reflect.Type;
 import java.util.Locale;
-import net.mcparkour.octenace.codec.Codec;
+import net.mcparkour.octenace.codec.CommonCodec;
 import net.mcparkour.octenace.converter.Converter;
 import net.mcparkour.octenace.model.value.ModelValue;
 import net.mcparkour.octenace.model.value.ModelValueFactory;
 import org.jetbrains.annotations.Nullable;
 
-public class LocaleCodec implements Codec<Locale> {
+public class LocaleCodec implements CommonCodec<Locale> {
 
 	@Override
 	public <O, A, V> ModelValue<O, A, V> encode(Locale object, Type type, Converter<O, A, V> converter) {

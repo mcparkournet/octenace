@@ -25,13 +25,13 @@
 package net.mcparkour.octenace.codec.basic;
 
 import java.lang.reflect.Type;
-import net.mcparkour.octenace.codec.Codec;
+import net.mcparkour.octenace.codec.CommonCodec;
 import net.mcparkour.octenace.converter.Converter;
 import net.mcparkour.octenace.model.value.ModelValue;
 import net.mcparkour.octenace.model.value.ModelValueFactory;
 import org.jetbrains.annotations.Nullable;
 
-public class StringCodec implements Codec<String> {
+public class StringCodec implements CommonCodec<String> {
 
 	@Override
 	public <O, A, V> ModelValue<O, A, V> encode(String object, Type type, Converter<O, A, V> converter) {

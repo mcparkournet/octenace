@@ -24,15 +24,15 @@
 
 package net.mcparkour.octenace.codec.basic.primitive;
 
-import net.mcparkour.octenace.codec.Codec;
+import net.mcparkour.octenace.codec.CommonCodec;
 import net.mcparkour.octenace.codec.basic.primitive.numeric.NumericCodecs;
 import net.mcparkour.octenace.codec.registry.CodecRegistry;
 import net.mcparkour.octenace.codec.registry.CodecRegistryBuilder;
 
 public final class PrimitiveCodecs {
 
-	public static final Codec<Boolean> BOOLEAN_CODEC = new BooleanCodec();
-	public static final Codec<Character> CHARACTER_CODEC = new CharacterCodec();
+	public static final CommonCodec<Boolean> BOOLEAN_CODEC = new BooleanCodec();
+	public static final CommonCodec<Character> CHARACTER_CODEC = new CharacterCodec();
 
 	public static final CodecRegistry PRIMITIVE_CODEC_REGISTRY = new CodecRegistryBuilder()
 		.registry(NumericCodecs.NUMERIC_CODEC_REGISTRY)

@@ -26,7 +26,7 @@ package net.mcparkour.octenace.codec.basic;
 
 import java.util.Locale;
 import java.util.UUID;
-import net.mcparkour.octenace.codec.Codec;
+import net.mcparkour.octenace.codec.CommonCodec;
 import net.mcparkour.octenace.codec.basic.collection.CollectionCodecs;
 import net.mcparkour.octenace.codec.basic.primitive.PrimitiveCodecs;
 import net.mcparkour.octenace.codec.registry.CodecRegistry;
@@ -34,10 +34,10 @@ import net.mcparkour.octenace.codec.registry.CodecRegistryBuilder;
 
 public final class Codecs {
 
-	public static final Codec<Enum<?>> ENUM_CODEC = new EnumCodec();
-	public static final Codec<String> STRING_CODEC = new StringCodec();
-	public static final Codec<UUID> UUID_CODEC = new UUIDCodec();
-	public static final Codec<Locale> LOCALE_CODEC = new LocaleCodec();
+	public static final CommonCodec<Enum<?>> ENUM_CODEC = new EnumCodec();
+	public static final CommonCodec<String> STRING_CODEC = new StringCodec();
+	public static final CommonCodec<UUID> UUID_CODEC = new UUIDCodec();
+	public static final CommonCodec<Locale> LOCALE_CODEC = new LocaleCodec();
 
 	public static final CodecRegistry BASIC_CODEC_REGISTRY = new CodecRegistryBuilder()
 		.registry(CollectionCodecs.COLLECTION_CODEC_REGISTRY)

@@ -27,16 +27,16 @@ package net.mcparkour.octenace.codec.basic.collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import net.mcparkour.octenace.codec.Codec;
+import net.mcparkour.octenace.codec.CommonCodec;
 import net.mcparkour.octenace.codec.registry.CodecRegistry;
 import net.mcparkour.octenace.codec.registry.CodecRegistryBuilder;
 
 public final class CollectionCodecs {
 
-	public static final Codec<Object[]> ARRAY_CODEC = new ArrayCodec();
-	public static final Codec<List<?>> LIST_CODEC = new ListCodec();
-	public static final Codec<Set<?>> SET_CODEC = new SetCodec();
-	public static final Codec<Map<?, ?>> MAP_CODEC = new MapCodec();
+	public static final CommonCodec<Object[]> ARRAY_CODEC = new ArrayCodec();
+	public static final CommonCodec<List<?>> LIST_CODEC = new ListCodec();
+	public static final CommonCodec<Set<?>> SET_CODEC = new SetCodec();
+	public static final CommonCodec<Map<?, ?>> MAP_CODEC = new MapCodec();
 
 	public static final CodecRegistry COLLECTION_CODEC_REGISTRY = new CodecRegistryBuilder()
 		.codec(ARRAY_CODEC, Object[].class)

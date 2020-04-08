@@ -85,7 +85,7 @@ public class BasicConverter<O, A, V> implements Converter<O, A, V> {
 		if (object == null) {
 			return this.modelValueFactory.createNullModelValue();
 		}
-		Codec<Object> codec = getObjectCodec(type);
+		Codec<O, A, V, Object> codec = getObjectCodec(type);
 		if (codec == null) {
 			ModelObject<O, A, V> modelObject = fromConfiguration(object);
 			return this.modelValueFactory.createObjectModelValue(modelObject);
@@ -117,7 +117,7 @@ public class BasicConverter<O, A, V> implements Converter<O, A, V> {
 		if (value.isNull()) {
 			return null;
 		}
-		Codec<Object> codec = getObjectCodec(type);
+		Codec<O, A, V, Object> codec = getObjectCodec(type);
 		if (codec == null) {
 			if (!value.isObject()) {
 				throw new CodecNotFoundException(type);
@@ -155,14 +155,14 @@ public class BasicConverter<O, A, V> implements Converter<O, A, V> {
 
 	@SuppressWarnings("unchecked")
 	@Nullable
-	private Codec<Object> getObjectCodec(Type type) {
+	private Codec<O, A, V, Object> getObjectCodec(Type type) {
 		Type rawType = Types.getRawType(type);
 		Class<?> classType = Types.asClassType(rawType);
-		Codec<?> codec = this.codecRegistry.get(classType);
+		Codec<?, ?, ?, ?> codec = this.codecRegistry.get(classType);
 		if (codec == null) {
 			return null;
 		}
-		return (Codec<Object>) codec;
+		return (Codec<O, A, V, Object>) codec;
 	}
 
 	@Override

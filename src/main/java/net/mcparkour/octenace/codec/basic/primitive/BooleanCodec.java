@@ -25,13 +25,13 @@
 package net.mcparkour.octenace.codec.basic.primitive;
 
 import java.lang.reflect.Type;
-import net.mcparkour.octenace.codec.Codec;
+import net.mcparkour.octenace.codec.CommonCodec;
 import net.mcparkour.octenace.converter.Converter;
 import net.mcparkour.octenace.model.value.ModelValue;
 import net.mcparkour.octenace.model.value.ModelValueFactory;
 import org.jetbrains.annotations.Nullable;
 
-public class BooleanCodec implements Codec<Boolean> {
+public class BooleanCodec implements CommonCodec<Boolean> {
 
 	@Override
 	public <O, A, V> ModelValue<O, A, V> encode(Boolean object, Type type, Converter<O, A, V> converter) {
