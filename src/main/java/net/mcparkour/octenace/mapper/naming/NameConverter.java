@@ -22,37 +22,13 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.mapper;
+package net.mcparkour.octenace.mapper.naming;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Type;
-import net.mcparkour.octenace.mapper.naming.NameConverter;
-import net.mcparkour.octenace.model.array.ModelArrayFactory;
-import net.mcparkour.octenace.model.object.ModelObject;
-import net.mcparkour.octenace.model.object.ModelObjectFactory;
-import net.mcparkour.octenace.model.value.ModelValue;
-import net.mcparkour.octenace.model.value.ModelValueFactory;
-import org.jetbrains.annotations.Nullable;
+public interface NameConverter {
 
-public interface Mapper<O, A, V> {
+	static NameConverter identity() {
+		return name -> name;
+	}
 
-	ModelObject<O, A, V> fromDocument(Object document);
-
-	ModelValue<O, A, V> fromDocument(@Nullable Object document, Type type);
-
-	<T> T toDocument(ModelObject<O, A, V> object, Class<T> configurationType);
-
-	Object toDocument(ModelValue<O, A, V> value, Type type);
-
-	boolean isFieldValid(Field field);
-
-	String getFieldName(Field field);
-
-	ModelObjectFactory<O, A, V> getObjectFactory();
-
-	ModelArrayFactory<O, A, V> getArrayFactory();
-
-	ModelValueFactory<O, A, V> getValueFactory();
-
-	NameConverter getNameConverter();
+	String convert(String name);
 }

@@ -22,11 +22,11 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.mapper;
+package net.mcparkour.octenace.mapper.naming;
 
-public enum LetterCase {
+public class KebabCaseNameConverter extends SeparatedCaseNameConverter {
 
-	INHERITED,
-	KEBAB,
-	SNAKE
+	public KebabCaseNameConverter() {
+		super("-");
+	}
 }

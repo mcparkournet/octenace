@@ -22,31 +22,26 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.util;
+package net.mcparkour.octenace.mapper.naming;
 
-public final class LetterCaseTransformer {
+public class SeparatedCaseNameConverter implements NameConverter {
 
-	private LetterCaseTransformer() {
-		throw new UnsupportedOperationException("Cannot create an instance of this class");
+	private String separator;
+
+	public SeparatedCaseNameConverter(String separator) {
+		this.separator = separator;
 	}
 
-	public static String toKebabCase(String text) {
-		return toSeparatorCase(text, '-');
-	}
-
-	public static String toSnakeCase(String text) {
-		return toSeparatorCase(text, '_');
-	}
-
-	private static String toSeparatorCase(String text, char separator) {
-		int length = text.length();
+	@Override
+	public String convert(String name) {
+		int length = name.length();
 		StringBuilder builder = new StringBuilder(length);
 		for (int index = 0; index < length; index++) {
-			char character = text.charAt(index);
+			char character = name.charAt(index);
 			if (Character.isUpperCase(character)) {
 				character = Character.toLowerCase(character);
-				if (isPreviousCharacterLowerCase(text, index) || isPreviousCharacterUpperCase(text, index) && isNextCharacterLowerCase(text, index)) {
-					builder.append(separator);
+				if (isPreviousCharacterLowerCase(name, index) || isPreviousCharacterUpperCase(name, index) && isNextCharacterLowerCase(name, index)) {
+					builder.append(this.separator);
 				}
 			}
 			builder.append(character);
