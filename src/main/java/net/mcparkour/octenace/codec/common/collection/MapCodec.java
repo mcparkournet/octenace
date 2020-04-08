@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.codec.basic.collection;
+package net.mcparkour.octenace.codec.common.collection;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

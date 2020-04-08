@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.codec.basic;
+package net.mcparkour.octenace.codec.common;
 
 import java.lang.reflect.Type;
 import net.mcparkour.octenace.codec.CommonCodec;

@@ -22,12 +22,12 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.codec.basic.primitive.numeric;
+package net.mcparkour.octenace.codec.common.primitive.numeric;
 
-public class DoubleCodec extends NumberCodec<Double> {
+public class IntegerCodec extends NumberCodec<Integer> {
 
 	@Override
-	public Double decode(Number number) {
-		return number.doubleValue();
+	public Integer decode(Number number) {
+		return number.intValue();
 	}
 }

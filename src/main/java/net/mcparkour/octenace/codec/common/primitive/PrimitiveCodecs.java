@@ -22,32 +22,27 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.codec.basic.primitive;
+package net.mcparkour.octenace.codec.common.primitive;
 
-import java.lang.reflect.Type;
 import net.mcparkour.octenace.codec.CommonCodec;
-import net.mcparkour.octenace.codec.CodecDecodeException;
-import net.mcparkour.octenace.converter.Converter;
-import net.mcparkour.octenace.model.value.ModelValue;
-import net.mcparkour.octenace.model.value.ModelValueFactory;
-import org.jetbrains.annotations.Nullable;
+import net.mcparkour.octenace.codec.common.primitive.numeric.NumericCodecs;
+import net.mcparkour.octenace.codec.registry.CodecRegistry;
+import net.mcparkour.octenace.codec.registry.CodecRegistryBuilder;
 
-public class CharacterCodec implements CommonCodec<Character> {
+public final class PrimitiveCodecs {
 
-	@Override
-	public <O, A, V> ModelValue<O, A, V> encode(Character object, Type type, Converter<O, A, V> converter) {
-		ModelValueFactory<O, A, V> valueFactory = converter.getModelValueFactory();
-		String string = String.valueOf(object);
-		return valueFactory.createStringModelValue(string);
-	}
+	public static final CommonCodec<Boolean> BOOLEAN_CODEC = new BooleanCodec();
+	public static final CommonCodec<Character> CHARACTER_CODEC = new CharacterCodec();
 
-	@Override
-	@Nullable
-	public <O, A, V> Character decode(ModelValue<O, A, V> value, Type type, Converter<O, A, V> converter) {
-		String string = value.asString();
-		if (string.length() != 1) {
-			throw new CodecDecodeException("Value length is not 1");
-		}
-		return string.charAt(0);
+	public static final CodecRegistry PRIMITIVE_CODEC_REGISTRY = new CodecRegistryBuilder()
+		.registry(NumericCodecs.NUMERIC_CODEC_REGISTRY)
+		.codec(BOOLEAN_CODEC, boolean.class)
+		.codec(BOOLEAN_CODEC, Boolean.class)
+		.codec(CHARACTER_CODEC, char.class)
+		.codec(CHARACTER_CODEC, Character.class)
+		.build();
+
+	private PrimitiveCodecs() {
+		throw new UnsupportedOperationException("Cannot create an instance of this class");
 	}
 }

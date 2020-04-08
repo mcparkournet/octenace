@@ -22,12 +22,29 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.codec.basic.primitive.numeric;
+package net.mcparkour.octenace.codec.common.primitive.numeric;
 
-public class IntegerCodec extends NumberCodec<Integer> {
+import java.lang.reflect.Type;
+import net.mcparkour.octenace.codec.CommonCodec;
+import net.mcparkour.octenace.converter.Converter;
+import net.mcparkour.octenace.model.value.ModelValue;
+import net.mcparkour.octenace.model.value.ModelValueFactory;
+import org.jetbrains.annotations.Nullable;
+
+public abstract class NumberCodec<T extends Number> implements CommonCodec<T> {
 
 	@Override
-	public Integer decode(Number number) {
-		return number.intValue();
+	public <O, A, V> ModelValue<O, A, V> encode(T object, Type type, Converter<O, A, V> converter) {
+		ModelValueFactory<O, A, V> valueFactory = converter.getModelValueFactory();
+		return valueFactory.createNumberModelValue(object);
 	}
+
+	@Override
+	@Nullable
+	public <O, A, V> T decode(ModelValue<O, A, V> value, Type type, Converter<O, A, V> converter) {
+		Number number = value.asNumber();
+		return decode(number);
+	}
+
+	public abstract T decode(Number number);
 }

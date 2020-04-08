@@ -22,30 +22,33 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.codec.basic.collection;
+package net.mcparkour.octenace.codec.common;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.Locale;
+import java.util.UUID;
 import net.mcparkour.octenace.codec.CommonCodec;
+import net.mcparkour.octenace.codec.common.collection.CollectionCodecs;
+import net.mcparkour.octenace.codec.common.primitive.PrimitiveCodecs;
 import net.mcparkour.octenace.codec.registry.CodecRegistry;
 import net.mcparkour.octenace.codec.registry.CodecRegistryBuilder;
 
-public final class CollectionCodecs {
+public final class Codecs {
 
-	public static final CommonCodec<Object[]> ARRAY_CODEC = new ArrayCodec();
-	public static final CommonCodec<List<?>> LIST_CODEC = new ListCodec();
-	public static final CommonCodec<Set<?>> SET_CODEC = new SetCodec();
-	public static final CommonCodec<Map<?, ?>> MAP_CODEC = new MapCodec();
+	public static final CommonCodec<Enum<?>> ENUM_CODEC = new EnumCodec();
+	public static final CommonCodec<String> STRING_CODEC = new StringCodec();
+	public static final CommonCodec<UUID> UUID_CODEC = new UUIDCodec();
+	public static final CommonCodec<Locale> LOCALE_CODEC = new LocaleCodec();
 
-	public static final CodecRegistry COLLECTION_CODEC_REGISTRY = new CodecRegistryBuilder()
-		.codec(ARRAY_CODEC, Object[].class)
-		.codec(LIST_CODEC, List.class)
-		.codec(SET_CODEC, Set.class)
-		.codec(MAP_CODEC, Map.class)
+	public static final CodecRegistry COMMON_CODEC_REGISTRY = new CodecRegistryBuilder()
+		.registry(CollectionCodecs.COLLECTION_CODEC_REGISTRY)
+		.registry(PrimitiveCodecs.PRIMITIVE_CODEC_REGISTRY)
+		.codec(ENUM_CODEC, Enum.class)
+		.codec(STRING_CODEC, String.class)
+		.codec(UUID_CODEC, UUID.class)
+		.codec(LOCALE_CODEC, Locale.class)
 		.build();
 
-	private CollectionCodecs() {
+	private Codecs() {
 		throw new UnsupportedOperationException("Cannot create an instance of this class");
 	}
 }

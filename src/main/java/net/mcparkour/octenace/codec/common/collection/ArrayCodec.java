@@ -22,12 +22,10 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.codec.basic.collection;
+package net.mcparkour.octenace.codec.common.collection;
 
-import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Array;
 import java.lang.reflect.Type;
-import java.util.LinkedHashSet;
-import java.util.Set;
 import net.mcparkour.common.reflection.type.Types;
 import net.mcparkour.octenace.codec.CommonCodec;
 import net.mcparkour.octenace.converter.Converter;
@@ -37,10 +35,10 @@ import net.mcparkour.octenace.model.value.ModelValue;
 import net.mcparkour.octenace.model.value.ModelValueFactory;
 import org.jetbrains.annotations.Nullable;
 
-public class SetCodec implements CommonCodec<Set<?>> {
+public class ArrayCodec implements CommonCodec<Object[]> {
 
 	@Override
-	public <O, A, V> ModelValue<O, A, V> encode(Set<?> object, Type type, Converter<O, A, V> converter) {
+	public <O, A, V> ModelValue<O, A, V> encode(Object[] object, Type type, Converter<O, A, V> converter) {
 		ModelArrayFactory<O, A, V> arrayFactory = converter.getModelArrayFactory();
 		ModelArray<O, A, V> array = arrayFactory.createEmptyModelArray();
 		for (Object element : object) {
@@ -54,23 +52,19 @@ public class SetCodec implements CommonCodec<Set<?>> {
 
 	@Override
 	@Nullable
-	public <O, A, V> Set<?> decode(ModelValue<O, A, V> value, Type type, Converter<O, A, V> converter) {
+	public <O, A, V> Object[] decode(ModelValue<O, A, V> value, Type type, Converter<O, A, V> converter) {
 		ModelArrayFactory<O, A, V> arrayFactory = converter.getModelArrayFactory();
 		A rawArray = value.asArray();
 		ModelArray<O, A, V> array = arrayFactory.createModelArray(rawArray);
-		Type genericType = getGenericType(type);
+		Class<?> classType = Types.asClassType(type);
+		Class<?> arrayType = classType.getComponentType();
 		int size = array.getSize();
-		Set<Object> set = new LinkedHashSet<>(size);
-		for (ModelValue<O, A, V> elementValue : array) {
-			Object object = converter.toObject(elementValue, genericType);
-			set.add(object);
+		Object[] resultArray = (Object[]) Array.newInstance(arrayType, size);
+		for (int index = 0; index < size; index++) {
+			ModelValue<O, A, V> elementValue = array.get(index);
+			Object object = converter.toObject(elementValue, arrayType);
+			resultArray[index] = object;
 		}
-		return set;
-	}
-
-	private Type getGenericType(Type type) {
-		ParameterizedType parameterizedType = Types.asParametrizedType(type);
-		Type[] typeArguments = parameterizedType.getActualTypeArguments();
-		return typeArguments[0];
+		return resultArray;
 	}
 }

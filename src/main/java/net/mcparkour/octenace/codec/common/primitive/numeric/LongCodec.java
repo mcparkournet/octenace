@@ -22,12 +22,12 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.codec.basic.primitive.numeric;
+package net.mcparkour.octenace.codec.common.primitive.numeric;
 
-public class ShortCodec extends NumberCodec<Short> {
+public class LongCodec extends NumberCodec<Long> {
 
 	@Override
-	public Short decode(Number number) {
-		return number.shortValue();
+	public Long decode(Number number) {
+		return number.longValue();
 	}
 }

@@ -22,29 +22,12 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.codec.basic;
+package net.mcparkour.octenace.codec.common.primitive.numeric;
 
-import java.lang.reflect.Type;
-import java.util.UUID;
-import net.mcparkour.octenace.codec.CommonCodec;
-import net.mcparkour.octenace.converter.Converter;
-import net.mcparkour.octenace.model.value.ModelValue;
-import net.mcparkour.octenace.model.value.ModelValueFactory;
-import org.jetbrains.annotations.Nullable;
-
-public class UUIDCodec implements CommonCodec<UUID> {
+public class FloatCodec extends NumberCodec<Float> {
 
 	@Override
-	public <O, A, V> ModelValue<O, A, V> encode(UUID object, Type type, Converter<O, A, V> converter) {
-		ModelValueFactory<O, A, V> valueFactory = converter.getModelValueFactory();
-		String uuidString = object.toString();
-		return valueFactory.createStringModelValue(uuidString);
-	}
-
-	@Override
-	@Nullable
-	public <O, A, V> UUID decode(ModelValue<O, A, V> value, Type type, Converter<O, A, V> converter) {
-		String uuidString = value.asString();
-		return UUID.fromString(uuidString);
+	public Float decode(Number number) {
+		return number.floatValue();
 	}
 }

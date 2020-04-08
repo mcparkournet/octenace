@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.codec.basic.primitive.numeric;
+package net.mcparkour.octenace.codec.common.primitive.numeric;
 
 public class ByteCodec extends NumberCodec<Byte> {
 

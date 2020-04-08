@@ -36,10 +36,9 @@ public class CodecRegistry {
 		this.codecs = codecs;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Nullable
-	public <T> Codec<?, ?, ?, T> get(Class<T> type) {
-		return (Codec<?, ?, ?, T>) this.codecs.stream()
+	public Codec<?, ?, ?, ?> get(Class<?> type) {
+		return this.codecs.stream()
 			.filter(codec -> codec.isAssignableFrom(type))
 			.findFirst()
 			.map(TypedCodec::getCodec)

@@ -22,49 +22,47 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.codec.basic.collection;
+package net.mcparkour.octenace.codec.common;
 
-import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.lang.reflect.Type;
+import java.util.Arrays;
+import net.mcparkour.common.reflection.Reflections;
 import net.mcparkour.common.reflection.type.Types;
 import net.mcparkour.octenace.codec.CommonCodec;
 import net.mcparkour.octenace.converter.Converter;
-import net.mcparkour.octenace.model.array.ModelArray;
-import net.mcparkour.octenace.model.array.ModelArrayFactory;
 import net.mcparkour.octenace.model.value.ModelValue;
 import net.mcparkour.octenace.model.value.ModelValueFactory;
 import org.jetbrains.annotations.Nullable;
 
-public class ArrayCodec implements CommonCodec<Object[]> {
+public class EnumCodec implements CommonCodec<Enum<?>> {
 
 	@Override
-	public <O, A, V> ModelValue<O, A, V> encode(Object[] object, Type type, Converter<O, A, V> converter) {
-		ModelArrayFactory<O, A, V> arrayFactory = converter.getModelArrayFactory();
-		ModelArray<O, A, V> array = arrayFactory.createEmptyModelArray();
-		for (Object element : object) {
-			Class<?> elementType = element.getClass();
-			ModelValue<O, A, V> elementValue = converter.toModelValue(element, elementType);
-			array.addValue(elementValue);
-		}
+	public <O, A, V> ModelValue<O, A, V> encode(Enum<?> object, Type type, Converter<O, A, V> converter) {
 		ModelValueFactory<O, A, V> valueFactory = converter.getModelValueFactory();
-		return valueFactory.createArrayModelValue(array);
+		String name = getEnumName(object, converter);
+		return valueFactory.createStringModelValue(name);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	@Nullable
-	public <O, A, V> Object[] decode(ModelValue<O, A, V> value, Type type, Converter<O, A, V> converter) {
-		ModelArrayFactory<O, A, V> arrayFactory = converter.getModelArrayFactory();
-		A rawArray = value.asArray();
-		ModelArray<O, A, V> array = arrayFactory.createModelArray(rawArray);
-		Class<?> classType = Types.asClassType(type);
-		Class<?> arrayType = classType.getComponentType();
-		int size = array.getSize();
-		Object[] resultArray = (Object[]) Array.newInstance(arrayType, size);
-		for (int index = 0; index < size; index++) {
-			ModelValue<O, A, V> elementValue = array.get(index);
-			Object object = converter.toObject(elementValue, arrayType);
-			resultArray[index] = object;
-		}
-		return resultArray;
+	public <O, A, V> Enum<?> decode(ModelValue<O, A, V> value, Type type, Converter<O, A, V> converter) {
+		Type rawType = Types.getRawType(type);
+		Class<?> classType = Types.asClassType(rawType);
+		Class<? extends Enum<?>> enumType = (Class<? extends Enum<?>>) classType;
+		Enum<?>[] enumConstants = enumType.getEnumConstants();
+		String valueString = value.asString();
+		return Arrays.stream(enumConstants)
+			.filter(enumConstant -> valueString.equals(getEnumName(enumConstant, converter)))
+			.findFirst()
+			.orElse(null);
+	}
+
+	private <O, A, V> String getEnumName(Enum<?> object, Converter<O, A, V> converter) {
+		Class<? extends Enum<?>> type = object.getDeclaringClass();
+		String name = object.name();
+		Field field = Reflections.getField(type, name);
+		return converter.getFieldName(field);
 	}
 }
