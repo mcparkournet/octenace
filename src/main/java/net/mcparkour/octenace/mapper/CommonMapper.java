@@ -43,7 +43,7 @@ import net.mcparkour.octenace.model.value.ModelValue;
 import net.mcparkour.octenace.model.value.ModelValueFactory;
 import org.jetbrains.annotations.Nullable;
 
-public class BasicMapper<O, A, V> implements Mapper<O, A, V> {
+public class CommonMapper<O, A, V> implements Mapper<O, A, V> {
 
 	private ModelObjectFactory<O, A, V> objectFactory;
 	private ModelArrayFactory<O, A, V> arrayFactory;
@@ -53,7 +53,7 @@ public class BasicMapper<O, A, V> implements Mapper<O, A, V> {
 	private CodecRegistry codecRegistry;
 	private NameAnnotationSupplier<? extends Annotation> nameAnnotationSupplier;
 
-	public BasicMapper(ModelObjectFactory<O, A, V> objectFactory, ModelArrayFactory<O, A, V> arrayFactory, ModelValueFactory<O, A, V> valueFactory, NameConverter nameConverter, List<FieldCondition> fieldConditions, CodecRegistry codecRegistry, NameAnnotationSupplier<? extends Annotation> nameAnnotationSupplier) {
+	public CommonMapper(ModelObjectFactory<O, A, V> objectFactory, ModelArrayFactory<O, A, V> arrayFactory, ModelValueFactory<O, A, V> valueFactory, NameConverter nameConverter, List<FieldCondition> fieldConditions, CodecRegistry codecRegistry, NameAnnotationSupplier<? extends Annotation> nameAnnotationSupplier) {
 		this.objectFactory = objectFactory;
 		this.arrayFactory = arrayFactory;
 		this.valueFactory = valueFactory;
