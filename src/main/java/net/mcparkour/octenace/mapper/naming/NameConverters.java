@@ -24,9 +24,12 @@
 
 package net.mcparkour.octenace.mapper.naming;
 
-public class KebabCaseNameConverter extends SeparatedCaseNameConverter {
+public final class NameConverters {
 
-	public KebabCaseNameConverter() {
-		super("-");
+	public static final NameConverter KEBAB_CASE_NAME_CONVERTER = new SeparatedCaseNameConverter("-");
+	public static final NameConverter SNAKE_CASE_NAME_CONVERTER = new SeparatedCaseNameConverter("_");
+
+	private NameConverters() {
+		throw new UnsupportedOperationException("Cannot create an instance of this class");
 	}
 }

@@ -29,30 +29,27 @@ import org.junit.jupiter.api.Test;
 
 public class NameConverterTest {
 
-	private static final NameConverter KEBAB_CASE_NAME_CONVERTER = new KebabCaseNameConverter();
-	private static final NameConverter SNAKE_CASE_NAME_CONVERTER = new SnakeCaseNameConverter();
-
 	@Test
 	public void testKebabCaseConverter() {
-		Assertions.assertEquals("", KEBAB_CASE_NAME_CONVERTER.convert(""));
-		Assertions.assertEquals("foo", KEBAB_CASE_NAME_CONVERTER.convert("foo"));
-		Assertions.assertEquals("foo", KEBAB_CASE_NAME_CONVERTER.convert("FOO"));
-		Assertions.assertEquals("foo-b", KEBAB_CASE_NAME_CONVERTER.convert("FooB"));
-		Assertions.assertEquals("foo-bar", KEBAB_CASE_NAME_CONVERTER.convert("FooBAR"));
-		Assertions.assertEquals("foo-bar-foo-bar", KEBAB_CASE_NAME_CONVERTER.convert("fooBarFooBar"));
-		Assertions.assertEquals("foo-bar-foo-bar", KEBAB_CASE_NAME_CONVERTER.convert("FooBarFooBar"));
-		Assertions.assertEquals("foo-bar-foo-bar", KEBAB_CASE_NAME_CONVERTER.convert("FooBarFOOBar"));
+		Assertions.assertEquals("", NameConverters.KEBAB_CASE_NAME_CONVERTER.convert(""));
+		Assertions.assertEquals("foo", NameConverters.KEBAB_CASE_NAME_CONVERTER.convert("foo"));
+		Assertions.assertEquals("foo", NameConverters.KEBAB_CASE_NAME_CONVERTER.convert("FOO"));
+		Assertions.assertEquals("foo-b", NameConverters.KEBAB_CASE_NAME_CONVERTER.convert("FooB"));
+		Assertions.assertEquals("foo-bar", NameConverters.KEBAB_CASE_NAME_CONVERTER.convert("FooBAR"));
+		Assertions.assertEquals("foo-bar-foo-bar", NameConverters.KEBAB_CASE_NAME_CONVERTER.convert("fooBarFooBar"));
+		Assertions.assertEquals("foo-bar-foo-bar", NameConverters.KEBAB_CASE_NAME_CONVERTER.convert("FooBarFooBar"));
+		Assertions.assertEquals("foo-bar-foo-bar", NameConverters.KEBAB_CASE_NAME_CONVERTER.convert("FooBarFOOBar"));
 	}
 
 	@Test
 	public void testSnakeCaseConverter() {
-		Assertions.assertEquals("", SNAKE_CASE_NAME_CONVERTER.convert(""));
-		Assertions.assertEquals("foo", SNAKE_CASE_NAME_CONVERTER.convert("foo"));
-		Assertions.assertEquals("foo", SNAKE_CASE_NAME_CONVERTER.convert("FOO"));
-		Assertions.assertEquals("foo_b", SNAKE_CASE_NAME_CONVERTER.convert("FooB"));
-		Assertions.assertEquals("foo_bar", SNAKE_CASE_NAME_CONVERTER.convert("FooBAR"));
-		Assertions.assertEquals("foo_bar_foo_bar", SNAKE_CASE_NAME_CONVERTER.convert("fooBarFooBar"));
-		Assertions.assertEquals("foo_bar_foo_bar", SNAKE_CASE_NAME_CONVERTER.convert("FooBarFooBar"));
-		Assertions.assertEquals("foo_bar_foo_bar", SNAKE_CASE_NAME_CONVERTER.convert("FooBarFOOBar"));
+		Assertions.assertEquals("", NameConverters.SNAKE_CASE_NAME_CONVERTER.convert(""));
+		Assertions.assertEquals("foo", NameConverters.SNAKE_CASE_NAME_CONVERTER.convert("foo"));
+		Assertions.assertEquals("foo", NameConverters.SNAKE_CASE_NAME_CONVERTER.convert("FOO"));
+		Assertions.assertEquals("foo_b", NameConverters.SNAKE_CASE_NAME_CONVERTER.convert("FooB"));
+		Assertions.assertEquals("foo_bar", NameConverters.SNAKE_CASE_NAME_CONVERTER.convert("FooBAR"));
+		Assertions.assertEquals("foo_bar_foo_bar", NameConverters.SNAKE_CASE_NAME_CONVERTER.convert("fooBarFooBar"));
+		Assertions.assertEquals("foo_bar_foo_bar", NameConverters.SNAKE_CASE_NAME_CONVERTER.convert("FooBarFooBar"));
+		Assertions.assertEquals("foo_bar_foo_bar", NameConverters.SNAKE_CASE_NAME_CONVERTER.convert("FooBarFOOBar"));
 	}
 }
