@@ -25,6 +25,7 @@
 package net.mcparkour.octenace.codec.registry;
 
 import java.lang.reflect.Type;
+import java.util.Objects;
 import net.mcparkour.octenace.codec.Codec;
 import net.mcparkour.octenace.codec.CommonCodec;
 import net.mcparkour.octenace.mapper.Mapper;
@@ -48,5 +49,29 @@ class CommonCodecWrapper<O, A, V, T> implements Codec<O, A, V, T> {
 	@Nullable
 	public T decode(ModelValue<O, A, V> value, Type type, Mapper<O, A, V> mapper) {
 		return this.codec.decode(value, type, mapper);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (!(obj instanceof CommonCodecWrapper)) {
+			return false;
+		}
+		CommonCodecWrapper<?, ?, ?, ?> that = (CommonCodecWrapper<?, ?, ?, ?>) obj;
+		return Objects.equals(this.codec, that.codec);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(this.codec);
+	}
+
+	@Override
+	public String toString() {
+		return "CommonCodecWrapper{" +
+			"codec=" + this.codec +
+			'}';
 	}
 }
