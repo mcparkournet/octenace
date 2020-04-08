@@ -69,6 +69,12 @@ public class TestModelValue implements ModelValue<Map<String, Object>, List<Obje
 	}
 
 	@Override
+	public float asFloat() {
+		Number number = asNumber();
+		return number.floatValue();
+	}
+
+	@Override
 	public double asDouble() {
 		Number number = asNumber();
 		return number.doubleValue();

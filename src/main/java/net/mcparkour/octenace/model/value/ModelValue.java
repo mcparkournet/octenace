@@ -36,6 +36,8 @@ public interface ModelValue<O, A, V> {
 
 	long asLong();
 
+	float asFloat();
+
 	double asDouble();
 
 	boolean isNumber();

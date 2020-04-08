@@ -53,6 +53,12 @@ public class TestModelValueFactory implements ModelValueFactory<Map<String, Obje
 	}
 
 	@Override
+	public ModelValue<Map<String, Object>, List<Object>, Object> createValue(float value) {
+		Object rawValue = value;
+		return createValue(rawValue);
+	}
+
+	@Override
 	public ModelValue<Map<String, Object>, List<Object>, Object> createValue(double value) {
 		Object rawValue = value;
 		return createValue(rawValue);

@@ -37,6 +37,8 @@ public interface ModelValueFactory<O, A, V> {
 
 	ModelValue<O, A, V> createValue(long value);
 
+	ModelValue<O, A, V> createValue(float value);
+
 	ModelValue<O, A, V> createValue(double value);
 
 	ModelValue<O, A, V> createValue(String value);

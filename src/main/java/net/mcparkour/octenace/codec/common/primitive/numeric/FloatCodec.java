@@ -41,7 +41,6 @@ public class FloatCodec implements CommonCodec<Float> {
 	@Override
 	@Nullable
 	public <O, A, V> Float decode(ModelValue<O, A, V> value, Type type, Mapper<O, A, V> mapper) {
-		double doubleValue = value.asDouble();
-		return (float) doubleValue;
+		return value.asFloat();
 	}
 }
