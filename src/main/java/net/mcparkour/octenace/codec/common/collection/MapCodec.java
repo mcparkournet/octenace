@@ -30,7 +30,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import net.mcparkour.common.reflection.type.Types;
 import net.mcparkour.octenace.codec.CommonCodec;
-import net.mcparkour.octenace.converter.Converter;
+import net.mcparkour.octenace.mapper.Mapper;
 import net.mcparkour.octenace.model.object.ModelObject;
 import net.mcparkour.octenace.model.object.ModelObjectFactory;
 import net.mcparkour.octenace.model.value.ModelValue;
@@ -40,49 +40,49 @@ import org.jetbrains.annotations.Nullable;
 public class MapCodec implements CommonCodec<Map<?, ?>> {
 
 	@Override
-	public <O, A, V> ModelValue<O, A, V> encode(Map<?, ?> object, Type type, Converter<O, A, V> converter) {
-		ModelObjectFactory<O, A, V> objectFactory = converter.getModelObjectFactory();
-		ModelObject<O, A, V> modelObject = objectFactory.createEmptyModelObject();
-		for (Map.Entry<?, ?> entry : object.entrySet()) {
-			ModelValue<O, A, V> modelKey = getModelKey(entry, converter);
+	public <O, A, V> ModelValue<O, A, V> encode(Map<?, ?> value, Type type, Mapper<O, A, V> mapper) {
+		ModelObjectFactory<O, A, V> objectFactory = mapper.getObjectFactory();
+		ModelObject<O, A, V> modelObject = objectFactory.createEmptyObject();
+		for (Map.Entry<?, ?> entry : value.entrySet()) {
+			ModelValue<O, A, V> modelKey = getModelKey(entry, mapper);
 			String key = modelKey.asString();
-			ModelValue<O, A, V> modelValue = getModelValue(entry, converter);
-			modelObject.setValue(key, modelValue);
+			ModelValue<O, A, V> modelValue = getModelValue(entry, mapper);
+			modelObject.set(key, modelValue);
 		}
-		ModelValueFactory<O, A, V> valueFactory = converter.getModelValueFactory();
-		return valueFactory.createObjectModelValue(modelObject);
+		ModelValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
+		return valueFactory.createObjectValue(modelObject);
 	}
 
-	private <O, A, V> ModelValue<O, A, V> getModelKey(Map.Entry<?, ?> entry, Converter<O, A, V> converter) {
+	private <O, A, V> ModelValue<O, A, V> getModelKey(Map.Entry<?, ?> entry, Mapper<O, A, V> mapper) {
 		Object key = entry.getKey();
 		Class<?> keyType = key.getClass();
-		return converter.toModelValue(key, keyType);
+		return mapper.fromDocument(key, keyType);
 	}
 
-	private <O, A, V> ModelValue<O, A, V> getModelValue(Map.Entry<?, ?> entry, Converter<O, A, V> converter) {
+	private <O, A, V> ModelValue<O, A, V> getModelValue(Map.Entry<?, ?> entry, Mapper<O, A, V> mapper) {
 		Object value = entry.getValue();
 		Class<?> valueType = value.getClass();
-		return converter.toModelValue(value, valueType);
+		return mapper.fromDocument(value, valueType);
 	}
 
 	@Override
 	@Nullable
-	public <O, A, V> Map<?, ?> decode(ModelValue<O, A, V> value, Type type, Converter<O, A, V> converter) {
-		ModelObjectFactory<O, A, V> objectFactory = converter.getModelObjectFactory();
+	public <O, A, V> Map<?, ?> decode(ModelValue<O, A, V> value, Type type, Mapper<O, A, V> mapper) {
+		ModelObjectFactory<O, A, V> objectFactory = mapper.getObjectFactory();
 		O rawObject = value.asObject();
-		ModelObject<O, A, V> object = objectFactory.createModelObject(rawObject);
-		ModelValueFactory<O, A, V> valueFactory = converter.getModelValueFactory();
+		ModelObject<O, A, V> object = objectFactory.createObject(rawObject);
+		ModelValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
 		Type[] genericTypes = getGenericTypes(type);
 		Type keyType = genericTypes[0];
 		Type valueType = genericTypes[1];
 		int size = object.getSize();
 		Map<Object, Object> map = new LinkedHashMap<>(size);
-		for (Map.Entry<String, ModelValue<O, A, V>> entry : object.getEntries()) {
+		for (Map.Entry<String, ModelValue<O, A, V>> entry : object) {
 			String key = entry.getKey();
-			ModelValue<O, A, V> keyModelValue = valueFactory.createStringModelValue(key);
-			Object mapKey = converter.toObject(keyModelValue, keyType);
+			ModelValue<O, A, V> keyModelValue = valueFactory.createValue(key);
+			Object mapKey = mapper.toDocument(keyModelValue, keyType);
 			ModelValue<O, A, V> entryValue = entry.getValue();
-			Object mapValue = converter.toObject(entryValue, valueType);
+			Object mapValue = mapper.toDocument(entryValue, valueType);
 			map.put(mapKey, mapValue);
 		}
 		return map;

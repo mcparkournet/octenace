@@ -25,14 +25,14 @@
 package net.mcparkour.octenace.codec;
 
 import java.lang.reflect.Type;
-import net.mcparkour.octenace.converter.Converter;
+import net.mcparkour.octenace.mapper.Mapper;
 import net.mcparkour.octenace.model.value.ModelValue;
 import org.jetbrains.annotations.Nullable;
 
 public interface Codec<O, A, V, T> {
 
-	ModelValue<O, A, V> encode(T object, Type type, Converter<O, A, V> converter);
+	ModelValue<O, A, V> encode(T value, Type type, Mapper<O, A, V> mapper);
 
 	@Nullable
-	T decode(ModelValue<O, A, V> value, Type type, Converter<O, A, V> converter);
+	T decode(ModelValue<O, A, V> value, Type type, Mapper<O, A, V> mapper);
 }

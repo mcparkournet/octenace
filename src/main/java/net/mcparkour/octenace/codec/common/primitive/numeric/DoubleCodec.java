@@ -24,10 +24,23 @@
 
 package net.mcparkour.octenace.codec.common.primitive.numeric;
 
-public class DoubleCodec extends NumberCodec<Double> {
+import java.lang.reflect.Type;
+import net.mcparkour.octenace.codec.CommonCodec;
+import net.mcparkour.octenace.mapper.Mapper;
+import net.mcparkour.octenace.model.value.ModelValue;
+import org.jetbrains.annotations.Nullable;
+
+public class DoubleCodec implements CommonCodec<Double> {
 
 	@Override
-	public Double decode(Number number) {
-		return number.doubleValue();
+	public <O, A, V> ModelValue<O, A, V> encode(Double value, Type type, Mapper<O, A, V> mapper) {
+		var valueFactory = mapper.getValueFactory();
+		return valueFactory.createValue(value);
+	}
+
+	@Override
+	@Nullable
+	public <O, A, V> Double decode(ModelValue<O, A, V> value, Type type, Mapper<O, A, V> mapper) {
+		return value.asDouble();
 	}
 }

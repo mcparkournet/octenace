@@ -22,19 +22,15 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.codec;
+package net.mcparkour.octenace.mapper;
 
-public class CodecEncodeException extends RuntimeException {
+import java.lang.reflect.Type;
 
-	private static final long serialVersionUID = 1403607342142626286L;
+public class CodecNotFoundException extends RuntimeException {
 
-	public CodecEncodeException() {}
+	private static final long serialVersionUID = 4086425613102979399L;
 
-	public CodecEncodeException(String message) {
-		super(message);
-	}
-
-	public CodecEncodeException(String message, Throwable cause) {
-		super(message, cause);
+	public CodecNotFoundException(Type type) {
+		super("Cannot find codec for type " + type.getTypeName());
 	}
 }

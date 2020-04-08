@@ -22,34 +22,11 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.converter;
+package net.mcparkour.octenace.mapper;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Type;
-import net.mcparkour.octenace.model.array.ModelArrayFactory;
-import net.mcparkour.octenace.model.object.ModelObject;
-import net.mcparkour.octenace.model.object.ModelObjectFactory;
-import net.mcparkour.octenace.model.value.ModelValue;
-import net.mcparkour.octenace.model.value.ModelValueFactory;
-import org.jetbrains.annotations.Nullable;
+public enum LetterCase {
 
-public interface Converter<O, A, V> {
-
-	ModelObject<O, A, V> fromConfiguration(Object configuration);
-
-	ModelValue<O, A, V> toModelValue(@Nullable Object object, Type type);
-
-	<T> T toConfiguration(ModelObject<O, A, V> object, Class<T> configurationType);
-
-	Object toObject(ModelValue<O, A, V> value, Type type);
-
-	boolean isFieldValid(Field field);
-
-	String getFieldName(Field field);
-
-	ModelObjectFactory<O, A, V> getModelObjectFactory();
-
-	ModelArrayFactory<O, A, V> getModelArrayFactory();
-
-	ModelValueFactory<O, A, V> getModelValueFactory();
+	INHERITED,
+	KEBAB,
+	SNAKE
 }

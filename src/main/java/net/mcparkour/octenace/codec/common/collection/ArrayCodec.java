@@ -28,7 +28,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import net.mcparkour.common.reflection.type.Types;
 import net.mcparkour.octenace.codec.CommonCodec;
-import net.mcparkour.octenace.converter.Converter;
+import net.mcparkour.octenace.mapper.Mapper;
 import net.mcparkour.octenace.model.array.ModelArray;
 import net.mcparkour.octenace.model.array.ModelArrayFactory;
 import net.mcparkour.octenace.model.value.ModelValue;
@@ -38,31 +38,31 @@ import org.jetbrains.annotations.Nullable;
 public class ArrayCodec implements CommonCodec<Object[]> {
 
 	@Override
-	public <O, A, V> ModelValue<O, A, V> encode(Object[] object, Type type, Converter<O, A, V> converter) {
-		ModelArrayFactory<O, A, V> arrayFactory = converter.getModelArrayFactory();
-		ModelArray<O, A, V> array = arrayFactory.createEmptyModelArray();
-		for (Object element : object) {
+	public <O, A, V> ModelValue<O, A, V> encode(Object[] value, Type type, Mapper<O, A, V> mapper) {
+		ModelArrayFactory<O, A, V> arrayFactory = mapper.getArrayFactory();
+		ModelArray<O, A, V> array = arrayFactory.createEmptyArray();
+		for (Object element : value) {
 			Class<?> elementType = element.getClass();
-			ModelValue<O, A, V> elementValue = converter.toModelValue(element, elementType);
-			array.addValue(elementValue);
+			ModelValue<O, A, V> elementValue = mapper.fromDocument(element, elementType);
+			array.add(elementValue);
 		}
-		ModelValueFactory<O, A, V> valueFactory = converter.getModelValueFactory();
-		return valueFactory.createArrayModelValue(array);
+		ModelValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
+		return valueFactory.createArrayValue(array);
 	}
 
 	@Override
 	@Nullable
-	public <O, A, V> Object[] decode(ModelValue<O, A, V> value, Type type, Converter<O, A, V> converter) {
-		ModelArrayFactory<O, A, V> arrayFactory = converter.getModelArrayFactory();
+	public <O, A, V> Object[] decode(ModelValue<O, A, V> value, Type type, Mapper<O, A, V> mapper) {
+		ModelArrayFactory<O, A, V> arrayFactory = mapper.getArrayFactory();
 		A rawArray = value.asArray();
-		ModelArray<O, A, V> array = arrayFactory.createModelArray(rawArray);
+		ModelArray<O, A, V> array = arrayFactory.createArray(rawArray);
 		Class<?> classType = Types.asClassType(type);
 		Class<?> arrayType = classType.getComponentType();
 		int size = array.getSize();
 		Object[] resultArray = (Object[]) Array.newInstance(arrayType, size);
 		for (int index = 0; index < size; index++) {
 			ModelValue<O, A, V> elementValue = array.get(index);
-			Object object = converter.toObject(elementValue, arrayType);
+			Object object = mapper.toDocument(elementValue, arrayType);
 			resultArray[index] = object;
 		}
 		return resultArray;

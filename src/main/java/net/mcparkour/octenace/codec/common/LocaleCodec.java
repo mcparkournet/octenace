@@ -27,7 +27,7 @@ package net.mcparkour.octenace.codec.common;
 import java.lang.reflect.Type;
 import java.util.Locale;
 import net.mcparkour.octenace.codec.CommonCodec;
-import net.mcparkour.octenace.converter.Converter;
+import net.mcparkour.octenace.mapper.Mapper;
 import net.mcparkour.octenace.model.value.ModelValue;
 import net.mcparkour.octenace.model.value.ModelValueFactory;
 import org.jetbrains.annotations.Nullable;
@@ -35,15 +35,15 @@ import org.jetbrains.annotations.Nullable;
 public class LocaleCodec implements CommonCodec<Locale> {
 
 	@Override
-	public <O, A, V> ModelValue<O, A, V> encode(Locale object, Type type, Converter<O, A, V> converter) {
-		ModelValueFactory<O, A, V> valueFactory = converter.getModelValueFactory();
-		String languageTag = object.toLanguageTag();
-		return valueFactory.createStringModelValue(languageTag);
+	public <O, A, V> ModelValue<O, A, V> encode(Locale value, Type type, Mapper<O, A, V> mapper) {
+		ModelValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
+		String languageTag = value.toLanguageTag();
+		return valueFactory.createValue(languageTag);
 	}
 
 	@Override
 	@Nullable
-	public <O, A, V> Locale decode(ModelValue<O, A, V> value, Type type, Converter<O, A, V> converter) {
+	public <O, A, V> Locale decode(ModelValue<O, A, V> value, Type type, Mapper<O, A, V> mapper) {
 		String languageTag = value.asString();
 		return Locale.forLanguageTag(languageTag);
 	}

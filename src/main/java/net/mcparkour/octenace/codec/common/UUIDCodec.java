@@ -27,7 +27,7 @@ package net.mcparkour.octenace.codec.common;
 import java.lang.reflect.Type;
 import java.util.UUID;
 import net.mcparkour.octenace.codec.CommonCodec;
-import net.mcparkour.octenace.converter.Converter;
+import net.mcparkour.octenace.mapper.Mapper;
 import net.mcparkour.octenace.model.value.ModelValue;
 import net.mcparkour.octenace.model.value.ModelValueFactory;
 import org.jetbrains.annotations.Nullable;
@@ -35,15 +35,15 @@ import org.jetbrains.annotations.Nullable;
 public class UUIDCodec implements CommonCodec<UUID> {
 
 	@Override
-	public <O, A, V> ModelValue<O, A, V> encode(UUID object, Type type, Converter<O, A, V> converter) {
-		ModelValueFactory<O, A, V> valueFactory = converter.getModelValueFactory();
-		String uuidString = object.toString();
-		return valueFactory.createStringModelValue(uuidString);
+	public <O, A, V> ModelValue<O, A, V> encode(UUID value, Type type, Mapper<O, A, V> mapper) {
+		ModelValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
+		String uuidString = value.toString();
+		return valueFactory.createValue(uuidString);
 	}
 
 	@Override
 	@Nullable
-	public <O, A, V> UUID decode(ModelValue<O, A, V> value, Type type, Converter<O, A, V> converter) {
+	public <O, A, V> UUID decode(ModelValue<O, A, V> value, Type type, Mapper<O, A, V> mapper) {
 		String uuidString = value.asString();
 		return UUID.fromString(uuidString);
 	}

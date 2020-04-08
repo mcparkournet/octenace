@@ -27,7 +27,7 @@ package net.mcparkour.octenace.codec.registry;
 import java.lang.reflect.Type;
 import net.mcparkour.octenace.codec.Codec;
 import net.mcparkour.octenace.codec.CommonCodec;
-import net.mcparkour.octenace.converter.Converter;
+import net.mcparkour.octenace.mapper.Mapper;
 import net.mcparkour.octenace.model.value.ModelValue;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,13 +40,13 @@ class CommonCodecWrapper<O, A, V, T> implements Codec<O, A, V, T> {
 	}
 
 	@Override
-	public ModelValue<O, A, V> encode(T object, Type type, Converter<O, A, V> converter) {
-		return this.codec.encode(object, type, converter);
+	public ModelValue<O, A, V> encode(T value, Type type, Mapper<O, A, V> mapper) {
+		return this.codec.encode(value, type, mapper);
 	}
 
-	@Nullable
 	@Override
-	public T decode(ModelValue<O, A, V> value, Type type, Converter<O, A, V> converter) {
-		return this.codec.decode(value, type, converter);
+	@Nullable
+	public T decode(ModelValue<O, A, V> value, Type type, Mapper<O, A, V> mapper) {
+		return this.codec.decode(value, type, mapper);
 	}
 }

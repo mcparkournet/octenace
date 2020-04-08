@@ -26,7 +26,7 @@ package net.mcparkour.octenace.model.object;
 
 public interface ModelObjectFactory<O, A, V> {
 
-	ModelObject<O, A, V> createEmptyModelObject();
+	ModelObject<O, A, V> createEmptyObject();
 
-	ModelObject<O, A, V> createModelObject(O object);
+	ModelObject<O, A, V> createObject(O object);
 }

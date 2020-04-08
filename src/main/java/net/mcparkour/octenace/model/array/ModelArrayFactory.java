@@ -26,7 +26,7 @@ package net.mcparkour.octenace.model.array;
 
 public interface ModelArrayFactory<O, A, V> {
 
-	ModelArray<O, A, V> createEmptyModelArray();
+	ModelArray<O, A, V> createEmptyArray();
 
-	ModelArray<O, A, V> createModelArray(A array);
+	ModelArray<O, A, V> createArray(A array);
 }

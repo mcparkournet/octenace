@@ -22,13 +22,14 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.converter;
+package net.mcparkour.octenace.mapper;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Optional;
 import net.mcparkour.common.reflection.Reflections;
 import net.mcparkour.common.reflection.type.Types;
 import net.mcparkour.octenace.codec.Codec;
@@ -42,20 +43,20 @@ import net.mcparkour.octenace.model.value.ModelValueFactory;
 import net.mcparkour.octenace.util.LetterCaseTransformer;
 import org.jetbrains.annotations.Nullable;
 
-public class BasicConverter<O, A, V> implements Converter<O, A, V> {
+public class BasicMapper<O, A, V> implements Mapper<O, A, V> {
 
-	private ModelObjectFactory<O, A, V> modelObjectFactory;
-	private ModelArrayFactory<O, A, V> modelArrayFactory;
-	private ModelValueFactory<O, A, V> modelValueFactory;
+	private ModelObjectFactory<O, A, V> objectFactory;
+	private ModelArrayFactory<O, A, V> arrayFactory;
+	private ModelValueFactory<O, A, V> valueFactory;
 	private LetterCase defaultKeysLetterCase;
 	private List<FieldCondition> fieldConditions;
 	private CodecRegistry codecRegistry;
 	private NameAnnotationSupplier<? extends Annotation> nameAnnotationSupplier;
 
-	public BasicConverter(ModelObjectFactory<O, A, V> modelObjectFactory, ModelArrayFactory<O, A, V> modelArrayFactory, ModelValueFactory<O, A, V> modelValueFactory, LetterCase defaultKeysLetterCase, List<FieldCondition> fieldConditions, CodecRegistry codecRegistry, NameAnnotationSupplier<? extends Annotation> nameAnnotationSupplier) {
-		this.modelObjectFactory = modelObjectFactory;
-		this.modelArrayFactory = modelArrayFactory;
-		this.modelValueFactory = modelValueFactory;
+	public BasicMapper(ModelObjectFactory<O, A, V> objectFactory, ModelArrayFactory<O, A, V> arrayFactory, ModelValueFactory<O, A, V> valueFactory, LetterCase defaultKeysLetterCase, List<FieldCondition> fieldConditions, CodecRegistry codecRegistry, NameAnnotationSupplier<? extends Annotation> nameAnnotationSupplier) {
+		this.objectFactory = objectFactory;
+		this.arrayFactory = arrayFactory;
+		this.valueFactory = valueFactory;
 		this.defaultKeysLetterCase = defaultKeysLetterCase;
 		this.fieldConditions = fieldConditions;
 		this.codecRegistry = codecRegistry;
@@ -63,38 +64,39 @@ public class BasicConverter<O, A, V> implements Converter<O, A, V> {
 	}
 
 	@Override
-	public ModelObject<O, A, V> fromConfiguration(Object configuration) {
-		ModelObject<O, A, V> object = this.modelObjectFactory.createEmptyModelObject();
-		Class<?> configurationType = configuration.getClass();
+	public ModelObject<O, A, V> fromDocument(Object document) {
+		ModelObject<O, A, V> object = this.objectFactory.createEmptyObject();
+		Class<?> configurationType = object.getClass();
 		Field[] fields = configurationType.getDeclaredFields();
 		for (Field field : fields) {
 			if (isFieldValid(field)) {
 				field.trySetAccessible();
 				String fieldName = getFieldName(field);
-				Object fieldValue = Reflections.getFieldValue(field, configuration);
+				Object fieldValue = Reflections.getFieldValue(field, object);
 				Type fieldType = field.getGenericType();
-				ModelValue<O, A, V> value = toModelValue(fieldValue, fieldType);
-				object.setValue(fieldName, value);
+				ModelValue<O, A, V> value = fromDocument(fieldValue, fieldType);
+				object.set(fieldName, value);
 			}
 		}
 		return object;
 	}
 
 	@Override
-	public ModelValue<O, A, V> toModelValue(@Nullable Object object, Type type) {
-		if (object == null) {
-			return this.modelValueFactory.createNullModelValue();
+	public ModelValue<O, A, V> fromDocument(@Nullable Object document, Type type) {
+		if (document == null) {
+			return this.valueFactory.createNullValue();
 		}
-		Codec<O, A, V, Object> codec = getObjectCodec(type);
-		if (codec == null) {
-			ModelObject<O, A, V> modelObject = fromConfiguration(object);
-			return this.modelValueFactory.createObjectModelValue(modelObject);
+		Optional<Codec<O, A, V, Object>> codecOptional = getObjectCodec(type);
+		if (codecOptional.isPresent()) {
+			Codec<O, A, V, Object> codec = codecOptional.get();
+			return codec.encode(document, type, this);
 		}
-		return codec.encode(object, type, this);
+		ModelObject<O, A, V> modelObject = fromDocument(document);
+		return this.valueFactory.createObjectValue(modelObject);
 	}
 
 	@Override
-	public <T> T toConfiguration(ModelObject<O, A, V> object, Class<T> configurationType) {
+	public <T> T toDocument(ModelObject<O, A, V> object, Class<T> configurationType) {
 		Constructor<T> constructor = Reflections.getSerializationConstructor(configurationType);
 		T instance = Reflections.newInstance(constructor);
 		Field[] fields = configurationType.getDeclaredFields();
@@ -102,9 +104,9 @@ public class BasicConverter<O, A, V> implements Converter<O, A, V> {
 			if (isFieldValid(field)) {
 				field.trySetAccessible();
 				String fieldName = getFieldName(field);
-				ModelValue<O, A, V> value = object.getValue(fieldName);
+				ModelValue<O, A, V> value = object.get(fieldName);
 				Type fieldType = field.getGenericType();
-				Object rawObject = toObject(value, fieldType);
+				Object rawObject = toDocument(value, fieldType);
 				Reflections.setFieldValue(field, instance, rawObject);
 			}
 		}
@@ -113,22 +115,23 @@ public class BasicConverter<O, A, V> implements Converter<O, A, V> {
 
 	@Override
 	@Nullable
-	public Object toObject(ModelValue<O, A, V> value, Type type) {
+	public Object toDocument(ModelValue<O, A, V> value, Type type) {
 		if (value.isNull()) {
 			return null;
 		}
-		Codec<O, A, V, Object> codec = getObjectCodec(type);
-		if (codec == null) {
-			if (!value.isObject()) {
-				throw new CodecNotFoundException(type);
-			}
-			O rawObject = value.asObject();
-			ModelObject<O, A, V> object = this.modelObjectFactory.createModelObject(rawObject);
-			Type rawType = Types.getRawType(type);
-			Class<?> classType = Types.asClassType(rawType);
-			return toConfiguration(object, classType);
+		Optional<Codec<O, A, V, Object>> codecOptional = getObjectCodec(type);
+		if (codecOptional.isPresent()) {
+			Codec<O, A, V, Object> codec = codecOptional.get();
+			return codec.decode(value, type, this);
 		}
-		return codec.decode(value, type, this);
+		if (!value.isObject()) {
+			throw new CodecNotFoundException(type);
+		}
+		O rawObject = value.asObject();
+		ModelObject<O, A, V> object = this.objectFactory.createObject(rawObject);
+		Type rawType = Types.getRawType(type);
+		Class<?> classType = Types.asClassType(rawType);
+		return toDocument(object, classType);
 	}
 
 	@Override
@@ -154,30 +157,29 @@ public class BasicConverter<O, A, V> implements Converter<O, A, V> {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Nullable
-	private Codec<O, A, V, Object> getObjectCodec(Type type) {
+	private Optional<Codec<O, A, V, Object>> getObjectCodec(Type type) {
 		Type rawType = Types.getRawType(type);
 		Class<?> classType = Types.asClassType(rawType);
 		Codec<?, ?, ?, ?> codec = this.codecRegistry.get(classType);
 		if (codec == null) {
-			return null;
+			return Optional.empty();
 		}
-		return (Codec<O, A, V, Object>) codec;
+		return Optional.of((Codec<O, A, V, Object>) codec);
 	}
 
 	@Override
-	public ModelObjectFactory<O, A, V> getModelObjectFactory() {
-		return this.modelObjectFactory;
+	public ModelObjectFactory<O, A, V> getObjectFactory() {
+		return this.objectFactory;
 	}
 
 	@Override
-	public ModelArrayFactory<O, A, V> getModelArrayFactory() {
-		return this.modelArrayFactory;
+	public ModelArrayFactory<O, A, V> getArrayFactory() {
+		return this.arrayFactory;
 	}
 
 	@Override
-	public ModelValueFactory<O, A, V> getModelValueFactory() {
-		return this.modelValueFactory;
+	public ModelValueFactory<O, A, V> getValueFactory() {
+		return this.valueFactory;
 	}
 
 	public LetterCase getDefaultKeysLetterCase() {

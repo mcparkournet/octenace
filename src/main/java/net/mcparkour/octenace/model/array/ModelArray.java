@@ -28,9 +28,9 @@ import net.mcparkour.octenace.model.value.ModelValue;
 
 public interface ModelArray<O, A, V> extends Iterable<ModelValue<O, A, V>> {
 
-	void addValue(ModelValue<O, A, V> value);
-
 	ModelValue<O, A, V> get(int index);
+
+	void add(ModelValue<O, A, V> value);
 
 	int getSize();
 

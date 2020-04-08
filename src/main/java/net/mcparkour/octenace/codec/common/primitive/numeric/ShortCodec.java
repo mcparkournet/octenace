@@ -24,10 +24,24 @@
 
 package net.mcparkour.octenace.codec.common.primitive.numeric;
 
-public class ShortCodec extends NumberCodec<Short> {
+import java.lang.reflect.Type;
+import net.mcparkour.octenace.codec.CommonCodec;
+import net.mcparkour.octenace.mapper.Mapper;
+import net.mcparkour.octenace.model.value.ModelValue;
+import org.jetbrains.annotations.Nullable;
+
+public class ShortCodec implements CommonCodec<Short> {
 
 	@Override
-	public Short decode(Number number) {
-		return number.shortValue();
+	public <O, A, V> ModelValue<O, A, V> encode(Short value, Type type, Mapper<O, A, V> mapper) {
+		var valueFactory = mapper.getValueFactory();
+		return valueFactory.createValue(value);
+	}
+
+	@Override
+	@Nullable
+	public <O, A, V> Short decode(ModelValue<O, A, V> value, Type type, Mapper<O, A, V> mapper) {
+		int intValue = value.asInt();
+		return (short) intValue;
 	}
 }

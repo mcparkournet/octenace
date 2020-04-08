@@ -24,10 +24,24 @@
 
 package net.mcparkour.octenace.codec.common.primitive.numeric;
 
-public class ByteCodec extends NumberCodec<Byte> {
+import java.lang.reflect.Type;
+import net.mcparkour.octenace.codec.CommonCodec;
+import net.mcparkour.octenace.mapper.Mapper;
+import net.mcparkour.octenace.model.value.ModelValue;
+import org.jetbrains.annotations.Nullable;
+
+public class ByteCodec implements CommonCodec<Byte> {
 
 	@Override
-	public Byte decode(Number number) {
-		return number.byteValue();
+	public <O, A, V> ModelValue<O, A, V> encode(Byte value, Type type, Mapper<O, A, V> mapper) {
+		var valueFactory = mapper.getValueFactory();
+		return valueFactory.createValue(value);
+	}
+
+	@Override
+	@Nullable
+	public <O, A, V> Byte decode(ModelValue<O, A, V> value, Type type, Mapper<O, A, V> mapper) {
+		int intValue = value.asInt();
+		return (byte) intValue;
 	}
 }

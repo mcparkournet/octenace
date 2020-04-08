@@ -22,32 +22,28 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.codec.common.primitive;
+package net.mcparkour.octenace.mapper;
 
-import java.lang.reflect.Type;
-import net.mcparkour.octenace.codec.CommonCodec;
-import net.mcparkour.octenace.codec.CodecDecodeException;
-import net.mcparkour.octenace.converter.Converter;
-import net.mcparkour.octenace.model.value.ModelValue;
-import net.mcparkour.octenace.model.value.ModelValueFactory;
-import org.jetbrains.annotations.Nullable;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.util.function.Function;
 
-public class CharacterCodec implements CommonCodec<Character> {
+public class NameAnnotationSupplier<T extends Annotation> {
 
-	@Override
-	public <O, A, V> ModelValue<O, A, V> encode(Character object, Type type, Converter<O, A, V> converter) {
-		ModelValueFactory<O, A, V> valueFactory = converter.getModelValueFactory();
-		String string = String.valueOf(object);
-		return valueFactory.createStringModelValue(string);
+	private Class<T> annotationType;
+	private Function<T, String> nameExtractor;
+
+	public NameAnnotationSupplier(Class<T> annotationType, Function<T, String> nameExtractor) {
+		this.annotationType = annotationType;
+		this.nameExtractor = nameExtractor;
 	}
 
-	@Override
-	@Nullable
-	public <O, A, V> Character decode(ModelValue<O, A, V> value, Type type, Converter<O, A, V> converter) {
-		String string = value.asString();
-		if (string.length() != 1) {
-			throw new CodecDecodeException("Value length is not 1");
-		}
-		return string.charAt(0);
+	public Class<T> getAnnotationType() {
+		return this.annotationType;
+	}
+
+	public String supply(Field field) {
+		T annotation = field.getAnnotation(this.annotationType);
+		return this.nameExtractor.apply(annotation);
 	}
 }

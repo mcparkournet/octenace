@@ -29,27 +29,31 @@ import net.mcparkour.octenace.model.object.ModelObject;
 
 public interface ModelValueFactory<O, A, V> {
 
-	ModelValue<O, A, V> createNullModelValue();
+	ModelValue<O, A, V> createNullValue();
 
-	ModelValue<O, A, V> createBooleanModelValue(boolean value);
+	ModelValue<O, A, V> createValue(boolean value);
 
-	ModelValue<O, A, V> createNumberModelValue(Number value);
+	ModelValue<O, A, V> createValue(int value);
 
-	ModelValue<O, A, V> createStringModelValue(String value);
+	ModelValue<O, A, V> createValue(long value);
 
-	default ModelValue<O, A, V> createObjectModelValue(ModelObject<O, A, V> object) {
+	ModelValue<O, A, V> createValue(double value);
+
+	ModelValue<O, A, V> createValue(String value);
+
+	default ModelValue<O, A, V> createObjectValue(ModelObject<O, A, V> object) {
 		O rawObject = object.getObject();
-		return createObjectModelValue(rawObject);
+		return createObjectValue(rawObject);
 	}
 
-	ModelValue<O, A, V> createObjectModelValue(O object);
+	ModelValue<O, A, V> createObjectValue(O object);
 
-	default ModelValue<O, A, V> createArrayModelValue(ModelArray<O, A, V> array) {
+	default ModelValue<O, A, V> createArrayValue(ModelArray<O, A, V> array) {
 		A rawArray = array.getArray();
-		return createArrayModelValue(rawArray);
+		return createArrayValue(rawArray);
 	}
 
-	ModelValue<O, A, V> createArrayModelValue(A array);
+	ModelValue<O, A, V> createArrayValue(A array);
 
-	ModelValue<O, A, V> createModelValue(V value);
+	ModelValue<O, A, V> createValue(V value);
 }

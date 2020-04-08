@@ -22,28 +22,34 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.converter;
+package net.mcparkour.octenace.mapper;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.function.Function;
+import java.lang.reflect.Type;
+import net.mcparkour.octenace.model.array.ModelArrayFactory;
+import net.mcparkour.octenace.model.object.ModelObject;
+import net.mcparkour.octenace.model.object.ModelObjectFactory;
+import net.mcparkour.octenace.model.value.ModelValue;
+import net.mcparkour.octenace.model.value.ModelValueFactory;
+import org.jetbrains.annotations.Nullable;
 
-public class NameAnnotationSupplier<T extends Annotation> {
+public interface Mapper<O, A, V> {
 
-	private Class<T> annotationType;
-	private Function<T, String> nameExtractor;
+	ModelObject<O, A, V> fromDocument(Object document);
 
-	public NameAnnotationSupplier(Class<T> annotationType, Function<T, String> nameExtractor) {
-		this.annotationType = annotationType;
-		this.nameExtractor = nameExtractor;
-	}
+	ModelValue<O, A, V> fromDocument(@Nullable Object document, Type type);
 
-	public Class<T> getAnnotationType() {
-		return this.annotationType;
-	}
+	<T> T toDocument(ModelObject<O, A, V> object, Class<T> configurationType);
 
-	public String supply(Field field) {
-		T annotation = field.getAnnotation(this.annotationType);
-		return this.nameExtractor.apply(annotation);
-	}
+	Object toDocument(ModelValue<O, A, V> value, Type type);
+
+	boolean isFieldValid(Field field);
+
+	String getFieldName(Field field);
+
+	ModelObjectFactory<O, A, V> getObjectFactory();
+
+	ModelArrayFactory<O, A, V> getArrayFactory();
+
+	ModelValueFactory<O, A, V> getValueFactory();
 }

@@ -24,10 +24,23 @@
 
 package net.mcparkour.octenace.codec.common.primitive.numeric;
 
-public class IntegerCodec extends NumberCodec<Integer> {
+import java.lang.reflect.Type;
+import net.mcparkour.octenace.codec.CommonCodec;
+import net.mcparkour.octenace.mapper.Mapper;
+import net.mcparkour.octenace.model.value.ModelValue;
+import org.jetbrains.annotations.Nullable;
+
+public class IntCodec implements CommonCodec<Integer> {
 
 	@Override
-	public Integer decode(Number number) {
-		return number.intValue();
+	public <O, A, V> ModelValue<O, A, V> encode(Integer value, Type type, Mapper<O, A, V> mapper) {
+		var valueFactory = mapper.getValueFactory();
+		return valueFactory.createValue(value);
+	}
+
+	@Override
+	@Nullable
+	public <O, A, V> Integer decode(ModelValue<O, A, V> value, Type type, Mapper<O, A, V> mapper) {
+		return value.asInt();
 	}
 }

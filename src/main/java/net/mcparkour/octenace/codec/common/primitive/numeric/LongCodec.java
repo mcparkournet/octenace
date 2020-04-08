@@ -24,10 +24,23 @@
 
 package net.mcparkour.octenace.codec.common.primitive.numeric;
 
-public class LongCodec extends NumberCodec<Long> {
+import java.lang.reflect.Type;
+import net.mcparkour.octenace.codec.CommonCodec;
+import net.mcparkour.octenace.mapper.Mapper;
+import net.mcparkour.octenace.model.value.ModelValue;
+import org.jetbrains.annotations.Nullable;
+
+public class LongCodec implements CommonCodec<Long> {
 
 	@Override
-	public Long decode(Number number) {
-		return number.longValue();
+	public <O, A, V> ModelValue<O, A, V> encode(Long value, Type type, Mapper<O, A, V> mapper) {
+		var valueFactory = mapper.getValueFactory();
+		return valueFactory.createValue(value);
+	}
+
+	@Override
+	@Nullable
+	public <O, A, V> Long decode(ModelValue<O, A, V> value, Type type, Mapper<O, A, V> mapper) {
+		return value.asLong();
 	}
 }

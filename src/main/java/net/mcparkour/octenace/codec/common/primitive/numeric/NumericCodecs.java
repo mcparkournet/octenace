@@ -32,7 +32,7 @@ public final class NumericCodecs {
 
 	public static final CommonCodec<Byte> BYTE_CODEC = new ByteCodec();
 	public static final CommonCodec<Short> SHORT_CODEC = new ShortCodec();
-	public static final CommonCodec<Integer> INTEGER_CODEC = new IntegerCodec();
+	public static final CommonCodec<Integer> INT_CODEC = new IntCodec();
 	public static final CommonCodec<Long> LONG_CODEC = new LongCodec();
 	public static final CommonCodec<Float> FLOAT_CODEC = new FloatCodec();
 	public static final CommonCodec<Double> DOUBLE_CODEC = new DoubleCodec();
@@ -42,8 +42,8 @@ public final class NumericCodecs {
 		.codec(BYTE_CODEC, Byte.class)
 		.codec(SHORT_CODEC, short.class)
 		.codec(SHORT_CODEC, Short.class)
-		.codec(INTEGER_CODEC, int.class)
-		.codec(INTEGER_CODEC, Integer.class)
+		.codec(INT_CODEC, int.class)
+		.codec(INT_CODEC, Integer.class)
 		.codec(LONG_CODEC, long.class)
 		.codec(LONG_CODEC, Long.class)
 		.codec(FLOAT_CODEC, float.class)

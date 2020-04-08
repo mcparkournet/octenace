@@ -22,11 +22,28 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.converter;
+package net.mcparkour.octenace.codec.common.primitive;
 
-public enum LetterCase {
+import java.lang.reflect.Type;
+import net.mcparkour.octenace.codec.CommonCodec;
+import net.mcparkour.octenace.mapper.Mapper;
+import net.mcparkour.octenace.model.value.ModelValue;
+import net.mcparkour.octenace.model.value.ModelValueFactory;
+import org.jetbrains.annotations.Nullable;
 
-	INHERITED,
-	KEBAB,
-	SNAKE
+public class CharCodec implements CommonCodec<Character> {
+
+	@Override
+	public <O, A, V> ModelValue<O, A, V> encode(Character value, Type type, Mapper<O, A, V> mapper) {
+		ModelValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
+		String string = Character.toString(value);
+		return valueFactory.createValue(string);
+	}
+
+	@Override
+	@Nullable
+	public <O, A, V> Character decode(ModelValue<O, A, V> value, Type type, Mapper<O, A, V> mapper) {
+		String string = value.asString();
+		return string.isEmpty() ? '\0' : string.charAt(0);
+	}
 }

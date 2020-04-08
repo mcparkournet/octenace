@@ -32,14 +32,14 @@ import net.mcparkour.octenace.codec.registry.CodecRegistryBuilder;
 public final class PrimitiveCodecs {
 
 	public static final CommonCodec<Boolean> BOOLEAN_CODEC = new BooleanCodec();
-	public static final CommonCodec<Character> CHARACTER_CODEC = new CharacterCodec();
+	public static final CommonCodec<Character> CHAR_CODEC = new CharCodec();
 
 	public static final CodecRegistry PRIMITIVE_CODEC_REGISTRY = new CodecRegistryBuilder()
 		.registry(NumericCodecs.NUMERIC_CODEC_REGISTRY)
 		.codec(BOOLEAN_CODEC, boolean.class)
 		.codec(BOOLEAN_CODEC, Boolean.class)
-		.codec(CHARACTER_CODEC, char.class)
-		.codec(CHARACTER_CODEC, Character.class)
+		.codec(CHAR_CODEC, char.class)
+		.codec(CHAR_CODEC, Character.class)
 		.build();
 
 	private PrimitiveCodecs() {

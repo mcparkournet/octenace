@@ -32,9 +32,17 @@ public interface ModelValue<O, A, V> {
 
 	boolean isBoolean();
 
-	Number asNumber();
+	int asInt();
 
-	boolean isNumber();
+	boolean isInt();
+
+	long asLong();
+
+	boolean isLong();
+
+	double asDouble();
+
+	boolean isDouble();
 
 	String asString();
 

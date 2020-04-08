@@ -30,7 +30,7 @@ import java.util.Arrays;
 import net.mcparkour.common.reflection.Reflections;
 import net.mcparkour.common.reflection.type.Types;
 import net.mcparkour.octenace.codec.CommonCodec;
-import net.mcparkour.octenace.converter.Converter;
+import net.mcparkour.octenace.mapper.Mapper;
 import net.mcparkour.octenace.model.value.ModelValue;
 import net.mcparkour.octenace.model.value.ModelValueFactory;
 import org.jetbrains.annotations.Nullable;
@@ -38,31 +38,31 @@ import org.jetbrains.annotations.Nullable;
 public class EnumCodec implements CommonCodec<Enum<?>> {
 
 	@Override
-	public <O, A, V> ModelValue<O, A, V> encode(Enum<?> object, Type type, Converter<O, A, V> converter) {
-		ModelValueFactory<O, A, V> valueFactory = converter.getModelValueFactory();
-		String name = getEnumName(object, converter);
-		return valueFactory.createStringModelValue(name);
+	public <O, A, V> ModelValue<O, A, V> encode(Enum<?> value, Type type, Mapper<O, A, V> mapper) {
+		ModelValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
+		String name = getEnumName(value, mapper);
+		return valueFactory.createValue(name);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	@Nullable
-	public <O, A, V> Enum<?> decode(ModelValue<O, A, V> value, Type type, Converter<O, A, V> converter) {
+	public <O, A, V> Enum<?> decode(ModelValue<O, A, V> value, Type type, Mapper<O, A, V> mapper) {
 		Type rawType = Types.getRawType(type);
 		Class<?> classType = Types.asClassType(rawType);
 		Class<? extends Enum<?>> enumType = (Class<? extends Enum<?>>) classType;
 		Enum<?>[] enumConstants = enumType.getEnumConstants();
 		String valueString = value.asString();
 		return Arrays.stream(enumConstants)
-			.filter(enumConstant -> valueString.equals(getEnumName(enumConstant, converter)))
+			.filter(enumConstant -> valueString.equals(getEnumName(enumConstant, mapper)))
 			.findFirst()
 			.orElse(null);
 	}
 
-	private <O, A, V> String getEnumName(Enum<?> object, Converter<O, A, V> converter) {
+	private <O, A, V> String getEnumName(Enum<?> object, Mapper<O, A, V> mapper) {
 		Class<? extends Enum<?>> type = object.getDeclaringClass();
 		String name = object.name();
 		Field field = Reflections.getField(type, name);
-		return converter.getFieldName(field);
+		return mapper.getFieldName(field);
 	}
 }
