@@ -22,29 +22,25 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.codec.common;
+package net.mcparkour.octenace.codec.common.extra;
 
-import java.lang.reflect.Type;
 import java.util.Locale;
+import java.util.UUID;
 import net.mcparkour.octenace.codec.CommonCodec;
-import net.mcparkour.octenace.mapper.Mapper;
-import net.mcparkour.octenace.model.value.ModelValue;
-import net.mcparkour.octenace.model.value.ModelValueFactory;
-import org.jetbrains.annotations.Nullable;
+import net.mcparkour.octenace.codec.registry.CodecRegistry;
+import net.mcparkour.octenace.codec.registry.CodecRegistryBuilder;
 
-public class LocaleCodec implements CommonCodec<Locale> {
+public final class ExtraCodecs {
 
-	@Override
-	public <O, A, V> ModelValue<O, A, V> encode(Locale value, Type type, Mapper<O, A, V> mapper) {
-		ModelValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
-		String languageTag = value.toLanguageTag();
-		return valueFactory.createValue(languageTag);
-	}
+	public static final CommonCodec<UUID> UUID_CODEC = new UUIDCodec();
+	public static final CommonCodec<Locale> LOCALE_CODEC = new LocaleCodec();
 
-	@Override
-	@Nullable
-	public <O, A, V> Locale decode(ModelValue<O, A, V> value, Type type, Mapper<O, A, V> mapper) {
-		String languageTag = value.asString();
-		return Locale.forLanguageTag(languageTag);
+	public static final CodecRegistry EXTRA_CODEC_REGISTRY = new CodecRegistryBuilder()
+		.codec(UUID_CODEC, UUID.class)
+		.codec(LOCALE_CODEC, Locale.class)
+		.build();
+
+	private ExtraCodecs() {
+		throw new UnsupportedOperationException("Cannot create an instance of this class");
 	}
 }

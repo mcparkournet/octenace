@@ -22,27 +22,29 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.codec.common;
+package net.mcparkour.octenace.codec.common.extra;
 
+import java.lang.reflect.Type;
+import java.util.Locale;
 import net.mcparkour.octenace.codec.CommonCodec;
-import net.mcparkour.octenace.codec.common.collection.CollectionCodecs;
-import net.mcparkour.octenace.codec.common.primitive.PrimitiveCodecs;
-import net.mcparkour.octenace.codec.registry.CodecRegistry;
-import net.mcparkour.octenace.codec.registry.CodecRegistryBuilder;
+import net.mcparkour.octenace.mapper.Mapper;
+import net.mcparkour.octenace.model.value.ModelValue;
+import net.mcparkour.octenace.model.value.ModelValueFactory;
+import org.jetbrains.annotations.Nullable;
 
-public final class Codecs {
+public class LocaleCodec implements CommonCodec<Locale> {
 
-	public static final CommonCodec<Enum<?>> ENUM_CODEC = new EnumCodec();
-	public static final CommonCodec<String> STRING_CODEC = new StringCodec();
+	@Override
+	public <O, A, V> ModelValue<O, A, V> encode(Locale value, Type type, Mapper<O, A, V> mapper) {
+		ModelValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
+		String languageTag = value.toLanguageTag();
+		return valueFactory.createValue(languageTag);
+	}
 
-	public static final CodecRegistry COMMON_CODEC_REGISTRY = new CodecRegistryBuilder()
-		.registry(CollectionCodecs.COLLECTION_CODEC_REGISTRY)
-		.registry(PrimitiveCodecs.PRIMITIVE_CODEC_REGISTRY)
-		.codec(ENUM_CODEC, Enum.class)
-		.codec(STRING_CODEC, String.class)
-		.build();
-
-	private Codecs() {
-		throw new UnsupportedOperationException("Cannot create an instance of this class");
+	@Override
+	@Nullable
+	public <O, A, V> Locale decode(ModelValue<O, A, V> value, Type type, Mapper<O, A, V> mapper) {
+		String languageTag = value.asString();
+		return Locale.forLanguageTag(languageTag);
 	}
 }

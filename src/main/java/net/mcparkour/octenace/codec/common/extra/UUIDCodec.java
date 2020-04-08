@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.codec.common;
+package net.mcparkour.octenace.codec.common.extra;
 
 import java.lang.reflect.Type;
 import java.util.UUID;
