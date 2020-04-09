@@ -24,7 +24,6 @@
 
 package net.mcparkour.octenace.mapper;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
@@ -32,6 +31,7 @@ import java.util.List;
 import java.util.Optional;
 import net.mcparkour.common.reflection.Reflections;
 import net.mcparkour.common.reflection.type.Types;
+import net.mcparkour.octenace.annotation.Property;
 import net.mcparkour.octenace.codec.Codec;
 import net.mcparkour.octenace.codec.registry.CodecRegistry;
 import net.mcparkour.octenace.condition.FieldCondition;
@@ -51,16 +51,14 @@ public class CommonMapper<O, A, V> implements Mapper<O, A, V> {
 	private NameConverter nameConverter;
 	private List<FieldCondition> fieldConditions;
 	private CodecRegistry codecRegistry;
-	private NameAnnotationSupplier<? extends Annotation> nameAnnotationSupplier;
 
-	public CommonMapper(ModelObjectFactory<O, A, V> objectFactory, ModelArrayFactory<O, A, V> arrayFactory, ModelValueFactory<O, A, V> valueFactory, NameConverter nameConverter, List<FieldCondition> fieldConditions, CodecRegistry codecRegistry, NameAnnotationSupplier<? extends Annotation> nameAnnotationSupplier) {
+	public CommonMapper(ModelObjectFactory<O, A, V> objectFactory, ModelArrayFactory<O, A, V> arrayFactory, ModelValueFactory<O, A, V> valueFactory, NameConverter nameConverter, List<FieldCondition> fieldConditions, CodecRegistry codecRegistry) {
 		this.objectFactory = objectFactory;
 		this.arrayFactory = arrayFactory;
 		this.valueFactory = valueFactory;
 		this.nameConverter = nameConverter;
 		this.fieldConditions = fieldConditions;
 		this.codecRegistry = codecRegistry;
-		this.nameAnnotationSupplier = nameAnnotationSupplier;
 	}
 
 	@Override
@@ -106,7 +104,10 @@ public class CommonMapper<O, A, V> implements Mapper<O, A, V> {
 				String fieldName = getFieldName(field);
 				ModelValue<O, A, V> value = object.get(fieldName);
 				Type fieldType = field.getGenericType();
-				Object rawObject = toDocument(value, fieldType);
+				var codecAnnotation = field.getAnnotation(net.mcparkour.octenace.annotation.Codec.class);
+				Object rawObject = codecAnnotation == null ?
+					toDocument(value, fieldType) :
+					toDocument(value, fieldType, codecAnnotation.value());
 				Reflections.setFieldValue(field, instance, rawObject);
 			}
 		}
@@ -116,16 +117,21 @@ public class CommonMapper<O, A, V> implements Mapper<O, A, V> {
 	@Override
 	@Nullable
 	public Object toDocument(ModelValue<O, A, V> value, Type type) {
+		return toDocument(value, type, type);
+	}
+
+	@Nullable
+	private Object toDocument(ModelValue<O, A, V> value, Type type, Type codecType) {
 		if (value.isNull()) {
 			return null;
 		}
-		Optional<Codec<O, A, V, Object>> codecOptional = getObjectCodec(type);
+		Optional<Codec<O, A, V, Object>> codecOptional = getObjectCodec(codecType);
 		if (codecOptional.isPresent()) {
 			Codec<O, A, V, Object> codec = codecOptional.get();
 			return codec.decode(value, type, this);
 		}
 		if (!value.isObject()) {
-			throw new CodecNotFoundException(type);
+			throw new CodecNotFoundException(codecType);
 		}
 		O rawObject = value.asObject();
 		ModelObject<O, A, V> object = this.objectFactory.createObject(rawObject);
@@ -142,9 +148,9 @@ public class CommonMapper<O, A, V> implements Mapper<O, A, V> {
 
 	@Override
 	public String getFieldName(Field field) {
-		Class<? extends Annotation> annotationType = this.nameAnnotationSupplier.getAnnotationType();
-		if (field.isAnnotationPresent(annotationType)) {
-			return this.nameAnnotationSupplier.supply(field);
+		Property property = field.getAnnotation(Property.class);
+		if (property != null) {
+			return property.value();
 		}
 		String name = field.getName();
 		return this.nameConverter.convert(name);

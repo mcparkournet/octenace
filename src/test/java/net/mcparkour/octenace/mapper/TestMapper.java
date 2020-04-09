@@ -24,7 +24,6 @@
 
 package net.mcparkour.octenace.mapper;
 
-import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Map;
 import net.mcparkour.octenace.codec.common.Codecs;
@@ -37,6 +36,6 @@ import net.mcparkour.octenace.model.value.TestModelValueFactory;
 public class TestMapper extends CommonMapper<Map<String, Object>, List<Object>, Object> {
 
 	public TestMapper() {
-		super(new TestModelObjectFactory(), new TestModelArrayFactory(), new TestModelValueFactory(), NameConverter.identity(), FieldConditions.BASIC_FIELD_CONDITIONS, Codecs.COMMON_CODEC_REGISTRY, new NameAnnotationSupplier<>(Annotation.class, Annotation::toString));
+		super(new TestModelObjectFactory(), new TestModelArrayFactory(), new TestModelValueFactory(), NameConverter.identity(), FieldConditions.BASIC_FIELD_CONDITIONS, Codecs.COMMON_CODEC_REGISTRY);
 	}
 }

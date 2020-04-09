@@ -22,28 +22,15 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.mapper;
+package net.mcparkour.octenace.condition;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.function.Function;
+import net.mcparkour.octenace.annotation.Ignored;
 
-public class NameAnnotationSupplier<T extends Annotation> {
+public class IgnoredAnnotationNotPresentedFieldCondition implements FieldCondition {
 
-	private Class<T> annotationType;
-	private Function<T, String> nameExtractor;
-
-	public NameAnnotationSupplier(Class<T> annotationType, Function<T, String> nameExtractor) {
-		this.annotationType = annotationType;
-		this.nameExtractor = nameExtractor;
-	}
-
-	public Class<T> getAnnotationType() {
-		return this.annotationType;
-	}
-
-	public String supply(Field field) {
-		T annotation = field.getAnnotation(this.annotationType);
-		return this.nameExtractor.apply(annotation);
+	@Override
+	public boolean check(Field field) {
+		return !field.isAnnotationPresent(Ignored.class);
 	}
 }

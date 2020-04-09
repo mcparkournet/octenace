@@ -22,19 +22,19 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.condition;
+package net.mcparkour.octenace.annotation;
 
-import java.util.List;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public final class FieldConditions {
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+public @interface Property {
 
-	public static final List<FieldCondition> BASIC_FIELD_CONDITIONS = List.of(
-		new NonStaticFieldCondition(),
-		new NonTransientFieldCondition(),
-		new IgnoredAnnotationNotPresentedFieldCondition()
-	);
-
-	private FieldConditions() {
-		throw new UnsupportedOperationException("Cannot create an instance of this class");
-	}
+	/**
+	 * @return property name
+	 */
+	String value();
 }
