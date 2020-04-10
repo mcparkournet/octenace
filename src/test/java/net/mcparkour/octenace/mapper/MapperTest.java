@@ -45,7 +45,7 @@ public class MapperTest {
 	public void testFromDocument() {
 		TestDocument document = new TestDocument();
 		var modelObject = this.mapper.fromDocument(document);
-		Map<String, Object> object = modelObject.getObject();
+		Map<Object, Object> object = modelObject.getObject();
 		Assertions.assertEquals(document.toString(), object.toString());
 	}
 

@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Map;
 import org.jetbrains.annotations.Nullable;
 
-public class TestModelValue implements ModelValue<Map<String, Object>, List<Object>, Object> {
+public class TestModelValue implements ModelValue<Map<Object, Object>, List<Object>, Object> {
 
 	@Nullable
 	private Object value;
@@ -106,12 +106,12 @@ public class TestModelValue implements ModelValue<Map<String, Object>, List<Obje
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public Map<String, Object> asObject() {
+	public Map<Object, Object> asObject() {
 		Object value = getNotNullValue();
 		if (!isObject()) {
 			throw new ValueConversionException(Map.class);
 		}
-		return (Map<String, Object>) value;
+		return (Map<Object, Object>) value;
 	}
 
 	@Override

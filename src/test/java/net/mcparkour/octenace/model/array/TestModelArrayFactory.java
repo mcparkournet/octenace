@@ -28,16 +28,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class TestModelArrayFactory implements ModelArrayFactory<Map<String, Object>, List<Object>, Object> {
+public class TestModelArrayFactory implements ModelArrayFactory<Map<Object, Object>, List<Object>, Object> {
 
 	@Override
-	public ModelArray<Map<String, Object>, List<Object>, Object> createEmptyArray() {
+	public ModelArray<Map<Object, Object>, List<Object>, Object> createEmptyArray() {
 		List<Object> array = new ArrayList<>(0);
 		return new TestModelArray(array);
 	}
 
 	@Override
-	public ModelArray<Map<String, Object>, List<Object>, Object> createArray(List<Object> array) {
+	public ModelArray<Map<Object, Object>, List<Object>, Object> createArray(List<Object> array) {
 		return new TestModelArray(array);
 	}
 }

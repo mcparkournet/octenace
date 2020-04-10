@@ -27,11 +27,11 @@ package net.mcparkour.octenace.model.object;
 import java.util.Map;
 import net.mcparkour.octenace.model.value.ModelValue;
 
-public interface ModelObject<O, A, V> extends Iterable<Map.Entry<String, ModelValue<O, A, V>>>{
+public interface ModelObject<O, A, V> extends Iterable<Map.Entry<ModelValue<O, A, V>, ModelValue<O, A, V>>> {
 
-	ModelValue<O, A, V> get(String key);
+	ModelValue<O, A, V> get(ModelValue<O, A, V> key);
 
-	void set(String key, ModelValue<O, A, V> value);
+	void set(ModelValue<O, A, V> key, ModelValue<O, A, V> value);
 
 	int getSize();
 

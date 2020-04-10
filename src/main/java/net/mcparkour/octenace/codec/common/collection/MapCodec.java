@@ -50,9 +50,8 @@ public class MapCodec implements CommonCodec<Map<?, ?>> {
 		ModelObject<O, A, V> modelObject = objectFactory.createEmptyObject();
 		for (Map.Entry<?, ?> entry : value.entrySet()) {
 			ModelValue<O, A, V> modelKey = getModelKey(entry, mapper);
-			String key = modelKey.asString();
 			ModelValue<O, A, V> modelValue = getModelValue(entry, mapper);
-			modelObject.set(key, modelValue);
+			modelObject.set(modelKey, modelValue);
 		}
 		ModelValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
 		return valueFactory.createObjectValue(modelObject);
@@ -76,16 +75,14 @@ public class MapCodec implements CommonCodec<Map<?, ?>> {
 		ModelObjectFactory<O, A, V> objectFactory = mapper.getObjectFactory();
 		O rawObject = value.asObject();
 		ModelObject<O, A, V> object = objectFactory.createObject(rawObject);
-		ModelValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
 		Type[] genericTypes = getGenericTypes(type);
 		Type keyType = genericTypes[0];
 		Type valueType = genericTypes[1];
 		int size = object.getSize();
 		Map<Object, Object> map = this.mapSupplier.supply(size);
-		for (Map.Entry<String, ModelValue<O, A, V>> entry : object) {
-			String key = entry.getKey();
-			ModelValue<O, A, V> keyModelValue = valueFactory.createValue(key);
-			Object mapKey = mapper.toDocument(keyModelValue, keyType);
+		for (Map.Entry<ModelValue<O, A, V>, ModelValue<O, A, V>> entry : object) {
+			ModelValue<O, A, V> entryKey = entry.getKey();
+			Object mapKey = mapper.toDocument(entryKey, keyType);
 			ModelValue<O, A, V> entryValue = entry.getValue();
 			Object mapValue = mapper.toDocument(entryValue, valueType);
 			map.put(mapKey, mapValue);

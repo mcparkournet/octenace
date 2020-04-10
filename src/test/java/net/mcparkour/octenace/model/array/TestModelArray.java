@@ -30,7 +30,7 @@ import java.util.Map;
 import net.mcparkour.octenace.model.value.ModelValue;
 import net.mcparkour.octenace.model.value.TestModelValue;
 
-public class TestModelArray implements ModelArray<Map<String, Object>, List<Object>, Object> {
+public class TestModelArray implements ModelArray<Map<Object, Object>, List<Object>, Object> {
 
 	private List<Object> array;
 
@@ -39,13 +39,13 @@ public class TestModelArray implements ModelArray<Map<String, Object>, List<Obje
 	}
 
 	@Override
-	public ModelValue<Map<String, Object>, List<Object>, Object> get(int index) {
+	public ModelValue<Map<Object, Object>, List<Object>, Object> get(int index) {
 		Object rawValue = this.array.get(index);
 		return new TestModelValue(rawValue);
 	}
 
 	@Override
-	public void add(ModelValue<Map<String, Object>, List<Object>, Object> value) {
+	public void add(ModelValue<Map<Object, Object>, List<Object>, Object> value) {
 		Object rawValue = value.getValue();
 		this.array.add(rawValue);
 	}
@@ -61,12 +61,12 @@ public class TestModelArray implements ModelArray<Map<String, Object>, List<Obje
 	}
 
 	@Override
-	public Iterator<ModelValue<Map<String, Object>, List<Object>, Object>> iterator() {
+	public Iterator<ModelValue<Map<Object, Object>, List<Object>, Object>> iterator() {
 		Iterator<Object> iterator = this.array.iterator();
 		return new TestModelArrayIterator(iterator);
 	}
 
-	private static final class TestModelArrayIterator implements Iterator<ModelValue<Map<String, Object>, List<Object>, Object>> {
+	private static final class TestModelArrayIterator implements Iterator<ModelValue<Map<Object, Object>, List<Object>, Object>> {
 
 		private Iterator<Object> iterator;
 
@@ -80,7 +80,7 @@ public class TestModelArray implements ModelArray<Map<String, Object>, List<Obje
 		}
 
 		@Override
-		public ModelValue<Map<String, Object>, List<Object>, Object> next() {
+		public ModelValue<Map<Object, Object>, List<Object>, Object> next() {
 			Object next = this.iterator.next();
 			return new TestModelValue(next);
 		}

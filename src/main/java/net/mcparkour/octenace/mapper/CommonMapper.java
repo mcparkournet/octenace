@@ -70,10 +70,11 @@ public class CommonMapper<O, A, V> implements Mapper<O, A, V> {
 			if (isFieldValid(field)) {
 				field.trySetAccessible();
 				String fieldName = getFieldName(field);
+				ModelValue<O, A, V> modelFieldName = this.valueFactory.createValue(fieldName);
 				Object fieldValue = Reflections.getFieldValue(field, document);
 				Type fieldType = field.getGenericType();
 				ModelValue<O, A, V> value = fromDocument(fieldValue, fieldType);
-				object.set(fieldName, value);
+				object.set(modelFieldName, value);
 			}
 		}
 		return object;
@@ -102,7 +103,8 @@ public class CommonMapper<O, A, V> implements Mapper<O, A, V> {
 			if (isFieldValid(field)) {
 				field.trySetAccessible();
 				String fieldName = getFieldName(field);
-				ModelValue<O, A, V> value = object.get(fieldName);
+				ModelValue<O, A, V> modelFieldName = this.valueFactory.createValue(fieldName);
+				ModelValue<O, A, V> value = object.get(modelFieldName);
 				Type fieldType = field.getGenericType();
 				var codecAnnotation = field.getAnnotation(net.mcparkour.octenace.annotation.Codec.class);
 				Object rawObject = codecAnnotation == null ?

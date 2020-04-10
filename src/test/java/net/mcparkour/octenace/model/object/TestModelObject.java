@@ -32,24 +32,26 @@ import java.util.Set;
 import net.mcparkour.octenace.model.value.ModelValue;
 import net.mcparkour.octenace.model.value.TestModelValue;
 
-public class TestModelObject implements ModelObject<Map<String, Object>, List<Object>, Object> {
+public class TestModelObject implements ModelObject<Map<Object, Object>, List<Object>, Object> {
 
-	private Map<String, Object> object;
+	private Map<Object, Object> object;
 
-	public TestModelObject(Map<String, Object> object) {
+	public TestModelObject(Map<Object, Object> object) {
 		this.object = object;
 	}
 
 	@Override
-	public ModelValue<Map<String, Object>, List<Object>, Object> get(String key) {
-		Object value = this.object.get(key);
+	public ModelValue<Map<Object, Object>, List<Object>, Object> get(ModelValue<Map<Object, Object>, List<Object>, Object> key) {
+		Object rawKey = key.getValue();
+		Object value = this.object.get(rawKey);
 		return new TestModelValue(value);
 	}
 
 	@Override
-	public void set(String key, ModelValue<Map<String, Object>, List<Object>, Object> value) {
+	public void set(ModelValue<Map<Object, Object>, List<Object>, Object> key, ModelValue<Map<Object, Object>, List<Object>, Object> value) {
+		Object rawKey = key.getValue();
 		Object rawValue = value.getValue();
-		this.object.put(key, rawValue);
+		this.object.put(rawKey, rawValue);
 	}
 
 	@Override
@@ -58,22 +60,22 @@ public class TestModelObject implements ModelObject<Map<String, Object>, List<Ob
 	}
 
 	@Override
-	public Map<String, Object> getObject() {
+	public Map<Object, Object> getObject() {
 		return this.object;
 	}
 
 	@Override
-	public Iterator<Entry<String, ModelValue<Map<String, Object>, List<Object>, Object>>> iterator() {
-		Set<Entry<String, Object>> entries = this.object.entrySet();
-		Iterator<Entry<String, Object>> iterator = entries.iterator();
+	public Iterator<Entry<ModelValue<Map<Object, Object>, List<Object>, Object>, ModelValue<Map<Object, Object>, List<Object>, Object>>> iterator() {
+		Set<Entry<Object, Object>> entries = this.object.entrySet();
+		Iterator<Entry<Object, Object>> iterator = entries.iterator();
 		return new TestModelObjectIterator(iterator);
 	}
 
-	public static final class TestModelObjectIterator implements Iterator<Entry<String, ModelValue<Map<String, Object>, List<Object>, Object>>> {
+	public static final class TestModelObjectIterator implements Iterator<Entry<ModelValue<Map<Object, Object>, List<Object>, Object>, ModelValue<Map<Object, Object>, List<Object>, Object>>> {
 
-		private Iterator<Entry<String, Object>> iterator;
+		private Iterator<Entry<Object, Object>> iterator;
 
-		public TestModelObjectIterator(Iterator<Entry<String, Object>> iterator) {
+		public TestModelObjectIterator(Iterator<Entry<Object, Object>> iterator) {
 			this.iterator = iterator;
 		}
 
@@ -83,12 +85,13 @@ public class TestModelObject implements ModelObject<Map<String, Object>, List<Ob
 		}
 
 		@Override
-		public Entry<String, ModelValue<Map<String, Object>, List<Object>, Object>> next() {
-			Entry<String, Object> next = this.iterator.next();
-			String key = next.getKey();
+		public Entry<ModelValue<Map<Object, Object>, List<Object>, Object>, ModelValue<Map<Object, Object>, List<Object>, Object>> next() {
+			Entry<Object, Object> next = this.iterator.next();
+			Object key = next.getKey();
 			Object value = next.getValue();
+			TestModelValue modelKey = new TestModelValue(key);
 			TestModelValue modelValue = new TestModelValue(value);
-			return Map.entry(key, modelValue);
+			return Map.entry(modelKey, modelValue);
 		}
 	}
 }

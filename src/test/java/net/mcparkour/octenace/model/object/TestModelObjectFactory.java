@@ -28,16 +28,16 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TestModelObjectFactory implements ModelObjectFactory<Map<String, Object>, List<Object>, Object> {
+public class TestModelObjectFactory implements ModelObjectFactory<Map<Object, Object>, List<Object>, Object> {
 
 	@Override
-	public ModelObject<Map<String, Object>, List<Object>, Object> createEmptyObject() {
-		Map<String, Object> object = new LinkedHashMap<>(0);
+	public ModelObject<Map<Object, Object>, List<Object>, Object> createEmptyObject() {
+		Map<Object, Object> object = new LinkedHashMap<>(0);
 		return new TestModelObject(object);
 	}
 
 	@Override
-	public ModelObject<Map<String, Object>, List<Object>, Object> createObject(Map<String, Object> object) {
+	public ModelObject<Map<Object, Object>, List<Object>, Object> createObject(Map<Object, Object> object) {
 		return new TestModelObject(object);
 	}
 }

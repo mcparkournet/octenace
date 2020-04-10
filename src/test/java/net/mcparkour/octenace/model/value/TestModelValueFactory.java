@@ -27,61 +27,61 @@ package net.mcparkour.octenace.model.value;
 import java.util.List;
 import java.util.Map;
 
-public class TestModelValueFactory implements ModelValueFactory<Map<String, Object>, List<Object>, Object> {
+public class TestModelValueFactory implements ModelValueFactory<Map<Object, Object>, List<Object>, Object> {
 
 	@Override
-	public ModelValue<Map<String, Object>, List<Object>, Object> createNullValue() {
+	public ModelValue<Map<Object, Object>, List<Object>, Object> createNullValue() {
 		return new TestModelValue(null);
 	}
 
 	@Override
-	public ModelValue<Map<String, Object>, List<Object>, Object> createValue(boolean value) {
+	public ModelValue<Map<Object, Object>, List<Object>, Object> createValue(boolean value) {
 		Object rawValue = value;
 		return createValue(rawValue);
 	}
 
 	@Override
-	public ModelValue<Map<String, Object>, List<Object>, Object> createValue(int value) {
+	public ModelValue<Map<Object, Object>, List<Object>, Object> createValue(int value) {
 		Object rawValue = value;
 		return createValue(rawValue);
 	}
 
 	@Override
-	public ModelValue<Map<String, Object>, List<Object>, Object> createValue(long value) {
+	public ModelValue<Map<Object, Object>, List<Object>, Object> createValue(long value) {
 		Object rawValue = value;
 		return createValue(rawValue);
 	}
 
 	@Override
-	public ModelValue<Map<String, Object>, List<Object>, Object> createValue(float value) {
+	public ModelValue<Map<Object, Object>, List<Object>, Object> createValue(float value) {
 		Object rawValue = value;
 		return createValue(rawValue);
 	}
 
 	@Override
-	public ModelValue<Map<String, Object>, List<Object>, Object> createValue(double value) {
+	public ModelValue<Map<Object, Object>, List<Object>, Object> createValue(double value) {
 		Object rawValue = value;
 		return createValue(rawValue);
 	}
 
 	@Override
-	public ModelValue<Map<String, Object>, List<Object>, Object> createValue(String value) {
+	public ModelValue<Map<Object, Object>, List<Object>, Object> createValue(String value) {
 		Object rawValue = value;
 		return createValue(rawValue);
 	}
 
 	@Override
-	public ModelValue<Map<String, Object>, List<Object>, Object> createObjectValue(Map<String, Object> object) {
+	public ModelValue<Map<Object, Object>, List<Object>, Object> createObjectValue(Map<Object, Object> object) {
 		return createValue(object);
 	}
 
 	@Override
-	public ModelValue<Map<String, Object>, List<Object>, Object> createArrayValue(List<Object> array) {
+	public ModelValue<Map<Object, Object>, List<Object>, Object> createArrayValue(List<Object> array) {
 		return createValue(array);
 	}
 
 	@Override
-	public ModelValue<Map<String, Object>, List<Object>, Object> createValue(Object value) {
+	public ModelValue<Map<Object, Object>, List<Object>, Object> createValue(Object value) {
 		return new TestModelValue(value);
 	}
 }
