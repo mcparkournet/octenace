@@ -27,7 +27,7 @@ package net.mcparkour.octenace.mapper;
 import java.util.List;
 import java.util.Map;
 import net.mcparkour.octenace.codec.common.Codecs;
-import net.mcparkour.octenace.condition.FieldConditions;
+import net.mcparkour.octenace.mapper.property.invalidator.PropertyInvalidators;
 import net.mcparkour.octenace.mapper.naming.NameConverter;
 import net.mcparkour.octenace.model.array.TestModelArrayFactory;
 import net.mcparkour.octenace.model.object.TestModelObjectFactory;
@@ -36,6 +36,6 @@ import net.mcparkour.octenace.model.value.TestModelValueFactory;
 public class TestMapper extends CommonMapper<Map<Object, Object>, List<Object>, Object> {
 
 	public TestMapper() {
-		super(new TestModelObjectFactory(), new TestModelArrayFactory(), new TestModelValueFactory(), NameConverter.identity(), FieldConditions.BASIC_FIELD_CONDITIONS, Codecs.COMMON_CODEC_REGISTRY);
+		super(new TestModelObjectFactory(), new TestModelArrayFactory(), new TestModelValueFactory(), NameConverter.identity(), PropertyInvalidators.COMMON_PROPERTY_INVALIDATORS, Codecs.COMMON_CODEC_REGISTRY);
 	}
 }

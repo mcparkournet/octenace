@@ -22,15 +22,25 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.condition;
+package net.mcparkour.octenace.mapper.property.invalidator;
 
-import java.lang.reflect.Field;
+import java.util.List;
+import net.mcparkour.common.reflection.Modifiers;
 import net.mcparkour.octenace.annotation.Ignored;
 
-public class IgnoredAnnotationNotPresentedFieldCondition implements FieldCondition {
+public final class PropertyInvalidators {
 
-	@Override
-	public boolean check(Field field) {
-		return !field.isAnnotationPresent(Ignored.class);
+	public static final PropertyInvalidator STATIC_PROPERTY_INVALIDATOR = Modifiers::isStatic;
+	public static final PropertyInvalidator TRANSIENT_PROPERTY_INVALIDATOR = Modifiers::isTransient;
+	public static final PropertyInvalidator IGNORED_ANNOTATION_INVALIDATOR = field -> field.isAnnotationPresent(Ignored.class);
+
+	public static final List<PropertyInvalidator> COMMON_PROPERTY_INVALIDATORS = List.of(
+		STATIC_PROPERTY_INVALIDATOR,
+		TRANSIENT_PROPERTY_INVALIDATOR,
+		IGNORED_ANNOTATION_INVALIDATOR
+	);
+
+	private PropertyInvalidators() {
+		throw new UnsupportedOperationException("Cannot create an instance of this class");
 	}
 }

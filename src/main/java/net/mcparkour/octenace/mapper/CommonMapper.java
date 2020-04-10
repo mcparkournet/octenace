@@ -34,7 +34,7 @@ import net.mcparkour.common.reflection.type.Types;
 import net.mcparkour.octenace.annotation.Property;
 import net.mcparkour.octenace.codec.Codec;
 import net.mcparkour.octenace.codec.registry.CodecRegistry;
-import net.mcparkour.octenace.condition.FieldCondition;
+import net.mcparkour.octenace.mapper.property.invalidator.PropertyInvalidator;
 import net.mcparkour.octenace.mapper.naming.NameConverter;
 import net.mcparkour.octenace.model.array.ModelArrayFactory;
 import net.mcparkour.octenace.model.object.ModelObject;
@@ -49,15 +49,15 @@ public class CommonMapper<O, A, V> implements Mapper<O, A, V> {
 	private ModelArrayFactory<O, A, V> arrayFactory;
 	private ModelValueFactory<O, A, V> valueFactory;
 	private NameConverter nameConverter;
-	private List<FieldCondition> fieldConditions;
+	private List<PropertyInvalidator> propertyInvalidators;
 	private CodecRegistry codecRegistry;
 
-	public CommonMapper(ModelObjectFactory<O, A, V> objectFactory, ModelArrayFactory<O, A, V> arrayFactory, ModelValueFactory<O, A, V> valueFactory, NameConverter nameConverter, List<FieldCondition> fieldConditions, CodecRegistry codecRegistry) {
+	public CommonMapper(ModelObjectFactory<O, A, V> objectFactory, ModelArrayFactory<O, A, V> arrayFactory, ModelValueFactory<O, A, V> valueFactory, NameConverter nameConverter, List<PropertyInvalidator> propertyInvalidators, CodecRegistry codecRegistry) {
 		this.objectFactory = objectFactory;
 		this.arrayFactory = arrayFactory;
 		this.valueFactory = valueFactory;
 		this.nameConverter = nameConverter;
-		this.fieldConditions = fieldConditions;
+		this.propertyInvalidators = propertyInvalidators;
 		this.codecRegistry = codecRegistry;
 	}
 
@@ -144,8 +144,8 @@ public class CommonMapper<O, A, V> implements Mapper<O, A, V> {
 
 	@Override
 	public boolean isFieldValid(Field field) {
-		return this.fieldConditions.stream()
-			.allMatch(condition -> condition.check(field));
+		return this.propertyInvalidators.stream()
+			.noneMatch(filter -> filter.invalid(field));
 	}
 
 	@Override
@@ -189,8 +189,8 @@ public class CommonMapper<O, A, V> implements Mapper<O, A, V> {
 		return this.nameConverter;
 	}
 
-	public List<FieldCondition> getFieldConditions() {
-		return List.copyOf(this.fieldConditions);
+	public List<PropertyInvalidator> getPropertyInvalidators() {
+		return List.copyOf(this.propertyInvalidators);
 	}
 
 	public CodecRegistry getCodecRegistry() {

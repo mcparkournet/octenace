@@ -22,19 +22,11 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.condition;
+package net.mcparkour.octenace.mapper.property.invalidator;
 
-import java.util.List;
+import java.lang.reflect.Field;
 
-public final class FieldConditions {
+public interface PropertyInvalidator {
 
-	public static final List<FieldCondition> BASIC_FIELD_CONDITIONS = List.of(
-		new NonStaticFieldCondition(),
-		new NonTransientFieldCondition(),
-		new IgnoredAnnotationNotPresentedFieldCondition()
-	);
-
-	private FieldConditions() {
-		throw new UnsupportedOperationException("Cannot create an instance of this class");
-	}
+	boolean invalid(Field field);
 }
