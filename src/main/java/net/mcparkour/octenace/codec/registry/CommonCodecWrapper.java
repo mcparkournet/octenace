@@ -30,7 +30,6 @@ import net.mcparkour.octenace.codec.Codec;
 import net.mcparkour.octenace.codec.CommonCodec;
 import net.mcparkour.octenace.mapper.Mapper;
 import net.mcparkour.octenace.model.value.ModelValue;
-import org.jetbrains.annotations.Nullable;
 
 class CommonCodecWrapper<O, A, V, T> implements Codec<O, A, V, T> {
 
@@ -46,7 +45,6 @@ class CommonCodecWrapper<O, A, V, T> implements Codec<O, A, V, T> {
 	}
 
 	@Override
-	@Nullable
 	public T decode(ModelValue<O, A, V> value, Type type, Mapper<O, A, V> mapper) {
 		return this.codec.decode(value, type, mapper);
 	}

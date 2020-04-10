@@ -30,7 +30,6 @@ import net.mcparkour.octenace.codec.CommonCodec;
 import net.mcparkour.octenace.mapper.Mapper;
 import net.mcparkour.octenace.model.value.ModelValue;
 import net.mcparkour.octenace.model.value.ModelValueFactory;
-import org.jetbrains.annotations.Nullable;
 
 public class UUIDCodec implements CommonCodec<UUID> {
 
@@ -42,7 +41,6 @@ public class UUIDCodec implements CommonCodec<UUID> {
 	}
 
 	@Override
-	@Nullable
 	public <O, A, V> UUID decode(ModelValue<O, A, V> value, Type type, Mapper<O, A, V> mapper) {
 		String uuidString = value.asString();
 		return UUID.fromString(uuidString);

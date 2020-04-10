@@ -29,7 +29,6 @@ import net.mcparkour.octenace.codec.CommonCodec;
 import net.mcparkour.octenace.mapper.Mapper;
 import net.mcparkour.octenace.model.value.ModelValue;
 import net.mcparkour.octenace.model.value.ModelValueFactory;
-import org.jetbrains.annotations.Nullable;
 
 public class BooleanCodec implements CommonCodec<Boolean> {
 
@@ -40,7 +39,6 @@ public class BooleanCodec implements CommonCodec<Boolean> {
 	}
 
 	@Override
-	@Nullable
 	public <O, A, V> Boolean decode(ModelValue<O, A, V> value, Type type, Mapper<O, A, V> mapper) {
 		return value.asBoolean();
 	}

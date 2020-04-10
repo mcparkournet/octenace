@@ -33,7 +33,6 @@ import net.mcparkour.octenace.codec.CommonCodec;
 import net.mcparkour.octenace.mapper.Mapper;
 import net.mcparkour.octenace.model.value.ModelValue;
 import net.mcparkour.octenace.model.value.ModelValueFactory;
-import org.jetbrains.annotations.Nullable;
 
 public class EnumCodec implements CommonCodec<Enum<?>> {
 
@@ -46,7 +45,6 @@ public class EnumCodec implements CommonCodec<Enum<?>> {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	@Nullable
 	public <O, A, V> Enum<?> decode(ModelValue<O, A, V> value, Type type, Mapper<O, A, V> mapper) {
 		Type rawType = Types.getRawType(type);
 		Class<?> classType = Types.asClassType(rawType);
@@ -56,7 +54,7 @@ public class EnumCodec implements CommonCodec<Enum<?>> {
 		return Arrays.stream(enumConstants)
 			.filter(enumConstant -> valueString.equals(getEnumName(enumConstant, mapper)))
 			.findFirst()
-			.orElse(null);
+			.orElseThrow();
 	}
 
 	private <O, A, V> String getEnumName(Enum<?> object, Mapper<O, A, V> mapper) {

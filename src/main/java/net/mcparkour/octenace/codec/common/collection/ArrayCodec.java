@@ -33,7 +33,6 @@ import net.mcparkour.octenace.model.array.ModelArray;
 import net.mcparkour.octenace.model.array.ModelArrayFactory;
 import net.mcparkour.octenace.model.value.ModelValue;
 import net.mcparkour.octenace.model.value.ModelValueFactory;
-import org.jetbrains.annotations.Nullable;
 
 public class ArrayCodec implements CommonCodec<Object[]> {
 
@@ -51,7 +50,6 @@ public class ArrayCodec implements CommonCodec<Object[]> {
 	}
 
 	@Override
-	@Nullable
 	public <O, A, V> Object[] decode(ModelValue<O, A, V> value, Type type, Mapper<O, A, V> mapper) {
 		ModelArrayFactory<O, A, V> arrayFactory = mapper.getArrayFactory();
 		A rawArray = value.asArray();

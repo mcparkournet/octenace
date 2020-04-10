@@ -29,7 +29,6 @@ import net.mcparkour.octenace.codec.CommonCodec;
 import net.mcparkour.octenace.mapper.Mapper;
 import net.mcparkour.octenace.model.value.ModelValue;
 import net.mcparkour.octenace.model.value.ModelValueFactory;
-import org.jetbrains.annotations.Nullable;
 
 public class CharCodec implements CommonCodec<Character> {
 
@@ -41,7 +40,6 @@ public class CharCodec implements CommonCodec<Character> {
 	}
 
 	@Override
-	@Nullable
 	public <O, A, V> Character decode(ModelValue<O, A, V> value, Type type, Mapper<O, A, V> mapper) {
 		String string = value.asString();
 		return string.isEmpty() ? '\0' : string.charAt(0);

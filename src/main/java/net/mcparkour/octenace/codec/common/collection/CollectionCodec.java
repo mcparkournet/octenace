@@ -34,7 +34,6 @@ import net.mcparkour.octenace.model.array.ModelArray;
 import net.mcparkour.octenace.model.array.ModelArrayFactory;
 import net.mcparkour.octenace.model.value.ModelValue;
 import net.mcparkour.octenace.model.value.ModelValueFactory;
-import org.jetbrains.annotations.Nullable;
 
 public class CollectionCodec implements CommonCodec<Collection<?>> {
 
@@ -58,7 +57,6 @@ public class CollectionCodec implements CommonCodec<Collection<?>> {
 	}
 
 	@Override
-	@Nullable
 	public <O, A, V> Collection<?> decode(ModelValue<O, A, V> value, Type type, Mapper<O, A, V> mapper) {
 		ModelArrayFactory<O, A, V> arrayFactory = mapper.getArrayFactory();
 		A rawArray = value.asArray();

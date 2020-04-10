@@ -34,7 +34,6 @@ import net.mcparkour.octenace.model.object.ModelObject;
 import net.mcparkour.octenace.model.object.ModelObjectFactory;
 import net.mcparkour.octenace.model.value.ModelValue;
 import net.mcparkour.octenace.model.value.ModelValueFactory;
-import org.jetbrains.annotations.Nullable;
 
 public class MapCodec implements CommonCodec<Map<?, ?>> {
 
@@ -70,7 +69,6 @@ public class MapCodec implements CommonCodec<Map<?, ?>> {
 	}
 
 	@Override
-	@Nullable
 	public <O, A, V> Map<?, ?> decode(ModelValue<O, A, V> value, Type type, Mapper<O, A, V> mapper) {
 		ModelObjectFactory<O, A, V> objectFactory = mapper.getObjectFactory();
 		O rawObject = value.asObject();

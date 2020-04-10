@@ -28,7 +28,6 @@ import java.lang.reflect.Type;
 import net.mcparkour.octenace.codec.CommonCodec;
 import net.mcparkour.octenace.mapper.Mapper;
 import net.mcparkour.octenace.model.value.ModelValue;
-import org.jetbrains.annotations.Nullable;
 
 public class LongCodec implements CommonCodec<Long> {
 
@@ -39,7 +38,6 @@ public class LongCodec implements CommonCodec<Long> {
 	}
 
 	@Override
-	@Nullable
 	public <O, A, V> Long decode(ModelValue<O, A, V> value, Type type, Mapper<O, A, V> mapper) {
 		return value.asLong();
 	}

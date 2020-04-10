@@ -30,7 +30,6 @@ import net.mcparkour.octenace.codec.CommonCodec;
 import net.mcparkour.octenace.mapper.Mapper;
 import net.mcparkour.octenace.model.value.ModelValue;
 import net.mcparkour.octenace.model.value.ModelValueFactory;
-import org.jetbrains.annotations.Nullable;
 
 public class LocaleCodec implements CommonCodec<Locale> {
 
@@ -42,7 +41,6 @@ public class LocaleCodec implements CommonCodec<Locale> {
 	}
 
 	@Override
-	@Nullable
 	public <O, A, V> Locale decode(ModelValue<O, A, V> value, Type type, Mapper<O, A, V> mapper) {
 		String languageTag = value.asString();
 		return Locale.forLanguageTag(languageTag);

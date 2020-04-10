@@ -28,7 +28,6 @@ import java.lang.reflect.Type;
 import net.mcparkour.octenace.codec.CommonCodec;
 import net.mcparkour.octenace.mapper.Mapper;
 import net.mcparkour.octenace.model.value.ModelValue;
-import org.jetbrains.annotations.Nullable;
 
 public class IntCodec implements CommonCodec<Integer> {
 
@@ -39,7 +38,6 @@ public class IntCodec implements CommonCodec<Integer> {
 	}
 
 	@Override
-	@Nullable
 	public <O, A, V> Integer decode(ModelValue<O, A, V> value, Type type, Mapper<O, A, V> mapper) {
 		return value.asInt();
 	}

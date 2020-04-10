@@ -28,7 +28,6 @@ import java.lang.reflect.Type;
 import net.mcparkour.octenace.codec.CommonCodec;
 import net.mcparkour.octenace.mapper.Mapper;
 import net.mcparkour.octenace.model.value.ModelValue;
-import org.jetbrains.annotations.Nullable;
 
 public class ByteCodec implements CommonCodec<Byte> {
 
@@ -39,7 +38,6 @@ public class ByteCodec implements CommonCodec<Byte> {
 	}
 
 	@Override
-	@Nullable
 	public <O, A, V> Byte decode(ModelValue<O, A, V> value, Type type, Mapper<O, A, V> mapper) {
 		int intValue = value.asInt();
 		return (byte) intValue;
