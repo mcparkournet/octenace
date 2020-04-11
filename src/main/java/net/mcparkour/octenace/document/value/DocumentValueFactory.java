@@ -33,6 +33,10 @@ public interface DocumentValueFactory<O, A, V> {
 
 	DocumentValue<O, A, V> createValue(boolean value);
 
+	DocumentValue<O, A, V> createValue(byte value);
+
+	DocumentValue<O, A, V> createValue(short value);
+
 	DocumentValue<O, A, V> createValue(int value);
 
 	DocumentValue<O, A, V> createValue(long value);
@@ -40,6 +44,8 @@ public interface DocumentValueFactory<O, A, V> {
 	DocumentValue<O, A, V> createValue(float value);
 
 	DocumentValue<O, A, V> createValue(double value);
+
+	DocumentValue<O, A, V> createValue(char value);
 
 	DocumentValue<O, A, V> createValue(String value);
 

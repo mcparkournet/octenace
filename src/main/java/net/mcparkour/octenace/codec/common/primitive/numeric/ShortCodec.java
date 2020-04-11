@@ -39,7 +39,6 @@ public class ShortCodec implements CommonCodec<Short> {
 
 	@Override
 	public <O, A, V> Short toObject(DocumentValue<O, A, V> document, Type type, Mapper<O, A, V> mapper) {
-		int intValue = document.asInt();
-		return (short) intValue;
+		return document.asShort();
 	}
 }

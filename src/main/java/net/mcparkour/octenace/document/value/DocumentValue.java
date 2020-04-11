@@ -32,6 +32,10 @@ public interface DocumentValue<O, A, V> {
 
 	boolean isBoolean();
 
+	byte asByte();
+
+	short asShort();
+
 	int asInt();
 
 	long asLong();
@@ -41,6 +45,10 @@ public interface DocumentValue<O, A, V> {
 	double asDouble();
 
 	boolean isNumber();
+
+	char asChar();
+
+	boolean isChar();
 
 	String asString();
 

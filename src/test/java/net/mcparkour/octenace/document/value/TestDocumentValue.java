@@ -57,6 +57,18 @@ public class TestDocumentValue implements DocumentValue<Map<Object, Object>, Lis
 	}
 
 	@Override
+	public byte asByte() {
+		Number number = asNumber();
+		return number.byteValue();
+	}
+
+	@Override
+	public short asShort() {
+		Number number = asNumber();
+		return number.shortValue();
+	}
+
+	@Override
 	public int asInt() {
 		Number number = asNumber();
 		return number.intValue();
@@ -91,6 +103,20 @@ public class TestDocumentValue implements DocumentValue<Map<Object, Object>, Lis
 	@Override
 	public boolean isNumber() {
 		return this.value instanceof Number;
+	}
+
+	@Override
+	public char asChar() {
+		Object value = getNotNullValue();
+		if (!isChar()) {
+			throw new ValueConversionException(Character.class);
+		}
+		return (char) value;
+	}
+
+	@Override
+	public boolean isChar() {
+		return this.value instanceof Character;
 	}
 
 	@Override

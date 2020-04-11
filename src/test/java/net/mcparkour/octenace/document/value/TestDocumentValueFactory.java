@@ -41,6 +41,18 @@ public class TestDocumentValueFactory implements DocumentValueFactory<Map<Object
 	}
 
 	@Override
+	public DocumentValue<Map<Object, Object>, List<Object>, Object> createValue(byte value) {
+		Object rawValue = value;
+		return createValue(rawValue);
+	}
+
+	@Override
+	public DocumentValue<Map<Object, Object>, List<Object>, Object> createValue(short value) {
+		Object rawValue = value;
+		return createValue(rawValue);
+	}
+
+	@Override
 	public DocumentValue<Map<Object, Object>, List<Object>, Object> createValue(int value) {
 		Object rawValue = value;
 		return createValue(rawValue);
@@ -60,6 +72,12 @@ public class TestDocumentValueFactory implements DocumentValueFactory<Map<Object
 
 	@Override
 	public DocumentValue<Map<Object, Object>, List<Object>, Object> createValue(double value) {
+		Object rawValue = value;
+		return createValue(rawValue);
+	}
+
+	@Override
+	public DocumentValue<Map<Object, Object>, List<Object>, Object> createValue(char value) {
 		Object rawValue = value;
 		return createValue(rawValue);
 	}

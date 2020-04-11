@@ -39,7 +39,6 @@ public class ByteCodec implements CommonCodec<Byte> {
 
 	@Override
 	public <O, A, V> Byte toObject(DocumentValue<O, A, V> document, Type type, Mapper<O, A, V> mapper) {
-		int intValue = document.asInt();
-		return (byte) intValue;
+		return document.asByte();
 	}
 }
