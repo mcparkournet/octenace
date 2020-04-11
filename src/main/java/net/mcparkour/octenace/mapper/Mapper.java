@@ -26,12 +26,15 @@ package net.mcparkour.octenace.mapper;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
-import net.mcparkour.octenace.mapper.property.name.NameConverter;
+import java.util.List;
+import net.mcparkour.octenace.codec.registry.CodecRegistry;
 import net.mcparkour.octenace.document.array.DocumentArrayFactory;
 import net.mcparkour.octenace.document.object.DocumentObject;
 import net.mcparkour.octenace.document.object.DocumentObjectFactory;
 import net.mcparkour.octenace.document.value.DocumentValue;
 import net.mcparkour.octenace.document.value.DocumentValueFactory;
+import net.mcparkour.octenace.mapper.property.invalidator.PropertyInvalidator;
+import net.mcparkour.octenace.mapper.property.name.NameConverter;
 import org.jetbrains.annotations.Nullable;
 
 public interface Mapper<O, A, V> {
@@ -40,9 +43,14 @@ public interface Mapper<O, A, V> {
 
 	DocumentValue<O, A, V> toDocument(@Nullable Object object, Type type);
 
+	@Nullable
 	<T> T toObject(DocumentObject<O, A, V> document, Class<T> objectType);
 
+	@Nullable
 	Object toObject(DocumentValue<O, A, V> document, Type type);
+
+	@Nullable
+	Object toObject(DocumentValue<O, A, V> value, Type type, Type codecType);
 
 	boolean isFieldValid(Field field);
 
@@ -55,4 +63,8 @@ public interface Mapper<O, A, V> {
 	DocumentValueFactory<O, A, V> getValueFactory();
 
 	NameConverter getNameConverter();
+
+	List<PropertyInvalidator> getPropertyInvalidators();
+
+	CodecRegistry getCodecRegistry();
 }

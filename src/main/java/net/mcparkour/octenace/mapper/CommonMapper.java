@@ -24,23 +24,21 @@
 
 package net.mcparkour.octenace.mapper;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Optional;
-import net.mcparkour.common.reflection.Reflections;
 import net.mcparkour.common.reflection.type.Types;
 import net.mcparkour.octenace.annotation.Property;
 import net.mcparkour.octenace.codec.Codec;
 import net.mcparkour.octenace.codec.registry.CodecRegistry;
-import net.mcparkour.octenace.mapper.property.invalidator.PropertyInvalidator;
-import net.mcparkour.octenace.mapper.property.name.NameConverter;
 import net.mcparkour.octenace.document.array.DocumentArrayFactory;
 import net.mcparkour.octenace.document.object.DocumentObject;
 import net.mcparkour.octenace.document.object.DocumentObjectFactory;
 import net.mcparkour.octenace.document.value.DocumentValue;
 import net.mcparkour.octenace.document.value.DocumentValueFactory;
+import net.mcparkour.octenace.mapper.property.invalidator.PropertyInvalidator;
+import net.mcparkour.octenace.mapper.property.name.NameConverter;
 import org.jetbrains.annotations.Nullable;
 
 public class CommonMapper<O, A, V> implements Mapper<O, A, V> {
@@ -63,21 +61,8 @@ public class CommonMapper<O, A, V> implements Mapper<O, A, V> {
 
 	@Override
 	public DocumentObject<O, A, V> toDocument(Object object) {
-		DocumentObject<O, A, V> emptyObject = this.objectFactory.createEmptyObject();
-		Class<?> configurationType = object.getClass();
-		Field[] fields = configurationType.getDeclaredFields();
-		for (Field field : fields) {
-			if (isFieldValid(field)) {
-				field.trySetAccessible();
-				String fieldName = getFieldName(field);
-				DocumentValue<O, A, V> modelFieldName = this.valueFactory.createValue(fieldName);
-				Object fieldValue = Reflections.getFieldValue(field, object);
-				Type fieldType = field.getGenericType();
-				DocumentValue<O, A, V> value = toDocument(fieldValue, fieldType);
-				emptyObject.set(modelFieldName, value);
-			}
-		}
-		return emptyObject;
+		DocumentValue<O, A, V> document = toDocument(object, object.getClass());
+		return this.objectFactory.createObject(document.asObject());
 	}
 
 	@Override
@@ -90,30 +75,15 @@ public class CommonMapper<O, A, V> implements Mapper<O, A, V> {
 			Codec<O, A, V, Object> codec = codecOptional.get();
 			return codec.toDocument(object, type, this);
 		}
-		DocumentObject<O, A, V> documentObject = toDocument(object);
-		return this.valueFactory.createObjectValue(documentObject);
+		throw new CodecNotFoundException(type);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
+	@Nullable
 	public <T> T toObject(DocumentObject<O, A, V> document, Class<T> objectType) {
-		Constructor<T> constructor = Reflections.getSerializationConstructor(objectType);
-		T instance = Reflections.newInstance(constructor);
-		Field[] fields = objectType.getDeclaredFields();
-		for (Field field : fields) {
-			if (isFieldValid(field)) {
-				field.trySetAccessible();
-				String fieldName = getFieldName(field);
-				DocumentValue<O, A, V> modelFieldName = this.valueFactory.createValue(fieldName);
-				DocumentValue<O, A, V> value = document.get(modelFieldName);
-				Type fieldType = field.getGenericType();
-				var codecAnnotation = field.getAnnotation(net.mcparkour.octenace.annotation.Codec.class);
-				Object rawObject = codecAnnotation == null ?
-					toObject(value, fieldType) :
-					toObject(value, fieldType, codecAnnotation.value());
-				Reflections.setFieldValue(field, instance, rawObject);
-			}
-		}
-		return instance;
+		DocumentValue<O, A, V> documentValue = this.valueFactory.createObjectValue(document);
+		return (T) toObject(documentValue, objectType);
 	}
 
 	@Override
@@ -122,8 +92,9 @@ public class CommonMapper<O, A, V> implements Mapper<O, A, V> {
 		return toObject(document, type, type);
 	}
 
+	@Override
 	@Nullable
-	private Object toObject(DocumentValue<O, A, V> value, Type type, Type codecType) {
+	public Object toObject(DocumentValue<O, A, V> value, Type type, Type codecType) {
 		if (value.isNull()) {
 			return null;
 		}
@@ -132,14 +103,7 @@ public class CommonMapper<O, A, V> implements Mapper<O, A, V> {
 			Codec<O, A, V, Object> codec = codecOptional.get();
 			return codec.toObject(value, type, this);
 		}
-		if (!value.isObject()) {
-			throw new CodecNotFoundException(codecType);
-		}
-		O rawObject = value.asObject();
-		DocumentObject<O, A, V> object = this.objectFactory.createObject(rawObject);
-		Type rawType = Types.getRawType(type);
-		Class<?> classType = Types.asClassType(rawType);
-		return toObject(object, classType);
+		throw new CodecNotFoundException(codecType);
 	}
 
 	@Override
@@ -187,10 +151,12 @@ public class CommonMapper<O, A, V> implements Mapper<O, A, V> {
 		return this.nameConverter;
 	}
 
+	@Override
 	public List<PropertyInvalidator> getPropertyInvalidators() {
 		return List.copyOf(this.propertyInvalidators);
 	}
 
+	@Override
 	public CodecRegistry getCodecRegistry() {
 		return this.codecRegistry;
 	}

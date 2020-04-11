@@ -25,6 +25,7 @@
 package net.mcparkour.octenace.mapper;
 
 import java.util.Map;
+import java.util.Objects;
 import net.mcparkour.octenace.TestObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -55,6 +56,6 @@ public class MapperTest {
 		TestObject originDocument = new TestObject();
 		var modelObject = this.mapper.toDocument(originDocument);
 		TestObject document = this.mapper.toObject(modelObject, TestObject.class);
-		Assertions.assertEquals(originDocument.toString(), document.toString());
+		Assertions.assertEquals(originDocument.toString(), Objects.requireNonNull(document).toString());
 	}
 }

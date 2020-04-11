@@ -34,12 +34,14 @@ public final class Codecs {
 
 	public static final CommonCodec<Enum<?>> ENUM_CODEC = new EnumCodec();
 	public static final CommonCodec<String> STRING_CODEC = new StringCodec();
+	public static final CommonCodec<Object> OBJECT_CODEC = new ObjectCodec();
 
 	public static final CodecRegistry COMMON_CODEC_REGISTRY = new CodecRegistryBuilder()
 		.registry(CollectionCodecs.COLLECTION_CODEC_REGISTRY)
 		.registry(PrimitiveCodecs.PRIMITIVE_CODEC_REGISTRY)
 		.codec(ENUM_CODEC, Enum.class)
 		.codec(STRING_CODEC, String.class)
+		.codec(OBJECT_CODEC, Object.class)
 		.build();
 
 	private Codecs() {
