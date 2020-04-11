@@ -24,15 +24,19 @@
 
 package net.mcparkour.octenace.codec.registry;
 
+import java.util.Comparator;
 import java.util.List;
 import net.mcparkour.octenace.codec.Codec;
 import org.jetbrains.annotations.Nullable;
 
 public class CodecRegistry {
 
+	private static final Comparator<TypedCodec> CODEC_PRIORITY_COMPARATOR = Comparator.comparingInt(TypedCodec::getTypeInheritanceDepth).reversed();
+
 	private List<TypedCodec> codecs;
 
 	public CodecRegistry(List<TypedCodec> codecs) {
+		codecs.sort(CODEC_PRIORITY_COMPARATOR);
 		this.codecs = codecs;
 	}
 

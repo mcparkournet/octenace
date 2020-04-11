@@ -32,8 +32,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.UUID;
 import net.mcparkour.octenace.codec.Codec;
-import net.mcparkour.octenace.codec.common.collection.CollectionCodecs;
+import net.mcparkour.octenace.codec.common.Codecs;
+import net.mcparkour.octenace.codec.common.extra.ExtraCodecs;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -41,7 +43,7 @@ public class CodecRegistryTest {
 
 	@Test
 	public void testSetCodecsPriority() {
-		CodecRegistry registry = CollectionCodecs.COLLECTION_CODEC_REGISTRY;
+		CodecRegistry registry = Codecs.COMMON_CODEC_REGISTRY;
 		Codec<?, ?, ?, ?> codec1 = registry.get(LinkedHashSet.class);
 		Codec<?, ?, ?, ?> codec2 = registry.get(HashSet.class);
 		Codec<?, ?, ?, ?> codec3 = registry.get(Set.class);
@@ -53,7 +55,7 @@ public class CodecRegistryTest {
 
 	@Test
 	public void testMapCodecsPriority() {
-		CodecRegistry registry = CollectionCodecs.COLLECTION_CODEC_REGISTRY;
+		CodecRegistry registry = Codecs.COMMON_CODEC_REGISTRY;
 		Codec<?, ?, ?, ?> codec1 = registry.get(LinkedHashMap.class);
 		Codec<?, ?, ?, ?> codec2 = registry.get(HashMap.class);
 		Codec<?, ?, ?, ?> codec3 = registry.get(Map.class);
@@ -61,5 +63,16 @@ public class CodecRegistryTest {
 		Assertions.assertNotEquals(codec1, codec2);
 		Assertions.assertEquals(codec2, codec3);
 		Assertions.assertEquals(codec2, codec4);
+	}
+
+	@Test
+	public void testObjectCodecPriority() {
+		CodecRegistry registry = new CodecRegistryBuilder()
+			.registry(Codecs.COMMON_CODEC_REGISTRY)
+			.codec(ExtraCodecs.UUID_CODEC, UUID.class)
+			.build();
+		Codec<?, ?, ?, ?> codec1 = ExtraCodecs.EXTRA_CODEC_REGISTRY.get(UUID.class);
+		Codec<?, ?, ?, ?> codec2 = registry.get(UUID.class);
+		Assertions.assertEquals(codec1, codec2);
 	}
 }

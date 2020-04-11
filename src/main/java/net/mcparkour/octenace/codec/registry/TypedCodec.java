@@ -36,6 +36,19 @@ public class TypedCodec {
 		this.type = type;
 	}
 
+	public int getTypeInheritanceDepth() {
+		if (this.type == Object.class) {
+			return -1;
+		}
+		int depth = 0;
+		Class<?> superclass = this.type.getSuperclass();
+		while (superclass != null) {
+			superclass = superclass.getSuperclass();
+			depth++;
+		}
+		return depth;
+	}
+
 	public boolean isAssignableFrom(Class<?> type) {
 		return this.type.isAssignableFrom(type);
 	}
