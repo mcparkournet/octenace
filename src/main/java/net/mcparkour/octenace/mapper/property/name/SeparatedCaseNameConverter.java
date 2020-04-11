@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.mapper.naming;
+package net.mcparkour.octenace.mapper.property.name;
 
 public class SeparatedCaseNameConverter implements NameConverter {
 

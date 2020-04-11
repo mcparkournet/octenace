@@ -22,22 +22,22 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.model.object;
+package net.mcparkour.octenace.document.object;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class TestModelObjectFactory implements ModelObjectFactory<Map<Object, Object>, List<Object>, Object> {
+public class TestDocumentObjectFactory implements DocumentObjectFactory<Map<Object, Object>, List<Object>, Object> {
 
 	@Override
-	public ModelObject<Map<Object, Object>, List<Object>, Object> createEmptyObject() {
+	public DocumentObject<Map<Object, Object>, List<Object>, Object> createEmptyObject() {
 		Map<Object, Object> object = new LinkedHashMap<>(0);
-		return new TestModelObject(object);
+		return new TestDocumentObject(object);
 	}
 
 	@Override
-	public ModelObject<Map<Object, Object>, List<Object>, Object> createObject(Map<Object, Object> object) {
-		return new TestModelObject(object);
+	public DocumentObject<Map<Object, Object>, List<Object>, Object> createObject(Map<Object, Object> object) {
+		return new TestDocumentObject(object);
 	}
 }

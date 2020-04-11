@@ -22,13 +22,22 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.mapper.naming;
+package net.mcparkour.octenace.document.array;
 
-public interface NameConverter {
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-	static NameConverter identity() {
-		return name -> name;
+public class TestDocumentArrayFactory implements DocumentArrayFactory<Map<Object, Object>, List<Object>, Object> {
+
+	@Override
+	public DocumentArray<Map<Object, Object>, List<Object>, Object> createEmptyArray() {
+		List<Object> array = new ArrayList<>(0);
+		return new TestDocumentArray(array);
 	}
 
-	String convert(String name);
+	@Override
+	public DocumentArray<Map<Object, Object>, List<Object>, Object> createArray(List<Object> array) {
+		return new TestDocumentArray(array);
+	}
 }

@@ -22,22 +22,37 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.model.array;
+package net.mcparkour.octenace.document.value;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+public interface DocumentValue<O, A, V> {
 
-public class TestModelArrayFactory implements ModelArrayFactory<Map<Object, Object>, List<Object>, Object> {
+	boolean isNull();
 
-	@Override
-	public ModelArray<Map<Object, Object>, List<Object>, Object> createEmptyArray() {
-		List<Object> array = new ArrayList<>(0);
-		return new TestModelArray(array);
-	}
+	boolean asBoolean();
 
-	@Override
-	public ModelArray<Map<Object, Object>, List<Object>, Object> createArray(List<Object> array) {
-		return new TestModelArray(array);
-	}
+	boolean isBoolean();
+
+	int asInt();
+
+	long asLong();
+
+	float asFloat();
+
+	double asDouble();
+
+	boolean isNumber();
+
+	String asString();
+
+	boolean isString();
+
+	O asObject();
+
+	boolean isObject();
+
+	A asArray();
+
+	boolean isArray();
+
+	V getValue();
 }

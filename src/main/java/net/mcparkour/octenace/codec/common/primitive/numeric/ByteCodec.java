@@ -27,19 +27,19 @@ package net.mcparkour.octenace.codec.common.primitive.numeric;
 import java.lang.reflect.Type;
 import net.mcparkour.octenace.codec.CommonCodec;
 import net.mcparkour.octenace.mapper.Mapper;
-import net.mcparkour.octenace.model.value.ModelValue;
+import net.mcparkour.octenace.document.value.DocumentValue;
 
 public class ByteCodec implements CommonCodec<Byte> {
 
 	@Override
-	public <O, A, V> ModelValue<O, A, V> encode(Byte value, Type type, Mapper<O, A, V> mapper) {
+	public <O, A, V> DocumentValue<O, A, V> toDocument(Byte object, Type type, Mapper<O, A, V> mapper) {
 		var valueFactory = mapper.getValueFactory();
-		return valueFactory.createValue(value);
+		return valueFactory.createValue(object);
 	}
 
 	@Override
-	public <O, A, V> Byte decode(ModelValue<O, A, V> value, Type type, Mapper<O, A, V> mapper) {
-		int intValue = value.asInt();
+	public <O, A, V> Byte toObject(DocumentValue<O, A, V> document, Type type, Mapper<O, A, V> mapper) {
+		int intValue = document.asInt();
 		return (byte) intValue;
 	}
 }

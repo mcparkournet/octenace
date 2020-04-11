@@ -22,11 +22,14 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.model.array;
+package net.mcparkour.octenace.mapper.property.name;
 
-public interface ModelArrayFactory<O, A, V> {
+public final class NameConverters {
 
-	ModelArray<O, A, V> createEmptyArray();
+	public static final NameConverter KEBAB_CASE_NAME_CONVERTER = new SeparatedCaseNameConverter("-");
+	public static final NameConverter SNAKE_CASE_NAME_CONVERTER = new SeparatedCaseNameConverter("_");
 
-	ModelArray<O, A, V> createArray(A array);
+	private NameConverters() {
+		throw new UnsupportedOperationException("Cannot create an instance of this class");
+	}
 }

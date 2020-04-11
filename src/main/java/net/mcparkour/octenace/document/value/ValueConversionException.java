@@ -22,11 +22,21 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.model.object;
+package net.mcparkour.octenace.document.value;
 
-public interface ModelObjectFactory<O, A, V> {
+public class ValueConversionException extends RuntimeException {
 
-	ModelObject<O, A, V> createEmptyObject();
+	private static final long serialVersionUID = 8610862198168239931L;
 
-	ModelObject<O, A, V> createObject(O object);
+	public ValueConversionException(Class<?> type) {
+		this(type, "value is not " + type.getSimpleName());
+	}
+
+	public ValueConversionException(Class<?> type, String reason) {
+		this("Cannot convert value to " + type.getName() + ": " + reason);
+	}
+
+	public ValueConversionException(String message) {
+		super(message);
+	}
 }

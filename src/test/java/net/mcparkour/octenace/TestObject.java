@@ -36,7 +36,7 @@ import net.mcparkour.octenace.annotation.Ignored;
 import net.mcparkour.octenace.annotation.Property;
 import org.jetbrains.annotations.Nullable;
 
-public class TestDocument {
+public class TestObject {
 
 	private boolean primitiveBoolean;
 	private Boolean wrapperBoolean;
@@ -73,13 +73,13 @@ public class TestDocument {
 	@Ignored
 	private String ignored;
 
-	private TestSubDocument subConfiguration;
+	private TestSubObject subConfiguration;
 
 	private TestEnum testEnum;
 	private TestEnum testEnum2;
 
 	private String[] stringArray;
-	private TestSubDocument[] objectArray;
+	private TestSubObject[] objectArray;
 
 	@Codec(LinkedHashSet.class)
 	private Set<TestEnum> enumSet;
@@ -87,21 +87,21 @@ public class TestDocument {
 	@Codec(LinkedHashSet.class)
 	private Set<String> stringSet;
 	@Codec(LinkedHashSet.class)
-	private Set<TestSubDocument> objectSet;
+	private Set<TestSubObject> objectSet;
 
 	private List<String> stringList;
-	private List<TestSubDocument> objectList;
+	private List<TestSubObject> objectList;
 
 	@Codec(LinkedHashMap.class)
 	private Map<String, String> stringMap;
 	@Codec(LinkedHashMap.class)
-	private Map<String, TestSubDocument> objectMap;
+	private Map<String, TestSubObject> objectMap;
 
-	public TestDocument() {
-		this(true, true, 'c', 'c', (byte) 1, (byte) 1, (short) 1, (short) 1, 1, 1, 1L, 1L, 0.1F, 0.1F, 0.1, 0.1, "string", null, "foobar", new TestSubDocument(), TestEnum.TWO, TestEnum.THREE, new String[] {"1", "2", "3"}, new TestSubDocument[] {new TestSubDocument(), new TestSubDocument(), new TestSubDocument()}, Collections.createLinkedSet(TestEnum.ONE, TestEnum.TWO, TestEnum.THREE), Collections.createLinkedSet("1", "2", "3"), Collections.createLinkedSet(new TestSubDocument(), new TestSubDocument(), new TestSubDocument()), List.of("1", "2", "3"), List.of(new TestSubDocument(), new TestSubDocument(), new TestSubDocument()), Collections.createLinkedMap("foo", "1", "bar", "2", "foobar", "3"), Collections.createLinkedMap("foo", new TestSubDocument(), "bar", new TestSubDocument(), "foobar", new TestSubDocument()));
+	public TestObject() {
+		this(true, true, 'c', 'c', (byte) 1, (byte) 1, (short) 1, (short) 1, 1, 1, 1L, 1L, 0.1F, 0.1F, 0.1, 0.1, "string", null, "foobar", new TestSubObject(), TestEnum.TWO, TestEnum.THREE, new String[] {"1", "2", "3"}, new TestSubObject[] {new TestSubObject(), new TestSubObject(), new TestSubObject()}, Collections.createLinkedSet(TestEnum.ONE, TestEnum.TWO, TestEnum.THREE), Collections.createLinkedSet("1", "2", "3"), Collections.createLinkedSet(new TestSubObject(), new TestSubObject(), new TestSubObject()), List.of("1", "2", "3"), List.of(new TestSubObject(), new TestSubObject(), new TestSubObject()), Collections.createLinkedMap("foo", "1", "bar", "2", "foobar", "3"), Collections.createLinkedMap("foo", new TestSubObject(), "bar", new TestSubObject(), "foobar", new TestSubObject()));
 	}
 
-	public TestDocument(boolean primitiveBoolean, Boolean wrapperBoolean, char primitiveCharacter, Character wrapperCharacter, byte primitiveByte, Byte wrapperByte, short primitiveShort, Short wrapperShort, int primitiveInteger, Integer wrapperInteger, long primitiveLong, Long wrapperLong, float primitiveFloat, Float wrapperFloat, double primitiveDouble, Double wrapperDouble, String string, @Nullable String nullString, String foo, TestSubDocument subConfiguration, TestEnum testEnum, TestEnum testEnum2, String[] stringArray, TestSubDocument[] objectArray, Set<TestEnum> enumSet, Set<String> stringSet, Set<TestSubDocument> objectSet, List<String> stringList, List<TestSubDocument> objectList, Map<String, String> stringMap, Map<String, TestSubDocument> objectMap) {
+	public TestObject(boolean primitiveBoolean, Boolean wrapperBoolean, char primitiveCharacter, Character wrapperCharacter, byte primitiveByte, Byte wrapperByte, short primitiveShort, Short wrapperShort, int primitiveInteger, Integer wrapperInteger, long primitiveLong, Long wrapperLong, float primitiveFloat, Float wrapperFloat, double primitiveDouble, Double wrapperDouble, String string, @Nullable String nullString, String foo, TestSubObject subConfiguration, TestEnum testEnum, TestEnum testEnum2, String[] stringArray, TestSubObject[] objectArray, Set<TestEnum> enumSet, Set<String> stringSet, Set<TestSubObject> objectSet, List<String> stringList, List<TestSubObject> objectList, Map<String, String> stringMap, Map<String, TestSubObject> objectMap) {
 		this.primitiveBoolean = primitiveBoolean;
 		this.wrapperBoolean = wrapperBoolean;
 		this.primitiveCharacter = primitiveCharacter;
@@ -140,10 +140,10 @@ public class TestDocument {
 		if (this == obj) {
 			return true;
 		}
-		if (!(obj instanceof TestDocument)) {
+		if (!(obj instanceof TestObject)) {
 			return false;
 		}
-		TestDocument that = (TestDocument) obj;
+		TestObject that = (TestObject) obj;
 		return this.primitiveBoolean == that.primitiveBoolean &&
 			this.primitiveCharacter == that.primitiveCharacter &&
 			this.primitiveByte == that.primitiveByte &&
@@ -305,7 +305,7 @@ public class TestDocument {
 		return this.ignored;
 	}
 
-	public TestSubDocument getSubConfiguration() {
+	public TestSubObject getSubConfiguration() {
 		return this.subConfiguration;
 	}
 
@@ -321,7 +321,7 @@ public class TestDocument {
 		return this.stringArray;
 	}
 
-	public TestSubDocument[] getObjectArray() {
+	public TestSubObject[] getObjectArray() {
 		return this.objectArray;
 	}
 
@@ -333,7 +333,7 @@ public class TestDocument {
 		return this.stringSet;
 	}
 
-	public Set<TestSubDocument> getObjectSet() {
+	public Set<TestSubObject> getObjectSet() {
 		return this.objectSet;
 	}
 
@@ -341,7 +341,7 @@ public class TestDocument {
 		return this.stringList;
 	}
 
-	public List<TestSubDocument> getObjectList() {
+	public List<TestSubObject> getObjectList() {
 		return this.objectList;
 	}
 
@@ -349,7 +349,7 @@ public class TestDocument {
 		return this.stringMap;
 	}
 
-	public Map<String, TestSubDocument> getObjectMap() {
+	public Map<String, TestSubObject> getObjectMap() {
 		return this.objectMap;
 	}
 }

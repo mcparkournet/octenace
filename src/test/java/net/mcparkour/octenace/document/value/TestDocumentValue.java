@@ -22,18 +22,18 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.model.value;
+package net.mcparkour.octenace.document.value;
 
 import java.util.List;
 import java.util.Map;
 import org.jetbrains.annotations.Nullable;
 
-public class TestModelValue implements ModelValue<Map<Object, Object>, List<Object>, Object> {
+public class TestDocumentValue implements DocumentValue<Map<Object, Object>, List<Object>, Object> {
 
 	@Nullable
 	private Object value;
 
-	public TestModelValue(@Nullable Object value) {
+	public TestDocumentValue(@Nullable Object value) {
 		this.value = value;
 	}
 

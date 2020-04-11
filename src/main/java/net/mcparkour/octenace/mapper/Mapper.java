@@ -26,33 +26,33 @@ package net.mcparkour.octenace.mapper;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
-import net.mcparkour.octenace.mapper.naming.NameConverter;
-import net.mcparkour.octenace.model.array.ModelArrayFactory;
-import net.mcparkour.octenace.model.object.ModelObject;
-import net.mcparkour.octenace.model.object.ModelObjectFactory;
-import net.mcparkour.octenace.model.value.ModelValue;
-import net.mcparkour.octenace.model.value.ModelValueFactory;
+import net.mcparkour.octenace.mapper.property.name.NameConverter;
+import net.mcparkour.octenace.document.array.DocumentArrayFactory;
+import net.mcparkour.octenace.document.object.DocumentObject;
+import net.mcparkour.octenace.document.object.DocumentObjectFactory;
+import net.mcparkour.octenace.document.value.DocumentValue;
+import net.mcparkour.octenace.document.value.DocumentValueFactory;
 import org.jetbrains.annotations.Nullable;
 
 public interface Mapper<O, A, V> {
 
-	ModelObject<O, A, V> fromDocument(Object document);
+	DocumentObject<O, A, V> toDocument(Object object);
 
-	ModelValue<O, A, V> fromDocument(@Nullable Object document, Type type);
+	DocumentValue<O, A, V> toDocument(@Nullable Object object, Type type);
 
-	<T> T toDocument(ModelObject<O, A, V> object, Class<T> configurationType);
+	<T> T toObject(DocumentObject<O, A, V> document, Class<T> objectType);
 
-	Object toDocument(ModelValue<O, A, V> value, Type type);
+	Object toObject(DocumentValue<O, A, V> document, Type type);
 
 	boolean isFieldValid(Field field);
 
 	String getFieldName(Field field);
 
-	ModelObjectFactory<O, A, V> getObjectFactory();
+	DocumentObjectFactory<O, A, V> getObjectFactory();
 
-	ModelArrayFactory<O, A, V> getArrayFactory();
+	DocumentArrayFactory<O, A, V> getArrayFactory();
 
-	ModelValueFactory<O, A, V> getValueFactory();
+	DocumentValueFactory<O, A, V> getValueFactory();
 
 	NameConverter getNameConverter();
 }

@@ -22,12 +22,12 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.mapper.naming;
+package net.mcparkour.octenace.mapper.property.name;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class NameConverterTest {
+public class NameConvertersTest {
 
 	@Test
 	public void testKebabCaseConverter() {

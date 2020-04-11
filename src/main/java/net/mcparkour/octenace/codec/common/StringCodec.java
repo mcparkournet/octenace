@@ -27,19 +27,19 @@ package net.mcparkour.octenace.codec.common;
 import java.lang.reflect.Type;
 import net.mcparkour.octenace.codec.CommonCodec;
 import net.mcparkour.octenace.mapper.Mapper;
-import net.mcparkour.octenace.model.value.ModelValue;
-import net.mcparkour.octenace.model.value.ModelValueFactory;
+import net.mcparkour.octenace.document.value.DocumentValue;
+import net.mcparkour.octenace.document.value.DocumentValueFactory;
 
 public class StringCodec implements CommonCodec<String> {
 
 	@Override
-	public <O, A, V> ModelValue<O, A, V> encode(String value, Type type, Mapper<O, A, V> mapper) {
-		ModelValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
-		return valueFactory.createValue(value);
+	public <O, A, V> DocumentValue<O, A, V> toDocument(String object, Type type, Mapper<O, A, V> mapper) {
+		DocumentValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
+		return valueFactory.createValue(object);
 	}
 
 	@Override
-	public <O, A, V> String decode(ModelValue<O, A, V> value, Type type, Mapper<O, A, V> mapper) {
-		return value.asString();
+	public <O, A, V> String toObject(DocumentValue<O, A, V> document, Type type, Mapper<O, A, V> mapper) {
+		return document.asString();
 	}
 }

@@ -29,38 +29,38 @@ import java.lang.reflect.Type;
 import net.mcparkour.common.reflection.type.Types;
 import net.mcparkour.octenace.codec.CommonCodec;
 import net.mcparkour.octenace.mapper.Mapper;
-import net.mcparkour.octenace.model.array.ModelArray;
-import net.mcparkour.octenace.model.array.ModelArrayFactory;
-import net.mcparkour.octenace.model.value.ModelValue;
-import net.mcparkour.octenace.model.value.ModelValueFactory;
+import net.mcparkour.octenace.document.array.DocumentArray;
+import net.mcparkour.octenace.document.array.DocumentArrayFactory;
+import net.mcparkour.octenace.document.value.DocumentValue;
+import net.mcparkour.octenace.document.value.DocumentValueFactory;
 
 public class ArrayCodec implements CommonCodec<Object[]> {
 
 	@Override
-	public <O, A, V> ModelValue<O, A, V> encode(Object[] value, Type type, Mapper<O, A, V> mapper) {
-		ModelArrayFactory<O, A, V> arrayFactory = mapper.getArrayFactory();
-		ModelArray<O, A, V> array = arrayFactory.createEmptyArray();
-		for (Object element : value) {
+	public <O, A, V> DocumentValue<O, A, V> toDocument(Object[] object, Type type, Mapper<O, A, V> mapper) {
+		DocumentArrayFactory<O, A, V> arrayFactory = mapper.getArrayFactory();
+		DocumentArray<O, A, V> array = arrayFactory.createEmptyArray();
+		for (Object element : object) {
 			Class<?> elementType = element.getClass();
-			ModelValue<O, A, V> elementValue = mapper.fromDocument(element, elementType);
+			DocumentValue<O, A, V> elementValue = mapper.toDocument(element, elementType);
 			array.add(elementValue);
 		}
-		ModelValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
+		DocumentValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
 		return valueFactory.createArrayValue(array);
 	}
 
 	@Override
-	public <O, A, V> Object[] decode(ModelValue<O, A, V> value, Type type, Mapper<O, A, V> mapper) {
-		ModelArrayFactory<O, A, V> arrayFactory = mapper.getArrayFactory();
-		A rawArray = value.asArray();
-		ModelArray<O, A, V> array = arrayFactory.createArray(rawArray);
+	public <O, A, V> Object[] toObject(DocumentValue<O, A, V> document, Type type, Mapper<O, A, V> mapper) {
+		DocumentArrayFactory<O, A, V> arrayFactory = mapper.getArrayFactory();
+		A rawArray = document.asArray();
+		DocumentArray<O, A, V> array = arrayFactory.createArray(rawArray);
 		Class<?> classType = Types.asClassType(type);
 		Class<?> arrayType = classType.getComponentType();
 		int size = array.getSize();
 		Object[] resultArray = (Object[]) Array.newInstance(arrayType, size);
 		for (int index = 0; index < size; index++) {
-			ModelValue<O, A, V> elementValue = array.get(index);
-			Object object = mapper.toDocument(elementValue, arrayType);
+			DocumentValue<O, A, V> elementValue = array.get(index);
+			Object object = mapper.toObject(elementValue, arrayType);
 			resultArray[index] = object;
 		}
 		return resultArray;

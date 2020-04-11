@@ -27,19 +27,19 @@ package net.mcparkour.octenace.codec.common.primitive;
 import java.lang.reflect.Type;
 import net.mcparkour.octenace.codec.CommonCodec;
 import net.mcparkour.octenace.mapper.Mapper;
-import net.mcparkour.octenace.model.value.ModelValue;
-import net.mcparkour.octenace.model.value.ModelValueFactory;
+import net.mcparkour.octenace.document.value.DocumentValue;
+import net.mcparkour.octenace.document.value.DocumentValueFactory;
 
 public class BooleanCodec implements CommonCodec<Boolean> {
 
 	@Override
-	public <O, A, V> ModelValue<O, A, V> encode(Boolean value, Type type, Mapper<O, A, V> mapper) {
-		ModelValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
-		return valueFactory.createValue(value);
+	public <O, A, V> DocumentValue<O, A, V> toDocument(Boolean object, Type type, Mapper<O, A, V> mapper) {
+		DocumentValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
+		return valueFactory.createValue(object);
 	}
 
 	@Override
-	public <O, A, V> Boolean decode(ModelValue<O, A, V> value, Type type, Mapper<O, A, V> mapper) {
-		return value.asBoolean();
+	public <O, A, V> Boolean toObject(DocumentValue<O, A, V> document, Type type, Mapper<O, A, V> mapper) {
+		return document.asBoolean();
 	}
 }

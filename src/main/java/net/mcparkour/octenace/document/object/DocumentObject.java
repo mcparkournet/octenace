@@ -22,21 +22,18 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.model.value;
+package net.mcparkour.octenace.document.object;
 
-public class ValueConversionException extends RuntimeException {
+import java.util.Map;
+import net.mcparkour.octenace.document.value.DocumentValue;
 
-	private static final long serialVersionUID = 8610862198168239931L;
+public interface DocumentObject<O, A, V> extends Iterable<Map.Entry<DocumentValue<O, A, V>, DocumentValue<O, A, V>>> {
 
-	public ValueConversionException(Class<?> type) {
-		this(type, "value is not " + type.getSimpleName());
-	}
+	DocumentValue<O, A, V> get(DocumentValue<O, A, V> key);
 
-	public ValueConversionException(Class<?> type, String reason) {
-		this("Cannot convert value to " + type.getName() + ": " + reason);
-	}
+	void set(DocumentValue<O, A, V> key, DocumentValue<O, A, V> value);
 
-	public ValueConversionException(String message) {
-		super(message);
-	}
+	int getSize();
+
+	O getObject();
 }

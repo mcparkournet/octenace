@@ -22,17 +22,11 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.model.array;
+package net.mcparkour.octenace.document.array;
 
-import net.mcparkour.octenace.model.value.ModelValue;
+public interface DocumentArrayFactory<O, A, V> {
 
-public interface ModelArray<O, A, V> extends Iterable<ModelValue<O, A, V>> {
+	DocumentArray<O, A, V> createEmptyArray();
 
-	ModelValue<O, A, V> get(int index);
-
-	void add(ModelValue<O, A, V> value);
-
-	int getSize();
-
-	A getArray();
+	DocumentArray<O, A, V> createArray(A array);
 }

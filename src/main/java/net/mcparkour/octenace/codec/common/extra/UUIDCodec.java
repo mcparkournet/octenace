@@ -28,21 +28,21 @@ import java.lang.reflect.Type;
 import java.util.UUID;
 import net.mcparkour.octenace.codec.CommonCodec;
 import net.mcparkour.octenace.mapper.Mapper;
-import net.mcparkour.octenace.model.value.ModelValue;
-import net.mcparkour.octenace.model.value.ModelValueFactory;
+import net.mcparkour.octenace.document.value.DocumentValue;
+import net.mcparkour.octenace.document.value.DocumentValueFactory;
 
 public class UUIDCodec implements CommonCodec<UUID> {
 
 	@Override
-	public <O, A, V> ModelValue<O, A, V> encode(UUID value, Type type, Mapper<O, A, V> mapper) {
-		ModelValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
-		String uuidString = value.toString();
+	public <O, A, V> DocumentValue<O, A, V> toDocument(UUID object, Type type, Mapper<O, A, V> mapper) {
+		DocumentValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
+		String uuidString = object.toString();
 		return valueFactory.createValue(uuidString);
 	}
 
 	@Override
-	public <O, A, V> UUID decode(ModelValue<O, A, V> value, Type type, Mapper<O, A, V> mapper) {
-		String uuidString = value.asString();
+	public <O, A, V> UUID toObject(DocumentValue<O, A, V> document, Type type, Mapper<O, A, V> mapper) {
+		String uuidString = document.asString();
 		return UUID.fromString(uuidString);
 	}
 }

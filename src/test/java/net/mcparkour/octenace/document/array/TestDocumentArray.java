@@ -22,30 +22,30 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.model.array;
+package net.mcparkour.octenace.document.array;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import net.mcparkour.octenace.model.value.ModelValue;
-import net.mcparkour.octenace.model.value.TestModelValue;
+import net.mcparkour.octenace.document.value.DocumentValue;
+import net.mcparkour.octenace.document.value.TestDocumentValue;
 
-public class TestModelArray implements ModelArray<Map<Object, Object>, List<Object>, Object> {
+public class TestDocumentArray implements DocumentArray<Map<Object, Object>, List<Object>, Object> {
 
 	private List<Object> array;
 
-	public TestModelArray(List<Object> array) {
+	public TestDocumentArray(List<Object> array) {
 		this.array = array;
 	}
 
 	@Override
-	public ModelValue<Map<Object, Object>, List<Object>, Object> get(int index) {
+	public DocumentValue<Map<Object, Object>, List<Object>, Object> get(int index) {
 		Object rawValue = this.array.get(index);
-		return new TestModelValue(rawValue);
+		return new TestDocumentValue(rawValue);
 	}
 
 	@Override
-	public void add(ModelValue<Map<Object, Object>, List<Object>, Object> value) {
+	public void add(DocumentValue<Map<Object, Object>, List<Object>, Object> value) {
 		Object rawValue = value.getValue();
 		this.array.add(rawValue);
 	}
@@ -61,12 +61,12 @@ public class TestModelArray implements ModelArray<Map<Object, Object>, List<Obje
 	}
 
 	@Override
-	public Iterator<ModelValue<Map<Object, Object>, List<Object>, Object>> iterator() {
+	public Iterator<DocumentValue<Map<Object, Object>, List<Object>, Object>> iterator() {
 		Iterator<Object> iterator = this.array.iterator();
 		return new TestModelArrayIterator(iterator);
 	}
 
-	private static final class TestModelArrayIterator implements Iterator<ModelValue<Map<Object, Object>, List<Object>, Object>> {
+	private static final class TestModelArrayIterator implements Iterator<DocumentValue<Map<Object, Object>, List<Object>, Object>> {
 
 		private Iterator<Object> iterator;
 
@@ -80,9 +80,9 @@ public class TestModelArray implements ModelArray<Map<Object, Object>, List<Obje
 		}
 
 		@Override
-		public ModelValue<Map<Object, Object>, List<Object>, Object> next() {
+		public DocumentValue<Map<Object, Object>, List<Object>, Object> next() {
 			Object next = this.iterator.next();
-			return new TestModelValue(next);
+			return new TestDocumentValue(next);
 		}
 	}
 }

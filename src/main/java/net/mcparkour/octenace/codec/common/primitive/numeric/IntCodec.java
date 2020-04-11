@@ -27,18 +27,18 @@ package net.mcparkour.octenace.codec.common.primitive.numeric;
 import java.lang.reflect.Type;
 import net.mcparkour.octenace.codec.CommonCodec;
 import net.mcparkour.octenace.mapper.Mapper;
-import net.mcparkour.octenace.model.value.ModelValue;
+import net.mcparkour.octenace.document.value.DocumentValue;
 
 public class IntCodec implements CommonCodec<Integer> {
 
 	@Override
-	public <O, A, V> ModelValue<O, A, V> encode(Integer value, Type type, Mapper<O, A, V> mapper) {
+	public <O, A, V> DocumentValue<O, A, V> toDocument(Integer object, Type type, Mapper<O, A, V> mapper) {
 		var valueFactory = mapper.getValueFactory();
-		return valueFactory.createValue(value);
+		return valueFactory.createValue(object);
 	}
 
 	@Override
-	public <O, A, V> Integer decode(ModelValue<O, A, V> value, Type type, Mapper<O, A, V> mapper) {
-		return value.asInt();
+	public <O, A, V> Integer toObject(DocumentValue<O, A, V> document, Type type, Mapper<O, A, V> mapper) {
+		return document.asInt();
 	}
 }

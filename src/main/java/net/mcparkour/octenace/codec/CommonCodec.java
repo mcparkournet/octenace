@@ -26,11 +26,11 @@ package net.mcparkour.octenace.codec;
 
 import java.lang.reflect.Type;
 import net.mcparkour.octenace.mapper.Mapper;
-import net.mcparkour.octenace.model.value.ModelValue;
+import net.mcparkour.octenace.document.value.DocumentValue;
 
 public interface CommonCodec<T> {
 
-	<O, A, V> ModelValue<O, A, V> encode(T value, Type type, Mapper<O, A, V> mapper);
+	<O, A, V> DocumentValue<O, A, V> toDocument(T object, Type type, Mapper<O, A, V> mapper);
 
-	<O, A, V> T decode(ModelValue<O, A, V> value, Type type, Mapper<O, A, V> mapper);
+	<O, A, V> T toObject(DocumentValue<O, A, V> document, Type type, Mapper<O, A, V> mapper);
 }

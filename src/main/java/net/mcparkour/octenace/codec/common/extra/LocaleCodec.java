@@ -28,21 +28,21 @@ import java.lang.reflect.Type;
 import java.util.Locale;
 import net.mcparkour.octenace.codec.CommonCodec;
 import net.mcparkour.octenace.mapper.Mapper;
-import net.mcparkour.octenace.model.value.ModelValue;
-import net.mcparkour.octenace.model.value.ModelValueFactory;
+import net.mcparkour.octenace.document.value.DocumentValue;
+import net.mcparkour.octenace.document.value.DocumentValueFactory;
 
 public class LocaleCodec implements CommonCodec<Locale> {
 
 	@Override
-	public <O, A, V> ModelValue<O, A, V> encode(Locale value, Type type, Mapper<O, A, V> mapper) {
-		ModelValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
-		String languageTag = value.toLanguageTag();
+	public <O, A, V> DocumentValue<O, A, V> toDocument(Locale object, Type type, Mapper<O, A, V> mapper) {
+		DocumentValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
+		String languageTag = object.toLanguageTag();
 		return valueFactory.createValue(languageTag);
 	}
 
 	@Override
-	public <O, A, V> Locale decode(ModelValue<O, A, V> value, Type type, Mapper<O, A, V> mapper) {
-		String languageTag = value.asString();
+	public <O, A, V> Locale toObject(DocumentValue<O, A, V> document, Type type, Mapper<O, A, V> mapper) {
+		String languageTag = document.asString();
 		return Locale.forLanguageTag(languageTag);
 	}
 }

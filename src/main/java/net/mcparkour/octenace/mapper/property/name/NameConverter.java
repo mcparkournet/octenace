@@ -22,14 +22,13 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.mapper.naming;
+package net.mcparkour.octenace.mapper.property.name;
 
-public final class NameConverters {
+public interface NameConverter {
 
-	public static final NameConverter KEBAB_CASE_NAME_CONVERTER = new SeparatedCaseNameConverter("-");
-	public static final NameConverter SNAKE_CASE_NAME_CONVERTER = new SeparatedCaseNameConverter("_");
-
-	private NameConverters() {
-		throw new UnsupportedOperationException("Cannot create an instance of this class");
+	static NameConverter identity() {
+		return name -> name;
 	}
+
+	String convert(String name);
 }

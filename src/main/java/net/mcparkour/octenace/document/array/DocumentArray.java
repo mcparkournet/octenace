@@ -22,37 +22,17 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.model.value;
+package net.mcparkour.octenace.document.array;
 
-public interface ModelValue<O, A, V> {
+import net.mcparkour.octenace.document.value.DocumentValue;
 
-	boolean isNull();
+public interface DocumentArray<O, A, V> extends Iterable<DocumentValue<O, A, V>> {
 
-	boolean asBoolean();
+	DocumentValue<O, A, V> get(int index);
 
-	boolean isBoolean();
+	void add(DocumentValue<O, A, V> value);
 
-	int asInt();
+	int getSize();
 
-	long asLong();
-
-	float asFloat();
-
-	double asDouble();
-
-	boolean isNumber();
-
-	String asString();
-
-	boolean isString();
-
-	O asObject();
-
-	boolean isObject();
-
-	A asArray();
-
-	boolean isArray();
-
-	V getValue();
+	A getArray();
 }

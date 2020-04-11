@@ -36,7 +36,7 @@ import net.mcparkour.octenace.annotation.Ignored;
 import net.mcparkour.octenace.annotation.Property;
 import org.jetbrains.annotations.Nullable;
 
-public class TestSubDocument {
+public class TestSubObject {
 
 	private boolean primitiveBoolean;
 	private Boolean wrapperBoolean;
@@ -89,11 +89,11 @@ public class TestSubDocument {
 	@Codec(LinkedHashMap.class)
 	private Map<String, String> stringMap;
 
-	public TestSubDocument() {
+	public TestSubObject() {
 		this(true, true, 'c', 'c', (byte) 1, (byte) 1, (short) 1, (short) 1, 1, 1, 1L, 1L, 0.1F, 0.1F, 0.1, 0.1, "string", null, "foobar", TestEnum.TWO, TestEnum.THREE, new String[] {"1", "2", "3"}, Collections.createLinkedSet(TestEnum.ONE, TestEnum.TWO, TestEnum.THREE), Collections.createLinkedSet("1", "2", "3"), List.of("1", "2", "3"), Collections.createLinkedMap("foo", "1", "bar", "2", "foobar", "3"));
 	}
 
-	public TestSubDocument(boolean primitiveBoolean, Boolean wrapperBoolean, char primitiveCharacter, Character wrapperCharacter, byte primitiveByte, Byte wrapperByte, short primitiveShort, Short wrapperShort, int primitiveInteger, Integer wrapperInteger, long primitiveLong, Long wrapperLong, float primitiveFloat, Float wrapperFloat, double primitiveDouble, Double wrapperDouble, String string, @Nullable String nullString, String foo, TestEnum testEnum, TestEnum testEnum2, String[] stringArray, Set<TestEnum> enumSet, Set<String> stringSet, List<String> stringList, Map<String, String> stringMap) {
+	public TestSubObject(boolean primitiveBoolean, Boolean wrapperBoolean, char primitiveCharacter, Character wrapperCharacter, byte primitiveByte, Byte wrapperByte, short primitiveShort, Short wrapperShort, int primitiveInteger, Integer wrapperInteger, long primitiveLong, Long wrapperLong, float primitiveFloat, Float wrapperFloat, double primitiveDouble, Double wrapperDouble, String string, @Nullable String nullString, String foo, TestEnum testEnum, TestEnum testEnum2, String[] stringArray, Set<TestEnum> enumSet, Set<String> stringSet, List<String> stringList, Map<String, String> stringMap) {
 		this.primitiveBoolean = primitiveBoolean;
 		this.wrapperBoolean = wrapperBoolean;
 		this.primitiveCharacter = primitiveCharacter;
@@ -127,10 +127,10 @@ public class TestSubDocument {
 		if (this == obj) {
 			return true;
 		}
-		if (!(obj instanceof TestSubDocument)) {
+		if (!(obj instanceof TestSubObject)) {
 			return false;
 		}
-		TestSubDocument that = (TestSubDocument) obj;
+		TestSubObject that = (TestSubObject) obj;
 		return this.primitiveBoolean == that.primitiveBoolean &&
 			this.primitiveCharacter == that.primitiveCharacter &&
 			this.primitiveByte == that.primitiveByte &&

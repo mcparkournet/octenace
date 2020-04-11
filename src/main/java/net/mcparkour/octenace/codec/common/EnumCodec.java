@@ -31,26 +31,26 @@ import net.mcparkour.common.reflection.Reflections;
 import net.mcparkour.common.reflection.type.Types;
 import net.mcparkour.octenace.codec.CommonCodec;
 import net.mcparkour.octenace.mapper.Mapper;
-import net.mcparkour.octenace.model.value.ModelValue;
-import net.mcparkour.octenace.model.value.ModelValueFactory;
+import net.mcparkour.octenace.document.value.DocumentValue;
+import net.mcparkour.octenace.document.value.DocumentValueFactory;
 
 public class EnumCodec implements CommonCodec<Enum<?>> {
 
 	@Override
-	public <O, A, V> ModelValue<O, A, V> encode(Enum<?> value, Type type, Mapper<O, A, V> mapper) {
-		ModelValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
-		String name = getEnumName(value, mapper);
+	public <O, A, V> DocumentValue<O, A, V> toDocument(Enum<?> object, Type type, Mapper<O, A, V> mapper) {
+		DocumentValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
+		String name = getEnumName(object, mapper);
 		return valueFactory.createValue(name);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <O, A, V> Enum<?> decode(ModelValue<O, A, V> value, Type type, Mapper<O, A, V> mapper) {
+	public <O, A, V> Enum<?> toObject(DocumentValue<O, A, V> document, Type type, Mapper<O, A, V> mapper) {
 		Type rawType = Types.getRawType(type);
 		Class<?> classType = Types.asClassType(rawType);
 		Class<? extends Enum<?>> enumType = (Class<? extends Enum<?>>) classType;
 		Enum<?>[] enumConstants = enumType.getEnumConstants();
-		String valueString = value.asString();
+		String valueString = document.asString();
 		return Arrays.stream(enumConstants)
 			.filter(enumConstant -> valueString.equals(getEnumName(enumConstant, mapper)))
 			.findFirst()

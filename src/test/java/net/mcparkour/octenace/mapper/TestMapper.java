@@ -28,14 +28,14 @@ import java.util.List;
 import java.util.Map;
 import net.mcparkour.octenace.codec.common.Codecs;
 import net.mcparkour.octenace.mapper.property.invalidator.PropertyInvalidators;
-import net.mcparkour.octenace.mapper.naming.NameConverter;
-import net.mcparkour.octenace.model.array.TestModelArrayFactory;
-import net.mcparkour.octenace.model.object.TestModelObjectFactory;
-import net.mcparkour.octenace.model.value.TestModelValueFactory;
+import net.mcparkour.octenace.mapper.property.name.NameConverter;
+import net.mcparkour.octenace.document.array.TestDocumentArrayFactory;
+import net.mcparkour.octenace.document.object.TestDocumentObjectFactory;
+import net.mcparkour.octenace.document.value.TestDocumentValueFactory;
 
 public class TestMapper extends CommonMapper<Map<Object, Object>, List<Object>, Object> {
 
 	public TestMapper() {
-		super(new TestModelObjectFactory(), new TestModelArrayFactory(), new TestModelValueFactory(), NameConverter.identity(), PropertyInvalidators.COMMON_PROPERTY_INVALIDATORS, Codecs.COMMON_CODEC_REGISTRY);
+		super(new TestDocumentObjectFactory(), new TestDocumentArrayFactory(), new TestDocumentValueFactory(), NameConverter.identity(), PropertyInvalidators.COMMON_PROPERTY_INVALIDATORS, Codecs.COMMON_CODEC_REGISTRY);
 	}
 }

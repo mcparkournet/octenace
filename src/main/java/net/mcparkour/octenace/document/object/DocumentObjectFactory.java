@@ -22,18 +22,11 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.model.object;
+package net.mcparkour.octenace.document.object;
 
-import java.util.Map;
-import net.mcparkour.octenace.model.value.ModelValue;
+public interface DocumentObjectFactory<O, A, V> {
 
-public interface ModelObject<O, A, V> extends Iterable<Map.Entry<ModelValue<O, A, V>, ModelValue<O, A, V>>> {
+	DocumentObject<O, A, V> createEmptyObject();
 
-	ModelValue<O, A, V> get(ModelValue<O, A, V> key);
-
-	void set(ModelValue<O, A, V> key, ModelValue<O, A, V> value);
-
-	int getSize();
-
-	O getObject();
+	DocumentObject<O, A, V> createObject(O object);
 }

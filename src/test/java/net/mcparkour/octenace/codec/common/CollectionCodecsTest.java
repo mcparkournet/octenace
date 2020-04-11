@@ -38,7 +38,7 @@ import net.mcparkour.common.reflection.Reflections;
 import net.mcparkour.octenace.codec.CommonCodec;
 import net.mcparkour.octenace.codec.common.collection.CollectionCodecs;
 import net.mcparkour.octenace.mapper.TestMapper;
-import net.mcparkour.octenace.model.value.TestModelValue;
+import net.mcparkour.octenace.document.value.TestDocumentValue;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -67,7 +67,7 @@ public class CollectionCodecsTest {
 	public void testArrayCodecEncode() {
 		CommonCodec<Object[]> codec = CollectionCodecs.ARRAY_CODEC;
 		String[] array = {"foo", "bar", "foobar"};
-		var encoded = codec.encode(array, String[].class, this.mapper);
+		var encoded = codec.toDocument(array, String[].class, this.mapper);
 		Object value = encoded.getValue();
 		Assertions.assertEquals(List.of(array), value);
 	}
@@ -76,8 +76,8 @@ public class CollectionCodecsTest {
 	public void testArrayCodecDecode() {
 		CommonCodec<Object[]> codec = CollectionCodecs.ARRAY_CODEC;
 		String[] array = {"foo", "bar", "foobar"};
-		TestModelValue value = new TestModelValue(List.of(array));
-		var decoded = codec.decode(value, String[].class, this.mapper);
+		TestDocumentValue value = new TestDocumentValue(List.of(array));
+		var decoded = codec.toObject(value, String[].class, this.mapper);
 		Assertions.assertArrayEquals(array, decoded);
 	}
 
@@ -86,7 +86,7 @@ public class CollectionCodecsTest {
 		CommonCodec<Collection<?>> codec = CollectionCodecs.ARRAY_LIST_CODEC;
 		List<String> list = new ArrayList<>(3);
 		list.addAll(TEST_COLLECTION);
-		var encoded = codec.encode(list, ArrayList.class, this.mapper);
+		var encoded = codec.toDocument(list, ArrayList.class, this.mapper);
 		Object value = encoded.getValue();
 		Assertions.assertEquals(list, value);
 	}
@@ -96,8 +96,8 @@ public class CollectionCodecsTest {
 		CommonCodec<Collection<?>> codec = CollectionCodecs.ARRAY_LIST_CODEC;
 		List<Object> list = new ArrayList<>(3);
 		list.addAll(TEST_COLLECTION);
-		TestModelValue value = new TestModelValue(list);
-		var decoded = codec.decode(value, this.stringCollectionType, this.mapper);
+		TestDocumentValue value = new TestDocumentValue(list);
+		var decoded = codec.toObject(value, this.stringCollectionType, this.mapper);
 		Assertions.assertEquals(list, decoded);
 	}
 
@@ -106,7 +106,7 @@ public class CollectionCodecsTest {
 		CommonCodec<Collection<?>> codec = CollectionCodecs.HASH_SET_CODEC;
 		Set<String> set = new HashSet<>(3);
 		set.addAll(TEST_COLLECTION);
-		var encoded = codec.encode(set, HashSet.class, this.mapper);
+		var encoded = codec.toDocument(set, HashSet.class, this.mapper);
 		Object value = encoded.getValue();
 		Iterable<?> iterable = (Iterable<?>) value;
 		Assertions.assertIterableEquals(set, iterable);
@@ -118,8 +118,8 @@ public class CollectionCodecsTest {
 		Set<Object> set = new HashSet<>(3);
 		set.addAll(TEST_COLLECTION);
 		List<Object> objects = List.copyOf(set);
-		TestModelValue value = new TestModelValue(objects);
-		var decoded = codec.decode(value, this.stringCollectionType, this.mapper);
+		TestDocumentValue value = new TestDocumentValue(objects);
+		var decoded = codec.toObject(value, this.stringCollectionType, this.mapper);
 		Assertions.assertEquals(set, decoded);
 	}
 
@@ -128,7 +128,7 @@ public class CollectionCodecsTest {
 		CommonCodec<Collection<?>> codec = CollectionCodecs.LINKED_HASH_SET_CODEC;
 		Set<String> set = new LinkedHashSet<>(3);
 		set.addAll(TEST_COLLECTION);
-		var encoded = codec.encode(set, LinkedHashSet.class, this.mapper);
+		var encoded = codec.toDocument(set, LinkedHashSet.class, this.mapper);
 		Object value = encoded.getValue();
 		Iterable<?> iterable = (Iterable<?>) value;
 		Assertions.assertIterableEquals(set, iterable);
@@ -140,8 +140,8 @@ public class CollectionCodecsTest {
 		Set<Object> set = new LinkedHashSet<>(3);
 		set.addAll(TEST_COLLECTION);
 		List<Object> objects = List.copyOf(set);
-		TestModelValue value = new TestModelValue(objects);
-		var decoded = codec.decode(value, this.stringCollectionType, this.mapper);
+		TestDocumentValue value = new TestDocumentValue(objects);
+		var decoded = codec.toObject(value, this.stringCollectionType, this.mapper);
 		Assertions.assertEquals(set, decoded);
 	}
 
@@ -150,7 +150,7 @@ public class CollectionCodecsTest {
 		CommonCodec<Map<?, ?>> codec = CollectionCodecs.HASH_MAP_CODEC;
 		Map<String, String> map = new HashMap<>(3);
 		map.putAll(TEST_MAP);
-		var encoded = codec.encode(map, HashMap.class, this.mapper);
+		var encoded = codec.toDocument(map, HashMap.class, this.mapper);
 		Object value = encoded.getValue();
 		Assertions.assertEquals(map, value);
 	}
@@ -160,8 +160,8 @@ public class CollectionCodecsTest {
 		CommonCodec<Map<?, ?>> codec = CollectionCodecs.HASH_MAP_CODEC;
 		Map<Object, Object> map = new HashMap<>(3);
 		map.putAll(TEST_MAP);
-		TestModelValue value = new TestModelValue(map);
-		var decoded = codec.decode(value, this.stringMapType, this.mapper);
+		TestDocumentValue value = new TestDocumentValue(map);
+		var decoded = codec.toObject(value, this.stringMapType, this.mapper);
 		Assertions.assertEquals(map, decoded);
 	}
 
@@ -170,7 +170,7 @@ public class CollectionCodecsTest {
 		CommonCodec<Map<?, ?>> codec = CollectionCodecs.LINKED_HASH_MAP_CODEC;
 		Map<String, String> map = new LinkedHashMap<>(3);
 		map.putAll(TEST_MAP);
-		var encoded = codec.encode(map, LinkedHashMap.class, this.mapper);
+		var encoded = codec.toDocument(map, LinkedHashMap.class, this.mapper);
 		Object value = encoded.getValue();
 		Assertions.assertEquals(map, value);
 	}
@@ -180,8 +180,8 @@ public class CollectionCodecsTest {
 		CommonCodec<Map<?, ?>> codec = CollectionCodecs.LINKED_HASH_MAP_CODEC;
 		Map<Object, Object> map = new LinkedHashMap<>(3);
 		map.putAll(TEST_MAP);
-		TestModelValue value = new TestModelValue(map);
-		var decoded = codec.decode(value, this.stringMapType, this.mapper);
+		TestDocumentValue value = new TestDocumentValue(map);
+		var decoded = codec.toObject(value, this.stringMapType, this.mapper);
 		Assertions.assertEquals(map, decoded);
 	}
 }

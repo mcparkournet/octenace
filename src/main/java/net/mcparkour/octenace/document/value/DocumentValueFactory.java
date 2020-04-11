@@ -22,40 +22,40 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.model.value;
+package net.mcparkour.octenace.document.value;
 
-import net.mcparkour.octenace.model.array.ModelArray;
-import net.mcparkour.octenace.model.object.ModelObject;
+import net.mcparkour.octenace.document.array.DocumentArray;
+import net.mcparkour.octenace.document.object.DocumentObject;
 
-public interface ModelValueFactory<O, A, V> {
+public interface DocumentValueFactory<O, A, V> {
 
-	ModelValue<O, A, V> createNullValue();
+	DocumentValue<O, A, V> createNullValue();
 
-	ModelValue<O, A, V> createValue(boolean value);
+	DocumentValue<O, A, V> createValue(boolean value);
 
-	ModelValue<O, A, V> createValue(int value);
+	DocumentValue<O, A, V> createValue(int value);
 
-	ModelValue<O, A, V> createValue(long value);
+	DocumentValue<O, A, V> createValue(long value);
 
-	ModelValue<O, A, V> createValue(float value);
+	DocumentValue<O, A, V> createValue(float value);
 
-	ModelValue<O, A, V> createValue(double value);
+	DocumentValue<O, A, V> createValue(double value);
 
-	ModelValue<O, A, V> createValue(String value);
+	DocumentValue<O, A, V> createValue(String value);
 
-	default ModelValue<O, A, V> createObjectValue(ModelObject<O, A, V> object) {
+	default DocumentValue<O, A, V> createObjectValue(DocumentObject<O, A, V> object) {
 		O rawObject = object.getObject();
 		return createObjectValue(rawObject);
 	}
 
-	ModelValue<O, A, V> createObjectValue(O object);
+	DocumentValue<O, A, V> createObjectValue(O object);
 
-	default ModelValue<O, A, V> createArrayValue(ModelArray<O, A, V> array) {
+	default DocumentValue<O, A, V> createArrayValue(DocumentArray<O, A, V> array) {
 		A rawArray = array.getArray();
 		return createArrayValue(rawArray);
 	}
 
-	ModelValue<O, A, V> createArrayValue(A array);
+	DocumentValue<O, A, V> createArrayValue(A array);
 
-	ModelValue<O, A, V> createValue(V value);
+	DocumentValue<O, A, V> createValue(V value);
 }

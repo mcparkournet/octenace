@@ -29,7 +29,7 @@ import java.util.UUID;
 import net.mcparkour.octenace.codec.CommonCodec;
 import net.mcparkour.octenace.codec.common.extra.ExtraCodecs;
 import net.mcparkour.octenace.mapper.TestMapper;
-import net.mcparkour.octenace.model.value.TestModelValue;
+import net.mcparkour.octenace.document.value.TestDocumentValue;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,7 +47,7 @@ public class ExtraCodecsTest {
 	public void testUUIDCodecEncode() {
 		CommonCodec<UUID> uuidCodec = ExtraCodecs.UUID_CODEC;
 		UUID uuid = UUID.fromString("00000000-1000-0100-0010-000000000001");
-		var encoded = uuidCodec.encode(uuid, UUID.class, this.mapper);
+		var encoded = uuidCodec.toDocument(uuid, UUID.class, this.mapper);
 		Object value = encoded.getValue();
 		Assertions.assertEquals(uuid.toString(), value);
 	}
@@ -56,8 +56,8 @@ public class ExtraCodecsTest {
 	public void testUUIDCodecDecode() {
 		CommonCodec<UUID> uuidCodec = ExtraCodecs.UUID_CODEC;
 		UUID uuid = UUID.fromString("00000000-1000-0100-0010-000000000001");
-		TestModelValue value = new TestModelValue(uuid.toString());
-		var decoded = uuidCodec.decode(value, UUID.class, this.mapper);
+		TestDocumentValue value = new TestDocumentValue(uuid.toString());
+		var decoded = uuidCodec.toObject(value, UUID.class, this.mapper);
 		Assertions.assertEquals(uuid, decoded);
 	}
 
@@ -65,7 +65,7 @@ public class ExtraCodecsTest {
 	public void testLocaleCodecEncode() {
 		CommonCodec<Locale> localeCodec = ExtraCodecs.LOCALE_CODEC;
 		Locale locale = Locale.US;
-		var encoded = localeCodec.encode(locale, Locale.class, this.mapper);
+		var encoded = localeCodec.toDocument(locale, Locale.class, this.mapper);
 		Object value = encoded.getValue();
 		Assertions.assertEquals(locale.toLanguageTag(), value);
 	}
@@ -74,8 +74,8 @@ public class ExtraCodecsTest {
 	public void testLocaleCodecDecode() {
 		CommonCodec<Locale> localeCodec = ExtraCodecs.LOCALE_CODEC;
 		Locale locale = Locale.US;
-		TestModelValue value = new TestModelValue(locale.toLanguageTag());
-		var decoded = localeCodec.decode(value, Locale.class, this.mapper);
+		TestDocumentValue value = new TestDocumentValue(locale.toLanguageTag());
+		var decoded = localeCodec.toObject(value, Locale.class, this.mapper);
 		Assertions.assertEquals(locale, decoded);
 	}
 }

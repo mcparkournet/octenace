@@ -29,7 +29,7 @@ import java.util.Objects;
 import net.mcparkour.octenace.codec.Codec;
 import net.mcparkour.octenace.codec.CommonCodec;
 import net.mcparkour.octenace.mapper.Mapper;
-import net.mcparkour.octenace.model.value.ModelValue;
+import net.mcparkour.octenace.document.value.DocumentValue;
 
 class CommonCodecWrapper<O, A, V, T> implements Codec<O, A, V, T> {
 
@@ -40,13 +40,13 @@ class CommonCodecWrapper<O, A, V, T> implements Codec<O, A, V, T> {
 	}
 
 	@Override
-	public ModelValue<O, A, V> encode(T value, Type type, Mapper<O, A, V> mapper) {
-		return this.codec.encode(value, type, mapper);
+	public DocumentValue<O, A, V> toDocument(T object, Type type, Mapper<O, A, V> mapper) {
+		return this.codec.toDocument(object, type, mapper);
 	}
 
 	@Override
-	public T decode(ModelValue<O, A, V> value, Type type, Mapper<O, A, V> mapper) {
-		return this.codec.decode(value, type, mapper);
+	public T toObject(DocumentValue<O, A, V> document, Type type, Mapper<O, A, V> mapper) {
+		return this.codec.toObject(document, type, mapper);
 	}
 
 	@Override
