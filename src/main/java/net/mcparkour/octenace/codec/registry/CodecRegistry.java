@@ -25,31 +25,58 @@
 package net.mcparkour.octenace.codec.registry;
 
 import java.util.Comparator;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 import net.mcparkour.octenace.codec.Codec;
 import org.jetbrains.annotations.Nullable;
 
 public class CodecRegistry {
 
-	private static final Comparator<TypedCodec> CODEC_PRIORITY_COMPARATOR = Comparator.comparingInt(TypedCodec::getTypeInheritanceDepth).reversed();
+	private static final Comparator<Entry<Class<?>, Codec<?, ?, ?, ?>>> INHERITANCE_DEPTH_COMPARATOR = Comparator.comparingInt(CodecRegistry::getEntryInheritanceDepth).reversed();
 
-	private List<TypedCodec> codecs;
+	private Map<Class<?>, Codec<?, ?, ?, ?>> codecs;
 
-	public CodecRegistry(List<TypedCodec> codecs) {
-		codecs.sort(CODEC_PRIORITY_COMPARATOR);
-		this.codecs = codecs;
+	public CodecRegistry(Map<Class<?>, Codec<?, ?, ?, ?>> codecs) {
+		this.codecs = codecs.entrySet().stream()
+			.sorted(INHERITANCE_DEPTH_COMPARATOR)
+			.collect(Collectors.toMap(Entry::getKey, Entry::getValue, (codec1, codec2) -> codec1, LinkedHashMap::new));
+	}
+
+	private static int getEntryInheritanceDepth(Entry<Class<?>, Codec<?, ?, ?, ?>> entry) {
+		Class<?> key = entry.getKey();
+		return getInheritanceDepth(key);
+	}
+
+	private static int getInheritanceDepth(Class<?> type) {
+		if (type == Object.class) {
+			return -1;
+		}
+		int depth = 0;
+		Class<?> superclass = type.getSuperclass();
+		while (superclass != null) {
+			superclass = superclass.getSuperclass();
+			depth++;
+		}
+		return depth;
 	}
 
 	@Nullable
 	public Codec<?, ?, ?, ?> get(Class<?> type) {
-		return this.codecs.stream()
-			.filter(codec -> codec.isAssignableFrom(type))
+		return this.codecs.computeIfAbsent(type, this::computeCodec);
+	}
+
+	@Nullable
+	private Codec<?, ?, ?, ?> computeCodec(Class<?> type) {
+		return this.codecs.entrySet().stream()
+			.filter(entry -> entry.getKey().isAssignableFrom(type))
 			.findFirst()
-			.map(TypedCodec::getCodec)
+			.map(Entry::getValue)
 			.orElse(null);
 	}
 
-	List<TypedCodec> getCodecs() {
-		return List.copyOf(this.codecs);
+	Map<Class<?>, Codec<?, ?, ?, ?>> getCodecs() {
+		return Map.copyOf(this.codecs);
 	}
 }

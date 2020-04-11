@@ -24,22 +24,22 @@
 
 package net.mcparkour.octenace.codec.registry;
 
-import java.util.ArrayList;
-import java.util.List;
-import net.mcparkour.octenace.codec.CommonCodec;
+import java.util.HashMap;
+import java.util.Map;
 import net.mcparkour.octenace.codec.Codec;
+import net.mcparkour.octenace.codec.CommonCodec;
 
 public class CodecRegistryBuilder {
 
-	private List<TypedCodec> codecs;
+	private Map<Class<?>, Codec<?, ?, ?, ?>> codecs;
 
 	public CodecRegistryBuilder() {
-		this.codecs = new ArrayList<>(0);
+		this.codecs = new HashMap<>(0);
 	}
 
 	public CodecRegistryBuilder registry(CodecRegistry registry) {
-		List<? extends TypedCodec> codecs = registry.getCodecs();
-		this.codecs.addAll(codecs);
+		Map<Class<?>, Codec<?, ?, ?, ?>> codecs = registry.getCodecs();
+		this.codecs.putAll(codecs);
 		return this;
 	}
 
@@ -49,7 +49,7 @@ public class CodecRegistryBuilder {
 	}
 
 	public CodecRegistryBuilder codec(Codec<?, ?, ?, ?> codec, Class<?> type) {
-		this.codecs.add(new TypedCodec(type, codec));
+		this.codecs.put(type, codec);
 		return this;
 	}
 
