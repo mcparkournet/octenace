@@ -46,7 +46,7 @@ import net.mcparkour.octenace.mapper.metadata.TypeMetadata;
 public class ObjectCodec<O, A, V> implements Codec<O, A, V, ObjectMetadata<O, A, V>, Object> {
 
 	@Override
-	public DocumentValue<O, A, V> toDocument(Object object, ObjectMetadata<O, A, V> metadata, Mapper<O, A, V> mapper) {
+	public DocumentValue<O, A, V> toDocument(Object object, ObjectMetadata<O, A, V> metadata, Mapper<O, A, V, ?> mapper) {
 		DocumentValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
 		DocumentObjectFactory<O, A, V> objectFactory = mapper.getObjectFactory();
 		DocumentObject<O, A, V> documentObject = objectFactory.createEmptyObject();
@@ -68,7 +68,7 @@ public class ObjectCodec<O, A, V> implements Codec<O, A, V, ObjectMetadata<O, A,
 	}
 
 	@Override
-	public Object toObject(DocumentValue<O, A, V> document, ObjectMetadata<O, A, V> metadata, Mapper<O, A, V> mapper) {
+	public Object toObject(DocumentValue<O, A, V> document, ObjectMetadata<O, A, V> metadata, Mapper<O, A, V, ?> mapper) {
 		DocumentValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
 		DocumentObjectFactory<O, A, V> objectFactory = mapper.getObjectFactory();
 		O rawObject = document.asObject();
@@ -94,7 +94,7 @@ public class ObjectCodec<O, A, V> implements Codec<O, A, V, ObjectMetadata<O, A,
 	}
 
 	@Override
-	public ObjectMetadata<O, A, V> getMetadata(TypeMetadata type, Mapper<O, A, V> mapper) {
+	public ObjectMetadata<O, A, V> getMetadata(TypeMetadata type, Mapper<O, A, V, ?> mapper) {
 		Class<?> classType = type.getClassType();
 		Field[] fields = classType.getDeclaredFields();
 		int length = fields.length;
@@ -105,8 +105,8 @@ public class ObjectCodec<O, A, V> implements Codec<O, A, V, ObjectMetadata<O, A,
 				String fieldName = mapper.getFieldName(field);
 				Type fieldGenericType = field.getGenericType();
 				var codecAnnotation = field.getAnnotation(net.mcparkour.octenace.annotation.Codec.class);
-				Type propType = codecAnnotation == null ? fieldGenericType : codecAnnotation.value();
-				Type fieldRawType = Types.getRawType(propType);
+				Type fieldType = codecAnnotation == null ? fieldGenericType : codecAnnotation.value();
+				Type fieldRawType = Types.getRawType(fieldType);
 				Class<?> fieldClassType = Types.asClassType(fieldRawType);
 				var codec = mapper.getObjectCodec(fieldClassType);
 				Metadata metadata = codec.getMetadata(new TypeMetadata(fieldClassType, fieldGenericType), mapper);

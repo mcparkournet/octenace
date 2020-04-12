@@ -33,18 +33,18 @@ import net.mcparkour.octenace.mapper.metadata.ValueMetadata;
 public class ShortCodec<O, A, V> implements Codec<O, A, V, ValueMetadata, Short> {
 
 	@Override
-	public DocumentValue<O, A, V> toDocument(Short object, ValueMetadata metadata, Mapper<O, A, V> mapper) {
+	public DocumentValue<O, A, V> toDocument(Short object, ValueMetadata metadata, Mapper<O, A, V, ?> mapper) {
 		var valueFactory = mapper.getValueFactory();
 		return valueFactory.createValue(object);
 	}
 
 	@Override
-	public Short toObject(DocumentValue<O, A, V> document, ValueMetadata metadata, Mapper<O, A, V> mapper) {
+	public Short toObject(DocumentValue<O, A, V> document, ValueMetadata metadata, Mapper<O, A, V, ?> mapper) {
 		return document.asShort();
 	}
 
 	@Override
-	public ValueMetadata getMetadata(TypeMetadata type, Mapper<O, A, V> mapper) {
+	public ValueMetadata getMetadata(TypeMetadata type, Mapper<O, A, V, ?> mapper) {
 		return new ValueMetadata();
 	}
 }

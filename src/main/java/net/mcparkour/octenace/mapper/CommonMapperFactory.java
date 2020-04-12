@@ -24,43 +24,34 @@
 
 package net.mcparkour.octenace.mapper;
 
-import java.lang.reflect.Field;
 import java.util.List;
-import net.mcparkour.octenace.codec.Codec;
 import net.mcparkour.octenace.codec.registry.CodecRegistry;
 import net.mcparkour.octenace.document.array.DocumentArrayFactory;
-import net.mcparkour.octenace.document.object.DocumentObject;
 import net.mcparkour.octenace.document.object.DocumentObjectFactory;
 import net.mcparkour.octenace.document.value.DocumentValueFactory;
-import net.mcparkour.octenace.mapper.metadata.Metadata;
 import net.mcparkour.octenace.mapper.property.invalidator.PropertyInvalidator;
 import net.mcparkour.octenace.mapper.property.name.NameConverter;
 
-public interface Mapper<O, A, V, T> {
+public class CommonMapperFactory<O, A, V> implements MapperFactory<O, A, V> {
 
-	DocumentObject<O, A, V> toDocument(T object);
+	private DocumentObjectFactory<O, A, V> objectFactory;
+	private DocumentArrayFactory<O, A, V> arrayFactory;
+	private DocumentValueFactory<O, A, V> valueFactory;
+	private NameConverter nameConverter;
+	private List<PropertyInvalidator> propertyInvalidators;
+	private CodecRegistry<O, A, V> codecRegistry;
 
-	T toObject(DocumentObject<O, A, V> document);
+	public CommonMapperFactory(DocumentObjectFactory<O, A, V> objectFactory, DocumentArrayFactory<O, A, V> arrayFactory, DocumentValueFactory<O, A, V> valueFactory, NameConverter nameConverter, List<PropertyInvalidator> propertyInvalidators, CodecRegistry<O, A, V> codecRegistry) {
+		this.objectFactory = objectFactory;
+		this.arrayFactory = arrayFactory;
+		this.valueFactory = valueFactory;
+		this.nameConverter = nameConverter;
+		this.propertyInvalidators = propertyInvalidators;
+		this.codecRegistry = codecRegistry;
+	}
 
-	Codec<O, A, V, Metadata, Object> getObjectCodec(Class<?> type);
-
-	boolean isFieldValid(Field field);
-
-	String getFieldName(Field field);
-
-	DocumentObjectFactory<O, A, V> getObjectFactory();
-
-	DocumentArrayFactory<O, A, V> getArrayFactory();
-
-	DocumentValueFactory<O, A, V> getValueFactory();
-
-	NameConverter getNameConverter();
-
-	List<PropertyInvalidator> getPropertyInvalidators();
-
-	CodecRegistry<O, A, V> getCodecRegistry();
-
-	Class<T> getType();
-
-	Metadata getMetadata();
+	@Override
+	public <T> Mapper<O, A, V, T> createMapper(Class<T> type) {
+		return new CommonMapper<>(this.objectFactory, this.arrayFactory, this.valueFactory, this.nameConverter, this.propertyInvalidators, this.codecRegistry, type);
+	}
 }

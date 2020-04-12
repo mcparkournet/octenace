@@ -31,9 +31,9 @@ import net.mcparkour.octenace.mapper.metadata.TypeMetadata;
 
 public interface Codec<O, A, V, M extends Metadata, T> {
 
-	DocumentValue<O, A, V> toDocument(T object, M metadata, Mapper<O, A, V> mapper);
+	DocumentValue<O, A, V> toDocument(T object, M metadata, Mapper<O, A, V, ?> mapper);
 
-	T toObject(DocumentValue<O, A, V> document, M metadata, Mapper<O, A, V> mapper);
+	T toObject(DocumentValue<O, A, V> document, M metadata, Mapper<O, A, V, ?> mapper);
 
-	M getMetadata(TypeMetadata type, Mapper<O, A, V> mapper);
+	M getMetadata(TypeMetadata type, Mapper<O, A, V, ?> mapper);
 }

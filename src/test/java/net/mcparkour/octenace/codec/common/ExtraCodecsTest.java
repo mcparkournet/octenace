@@ -39,11 +39,11 @@ import org.junit.jupiter.api.Test;
 
 public class ExtraCodecsTest {
 
-	private TestMapper mapper;
+	private TestMapper<?> mapper;
 
 	@BeforeEach
 	public void setUp() {
-		this.mapper = new TestMapper();
+		this.mapper = new TestMapper<>(Object.class);
 	}
 
 	@Test

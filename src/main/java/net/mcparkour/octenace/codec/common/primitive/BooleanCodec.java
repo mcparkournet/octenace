@@ -34,18 +34,18 @@ import net.mcparkour.octenace.mapper.metadata.ValueMetadata;
 public class BooleanCodec<O, A, V> implements Codec<O, A, V, ValueMetadata, Boolean> {
 
 	@Override
-	public DocumentValue<O, A, V> toDocument(Boolean object, ValueMetadata metadata, Mapper<O, A, V> mapper) {
+	public DocumentValue<O, A, V> toDocument(Boolean object, ValueMetadata metadata, Mapper<O, A, V, ?> mapper) {
 		DocumentValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
 		return valueFactory.createValue(object);
 	}
 
 	@Override
-	public Boolean toObject(DocumentValue<O, A, V> document, ValueMetadata metadata, Mapper<O, A, V> mapper) {
+	public Boolean toObject(DocumentValue<O, A, V> document, ValueMetadata metadata, Mapper<O, A, V, ?> mapper) {
 		return document.asBoolean();
 	}
 
 	@Override
-	public ValueMetadata getMetadata(TypeMetadata type, Mapper<O, A, V> mapper) {
+	public ValueMetadata getMetadata(TypeMetadata type, Mapper<O, A, V, ?> mapper) {
 		return new ValueMetadata();
 	}
 }

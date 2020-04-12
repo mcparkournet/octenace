@@ -40,7 +40,7 @@ import net.mcparkour.octenace.mapper.metadata.TypeMetadata;
 public abstract class CollectionCodec<O, A, V, T extends Collection<?>> implements Codec<O, A, V, CollectionMetadata<O, A, V>, T> {
 
 	@Override
-	public DocumentValue<O, A, V> toDocument(T object, CollectionMetadata<O, A, V> metadata, Mapper<O, A, V> mapper) {
+	public DocumentValue<O, A, V> toDocument(T object, CollectionMetadata<O, A, V> metadata, Mapper<O, A, V, ?> mapper) {
 		DocumentValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
 		DocumentArrayFactory<O, A, V> arrayFactory = mapper.getArrayFactory();
 		int size = object.size();
@@ -57,7 +57,7 @@ public abstract class CollectionCodec<O, A, V, T extends Collection<?>> implemen
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public T toObject(DocumentValue<O, A, V> document, CollectionMetadata<O, A, V> metadata, Mapper<O, A, V> mapper) {
+	public T toObject(DocumentValue<O, A, V> document, CollectionMetadata<O, A, V> metadata, Mapper<O, A, V, ?> mapper) {
 		DocumentArrayFactory<O, A, V> arrayFactory = mapper.getArrayFactory();
 		A rawArray = document.asArray();
 		DocumentArray<O, A, V> array = arrayFactory.createArray(rawArray);
@@ -75,7 +75,7 @@ public abstract class CollectionCodec<O, A, V, T extends Collection<?>> implemen
 	public abstract T createCollection(int size);
 
 	@Override
-	public CollectionMetadata<O, A, V> getMetadata(TypeMetadata type, Mapper<O, A, V> mapper) {
+	public CollectionMetadata<O, A, V> getMetadata(TypeMetadata type, Mapper<O, A, V, ?> mapper) {
 		Class<?> elementType = type.getFirstGenericType();
 		var codec = mapper.getObjectCodec(elementType);
 		Metadata metadata = codec.getMetadata(new TypeMetadata(elementType), mapper);

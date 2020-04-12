@@ -52,11 +52,11 @@ public class CollectionCodecsTest {
 	private static final List<String> TEST_COLLECTION = List.of("foo", "bar", "foobar");
 	private static final Map<String, String> TEST_MAP = Map.of("foo", "bar", "bar", "foo", "foobar", "barfoo");
 
-	private TestMapper mapper;
+	private TestMapper<?> mapper;
 
 	@BeforeEach
 	public void setUp() {
-		this.mapper = new TestMapper();
+		this.mapper = new TestMapper<>(Object.class);
 	}
 
 	@Test

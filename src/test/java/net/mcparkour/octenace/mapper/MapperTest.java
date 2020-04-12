@@ -34,11 +34,11 @@ import org.junit.jupiter.api.Test;
 
 public class MapperTest {
 
-	private TestMapper mapper;
+	private TestMapper<TestObject> mapper;
 
 	@BeforeEach
 	public void setUp() {
-		this.mapper = new TestMapper();
+		this.mapper = new TestMapper<>(TestObject.class);
 	}
 
 	@Test
@@ -55,7 +55,7 @@ public class MapperTest {
 	public void testToDocument() {
 		TestObject originDocument = new TestObject();
 		var modelObject = this.mapper.toDocument(originDocument);
-		TestObject document = this.mapper.toObject(modelObject, TestObject.class);
+		TestObject document = this.mapper.toObject(modelObject);
 		Assertions.assertEquals(originDocument.toString(), Objects.requireNonNull(document).toString());
 	}
 }

@@ -38,21 +38,21 @@ import net.mcparkour.octenace.mapper.metadata.TypeMetadata;
 public class EnumCodec<O, A, V> implements Codec<O, A, V, EnumMetadata, Enum<?>> {
 
 	@Override
-	public DocumentValue<O, A, V> toDocument(Enum<?> object, EnumMetadata metadata, Mapper<O, A, V> mapper) {
+	public DocumentValue<O, A, V> toDocument(Enum<?> object, EnumMetadata metadata, Mapper<O, A, V, ?> mapper) {
 		DocumentValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
 		String name = metadata.getName(object);
 		return valueFactory.createValue(name);
 	}
 
 	@Override
-	public Enum<?> toObject(DocumentValue<O, A, V> document, EnumMetadata metadata, Mapper<O, A, V> mapper) {
+	public Enum<?> toObject(DocumentValue<O, A, V> document, EnumMetadata metadata, Mapper<O, A, V, ?> mapper) {
 		String valueString = document.asString();
 		return metadata.getEnum(valueString);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public EnumMetadata getMetadata(TypeMetadata type, Mapper<O, A, V> mapper) {
+	public EnumMetadata getMetadata(TypeMetadata type, Mapper<O, A, V, ?> mapper) {
 		Class<?> classType = type.getClassType();
 		Class<? extends Enum<?>> enumType = (Class<? extends Enum<?>>) classType;
 		Enum<?>[] enumConstants = enumType.getEnumConstants();
@@ -67,7 +67,7 @@ public class EnumCodec<O, A, V> implements Codec<O, A, V, EnumMetadata, Enum<?>>
 		return new EnumMetadata(enumType, enumToNameMap, nameToEnumMap);
 	}
 
-	private String getEnumName(Class<? extends Enum<?>> type, Enum<?> enumConstant, Mapper<O, A, V> mapper) {
+	private String getEnumName(Class<? extends Enum<?>> type, Enum<?> enumConstant, Mapper<O, A, V, ?> mapper) {
 		String name = enumConstant.name();
 		Field field = Reflections.getField(type, name);
 		return mapper.getFieldName(field);

@@ -41,7 +41,7 @@ import net.mcparkour.octenace.mapper.metadata.TypeMetadata;
 public abstract class MapCodec<O, A, V, T extends Map<?, ?>> implements Codec<O, A, V, MapMetadata<O, A, V>, T> {
 
 	@Override
-	public DocumentValue<O, A, V> toDocument(T object, MapMetadata<O, A, V> metadata, Mapper<O, A, V> mapper) {
+	public DocumentValue<O, A, V> toDocument(T object, MapMetadata<O, A, V> metadata, Mapper<O, A, V, ?> mapper) {
 		DocumentValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
 		DocumentObjectFactory<O, A, V> objectFactory = mapper.getObjectFactory();
 		int size = object.size();
@@ -65,7 +65,7 @@ public abstract class MapCodec<O, A, V, T extends Map<?, ?>> implements Codec<O,
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public T toObject(DocumentValue<O, A, V> document, MapMetadata<O, A, V> metadata, Mapper<O, A, V> mapper) {
+	public T toObject(DocumentValue<O, A, V> document, MapMetadata<O, A, V> metadata, Mapper<O, A, V, ?> mapper) {
 		DocumentObjectFactory<O, A, V> objectFactory = mapper.getObjectFactory();
 		O rawObject = document.asObject();
 		DocumentObject<O, A, V> object = objectFactory.createObject(rawObject);
@@ -90,7 +90,7 @@ public abstract class MapCodec<O, A, V, T extends Map<?, ?>> implements Codec<O,
 	public abstract T createMap(int size);
 
 	@Override
-	public MapMetadata<O, A, V> getMetadata(TypeMetadata type, Mapper<O, A, V> mapper) {
+	public MapMetadata<O, A, V> getMetadata(TypeMetadata type, Mapper<O, A, V, ?> mapper) {
 		Entry<Class<?>, Class<?>> genericTypes = type.getGenericTypesPair();
 		Class<?> keyType = genericTypes.getKey();
 		Class<?> valueType = genericTypes.getValue();

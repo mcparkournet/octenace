@@ -39,7 +39,7 @@ import net.mcparkour.octenace.mapper.metadata.TypeMetadata;
 public class ArrayCodec<O, A, V> implements Codec<O, A, V, CollectionMetadata<O, A, V>, Object[]> {
 
 	@Override
-	public DocumentValue<O, A, V> toDocument(Object[] object, CollectionMetadata<O, A, V> metadata, Mapper<O, A, V> mapper) {
+	public DocumentValue<O, A, V> toDocument(Object[] object, CollectionMetadata<O, A, V> metadata, Mapper<O, A, V, ?> mapper) {
 		DocumentValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
 		DocumentArrayFactory<O, A, V> arrayFactory = mapper.getArrayFactory();
 		int length = object.length;
@@ -55,7 +55,7 @@ public class ArrayCodec<O, A, V> implements Codec<O, A, V, CollectionMetadata<O,
 	}
 
 	@Override
-	public Object[] toObject(DocumentValue<O, A, V> document, CollectionMetadata<O, A, V> metadata, Mapper<O, A, V> mapper) {
+	public Object[] toObject(DocumentValue<O, A, V> document, CollectionMetadata<O, A, V> metadata, Mapper<O, A, V, ?> mapper) {
 		DocumentArrayFactory<O, A, V> arrayFactory = mapper.getArrayFactory();
 		A rawArray = document.asArray();
 		DocumentArray<O, A, V> array = arrayFactory.createArray(rawArray);
@@ -73,7 +73,7 @@ public class ArrayCodec<O, A, V> implements Codec<O, A, V, CollectionMetadata<O,
 	}
 
 	@Override
-	public CollectionMetadata<O, A, V> getMetadata(TypeMetadata type, Mapper<O, A, V> mapper) {
+	public CollectionMetadata<O, A, V> getMetadata(TypeMetadata type, Mapper<O, A, V, ?> mapper) {
 		Class<?> elementType = type.getComponentType();
 		var codec = mapper.getObjectCodec(elementType);
 		Metadata metadata = codec.getMetadata(new TypeMetadata(elementType), mapper);

@@ -33,9 +33,9 @@ import net.mcparkour.octenace.document.value.TestDocumentValueFactory;
 import net.mcparkour.octenace.mapper.property.invalidator.PropertyInvalidators;
 import net.mcparkour.octenace.mapper.property.name.NameConverter;
 
-public class TestMapper extends CommonMapper<Map<Object, Object>, List<Object>, Object> {
+public class TestMapper<T> extends CommonMapper<Map<Object, Object>, List<Object>, Object, T> {
 
-	public TestMapper() {
-		super(new TestDocumentObjectFactory(), new TestDocumentArrayFactory(), new TestDocumentValueFactory(), NameConverter.identity(), PropertyInvalidators.COMMON_PROPERTY_INVALIDATORS, Codecs.createCommonCodecRegistry());
+	public TestMapper(Class<T> type) {
+		super(new TestDocumentObjectFactory(), new TestDocumentArrayFactory(), new TestDocumentValueFactory(), NameConverter.identity(), PropertyInvalidators.COMMON_PROPERTY_INVALIDATORS, Codecs.createCommonCodecRegistry(), type);
 	}
 }

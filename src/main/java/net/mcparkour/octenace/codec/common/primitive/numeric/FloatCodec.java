@@ -33,18 +33,18 @@ import net.mcparkour.octenace.mapper.metadata.ValueMetadata;
 public class FloatCodec<O, A, V> implements Codec<O, A, V, ValueMetadata, Float> {
 
 	@Override
-	public DocumentValue<O, A, V> toDocument(Float object, ValueMetadata metadata, Mapper<O, A, V> mapper) {
+	public DocumentValue<O, A, V> toDocument(Float object, ValueMetadata metadata, Mapper<O, A, V, ?> mapper) {
 		var valueFactory = mapper.getValueFactory();
 		return valueFactory.createValue(object);
 	}
 
 	@Override
-	public Float toObject(DocumentValue<O, A, V> document, ValueMetadata metadata, Mapper<O, A, V> mapper) {
+	public Float toObject(DocumentValue<O, A, V> document, ValueMetadata metadata, Mapper<O, A, V, ?> mapper) {
 		return document.asFloat();
 	}
 
 	@Override
-	public ValueMetadata getMetadata(TypeMetadata type, Mapper<O, A, V> mapper) {
+	public ValueMetadata getMetadata(TypeMetadata type, Mapper<O, A, V, ?> mapper) {
 		return new ValueMetadata();
 	}
 }
