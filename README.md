@@ -13,6 +13,6 @@ repositories {
 }
 
 dependencies {
-    implementation("net.mcparkour:octenace:0.0.12")
+    implementation("net.mcparkour:octenace:0.0.13")
 }
 ```
