@@ -24,60 +24,14 @@
 
 package net.mcparkour.octenace.codec.registry;
 
-import java.util.Comparator;
-import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
 import net.mcparkour.octenace.codec.Codec;
 import net.mcparkour.octenace.mapper.metadata.Metadata;
 import org.jetbrains.annotations.Nullable;
 
-public class CodecRegistry<O, A, V> {
+public interface CodecRegistry<O, A, V> {
 
-	private Map<Class<?>, Codec<O, A, V, ? extends Metadata, ?>> codecs;
+	@Nullable <T> Codec<O, A, V, ? extends Metadata, T> get(Class<T> type);
 
-	public CodecRegistry(Map<Class<?>, Codec<O, A, V, ? extends Metadata, ?>> codecs) {
-		var comparator = Comparator.comparingInt(this::getEntryInheritanceDepth).reversed();
-		this.codecs = codecs.entrySet().stream()
-			.sorted(comparator)
-			.collect(Collectors.toMap(Entry::getKey, Entry::getValue, (codec1, codec2) -> codec1, LinkedHashMap::new));
-	}
-
-	private int getEntryInheritanceDepth(Entry<Class<?>, Codec<O, A, V, ? extends Metadata, ?>> entry) {
-		Class<?> key = entry.getKey();
-		return getInheritanceDepth(key);
-	}
-
-	private static int getInheritanceDepth(Class<?> type) {
-		if (type == Object.class) {
-			return -1;
-		}
-		int depth = 0;
-		Class<?> superclass = type.getSuperclass();
-		while (superclass != null) {
-			superclass = superclass.getSuperclass();
-			depth++;
-		}
-		return depth;
-	}
-
-	@SuppressWarnings("unchecked")
-	@Nullable
-	public <T> Codec<O, A, V, ? extends Metadata, T> get(Class<T> type) {
-		return (Codec<O, A, V, ? extends Metadata, T>) this.codecs.computeIfAbsent(type, this::computeCodec);
-	}
-
-	@Nullable
-	private Codec<O, A, V, ? extends Metadata, ?> computeCodec(Class<?> type) {
-		return this.codecs.entrySet().stream()
-			.filter(entry -> entry.getKey().isAssignableFrom(type))
-			.findFirst()
-			.map(Entry::getValue)
-			.orElse(null);
-	}
-
-	Map<Class<?>, Codec<O, A, V, ? extends Metadata, ?>> getCodecs() {
-		return Map.copyOf(this.codecs);
-	}
+	Map<Class<?>, Codec<O, A, V, ? extends Metadata, ?>> getCodecs();
 }

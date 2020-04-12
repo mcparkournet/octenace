@@ -27,7 +27,7 @@ package net.mcparkour.octenace.codec.common;
 import net.mcparkour.octenace.codec.common.collection.CollectionCodecs;
 import net.mcparkour.octenace.codec.common.primitive.PrimitiveCodecs;
 import net.mcparkour.octenace.codec.registry.CodecRegistry;
-import net.mcparkour.octenace.codec.registry.CodecRegistryBuilder;
+import net.mcparkour.octenace.codec.registry.cached.CachedCodecRegistryBuilder;
 
 public final class Codecs {
 
@@ -39,7 +39,7 @@ public final class Codecs {
 		EnumCodec<O, A, V> enumCodec = new EnumCodec<>();
 		StringCodec<O, A, V> stringCodec = new StringCodec<>();
 		ObjectCodec<O, A, V> objectCodec = new ObjectCodec<>();
-		return new CodecRegistryBuilder<O, A, V>()
+		return new CachedCodecRegistryBuilder<O, A, V>()
 			.registry(CollectionCodecs.createCollectionCodecRegistry())
 			.registry(PrimitiveCodecs.createPrimitiveCodecRegistry())
 			.codec(Enum.class, enumCodec)

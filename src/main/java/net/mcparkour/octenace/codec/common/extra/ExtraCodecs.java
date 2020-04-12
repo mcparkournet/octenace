@@ -27,7 +27,7 @@ package net.mcparkour.octenace.codec.common.extra;
 import java.util.Locale;
 import java.util.UUID;
 import net.mcparkour.octenace.codec.registry.CodecRegistry;
-import net.mcparkour.octenace.codec.registry.CodecRegistryBuilder;
+import net.mcparkour.octenace.codec.registry.cached.CachedCodecRegistryBuilder;
 
 public final class ExtraCodecs {
 
@@ -38,7 +38,7 @@ public final class ExtraCodecs {
 	public static <O, A, V> CodecRegistry<O, A, V> createExtraCodecRegistry() {
 		UUIDCodec<O, A, V> uuidCodec = new UUIDCodec<>();
 		LocaleCodec<O, A, V> localeCodec = new LocaleCodec<>();
-		return new CodecRegistryBuilder<O, A, V>()
+		return new CachedCodecRegistryBuilder<O, A, V>()
 			.codec(UUID.class, uuidCodec)
 			.codec(Locale.class, localeCodec)
 			.build();

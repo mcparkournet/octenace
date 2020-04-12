@@ -37,10 +37,11 @@ import java.util.UUID;
 import net.mcparkour.octenace.codec.common.Codecs;
 import net.mcparkour.octenace.codec.common.extra.ExtraCodecs;
 import net.mcparkour.octenace.codec.common.extra.UUIDCodec;
+import net.mcparkour.octenace.codec.registry.cached.CachedCodecRegistryBuilder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class CodecRegistryTest {
+public class CachedCodecRegistryTest {
 
 	@Test
 	public void testSetCodecsPriority() {
@@ -68,7 +69,7 @@ public class CodecRegistryTest {
 
 	@Test
 	public void testObjectCodecPriority() {
-		CodecRegistry<?, ?, ?> registry = new CodecRegistryBuilder<>()
+		CodecRegistry<?, ?, ?> registry = new CachedCodecRegistryBuilder<>()
 			.registry(Codecs.createCommonCodecRegistry())
 			.codec(UUID.class, new UUIDCodec<>())
 			.build();

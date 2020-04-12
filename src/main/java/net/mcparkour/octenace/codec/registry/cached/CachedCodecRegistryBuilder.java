@@ -22,37 +22,38 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.codec.common.primitive.numeric;
+package net.mcparkour.octenace.codec.registry.cached;
 
+import java.util.HashMap;
+import java.util.Map;
+import net.mcparkour.octenace.codec.Codec;
 import net.mcparkour.octenace.codec.registry.CodecRegistry;
-import net.mcparkour.octenace.codec.registry.cached.CachedCodecRegistryBuilder;
+import net.mcparkour.octenace.codec.registry.CodecRegistryBuilder;
+import net.mcparkour.octenace.mapper.metadata.Metadata;
 
-public final class NumericCodecs {
+public class CachedCodecRegistryBuilder<O, A, V> implements CodecRegistryBuilder<O, A, V> {
 
-	private NumericCodecs() {
-		throw new UnsupportedOperationException("Cannot create an instance of this class");
+	private Map<Class<?>, Codec<O, A, V, ? extends Metadata, ?>> codecs;
+
+	public CachedCodecRegistryBuilder() {
+		this.codecs = new HashMap<>(0);
 	}
 
-	public static <O, A, V> CodecRegistry<O, A, V> createNumericCodecRegistry() {
-		ByteCodec<O, A, V> byteCodec = new ByteCodec<>();
-		ShortCodec<O, A, V> shortCodec = new ShortCodec<>();
-		IntCodec<O, A, V> intCodec = new IntCodec<>();
-		LongCodec<O, A, V> longCodec = new LongCodec<>();
-		FloatCodec<O, A, V> floatCodec = new FloatCodec<>();
-		DoubleCodec<O, A, V> doubleCodec = new DoubleCodec<>();
-		return new CachedCodecRegistryBuilder<O, A, V>()
-			.codec(byte.class, byteCodec)
-			.codec(Byte.class, byteCodec)
-			.codec(short.class, shortCodec)
-			.codec(Short.class, shortCodec)
-			.codec(int.class, intCodec)
-			.codec(Integer.class, intCodec)
-			.codec(long.class, longCodec)
-			.codec(Long.class, longCodec)
-			.codec(float.class, floatCodec)
-			.codec(Float.class, floatCodec)
-			.codec(double.class, doubleCodec)
-			.codec(Double.class, doubleCodec)
-			.build();
+	@Override
+	public CachedCodecRegistryBuilder<O, A, V> registry(CodecRegistry<O, A, V> registry) {
+		Map<Class<?>, Codec<O, A, V, ? extends Metadata, ?>> codecs = registry.getCodecs();
+		this.codecs.putAll(codecs);
+		return this;
+	}
+
+	@Override
+	public CachedCodecRegistryBuilder<O, A, V> codec(Class<?> type, Codec<O, A, V, ? extends Metadata, ?> codec) {
+		this.codecs.put(type, codec);
+		return this;
+	}
+
+	@Override
+	public CodecRegistry<O, A, V> build() {
+		return new CachedCodecRegistry<>(this.codecs);
 	}
 }

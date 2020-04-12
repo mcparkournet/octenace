@@ -26,7 +26,7 @@ package net.mcparkour.octenace.codec.common.primitive;
 
 import net.mcparkour.octenace.codec.common.primitive.numeric.NumericCodecs;
 import net.mcparkour.octenace.codec.registry.CodecRegistry;
-import net.mcparkour.octenace.codec.registry.CodecRegistryBuilder;
+import net.mcparkour.octenace.codec.registry.cached.CachedCodecRegistryBuilder;
 
 public final class PrimitiveCodecs {
 
@@ -37,7 +37,7 @@ public final class PrimitiveCodecs {
 	public static <O, A, V> CodecRegistry<O, A, V> createPrimitiveCodecRegistry() {
 		BooleanCodec<O, A, V> booleanCodec = new BooleanCodec<>();
 		CharCodec<O, A, V> charCodec = new CharCodec<>();
-		return new CodecRegistryBuilder<O, A, V>()
+		return new CachedCodecRegistryBuilder<O, A, V>()
 			.registry(NumericCodecs.createNumericCodecRegistry())
 			.codec(boolean.class, booleanCodec)
 			.codec(Boolean.class, booleanCodec)

@@ -24,31 +24,14 @@
 
 package net.mcparkour.octenace.codec.registry;
 
-import java.util.HashMap;
-import java.util.Map;
 import net.mcparkour.octenace.codec.Codec;
 import net.mcparkour.octenace.mapper.metadata.Metadata;
 
-public class CodecRegistryBuilder<O, A, V> {
+public interface CodecRegistryBuilder<O, A, V> {
 
-	private Map<Class<?>, Codec<O, A, V, ? extends Metadata, ?>> codecs;
+	CodecRegistryBuilder<O, A, V> registry(CodecRegistry<O, A, V> registry);
 
-	public CodecRegistryBuilder() {
-		this.codecs = new HashMap<>(0);
-	}
+	CodecRegistryBuilder<O, A, V> codec(Class<?> type, Codec<O, A, V, ? extends Metadata, ?> codec);
 
-	public CodecRegistryBuilder<O, A, V> registry(CodecRegistry<O, A, V> registry) {
-		Map<Class<?>, Codec<O, A, V, ? extends Metadata, ?>> codecs = registry.getCodecs();
-		this.codecs.putAll(codecs);
-		return this;
-	}
-
-	public CodecRegistryBuilder<O, A, V> codec(Class<?> type, Codec<O, A, V, ? extends Metadata, ?> codec) {
-		this.codecs.put(type, codec);
-		return this;
-	}
-
-	public CodecRegistry<O, A, V> build() {
-		return new CodecRegistry<>(this.codecs);
-	}
+	CodecRegistry<O, A, V> build();
 }

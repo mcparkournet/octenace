@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import net.mcparkour.octenace.codec.registry.CodecRegistry;
-import net.mcparkour.octenace.codec.registry.CodecRegistryBuilder;
+import net.mcparkour.octenace.codec.registry.cached.CachedCodecRegistryBuilder;
 
 public final class CollectionCodecs {
 
@@ -48,7 +48,7 @@ public final class CollectionCodecs {
 		LinkedHashSetCodec<O, A, V> linkedHashSetCodec = new LinkedHashSetCodec<>();
 		HashMapCodec<O, A, V> hashMapCodec = new HashMapCodec<>();
 		LinkedHashMapCodec<O, A, V> linkedHashMapCodec = new LinkedHashMapCodec<>();
-		return new CodecRegistryBuilder<O, A, V>()
+		return new CachedCodecRegistryBuilder<O, A, V>()
 			.codec(Object[].class, arrayCodec)
 			.codec(ArrayList.class, arrayListCodec)
 			.codec(List.class, arrayListCodec)
