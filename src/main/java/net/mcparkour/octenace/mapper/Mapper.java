@@ -35,13 +35,12 @@ import net.mcparkour.octenace.document.value.DocumentValueFactory;
 import net.mcparkour.octenace.mapper.metadata.Metadata;
 import net.mcparkour.octenace.mapper.property.invalidator.PropertyInvalidator;
 import net.mcparkour.octenace.mapper.property.name.NameConverter;
-import org.jetbrains.annotations.Nullable;
 
 public interface Mapper<O, A, V> {
 
 	DocumentObject<O, A, V> toDocument(Object object);
 
-	@Nullable <T> T toObject(DocumentObject<O, A, V> document, Class<T> objectType);
+	<T> T toObject(DocumentObject<O, A, V> document, Class<T> objectType);
 
 	boolean isFieldValid(Field field);
 
