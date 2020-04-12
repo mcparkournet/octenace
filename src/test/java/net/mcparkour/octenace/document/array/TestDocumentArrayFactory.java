@@ -31,8 +31,8 @@ import java.util.Map;
 public class TestDocumentArrayFactory implements DocumentArrayFactory<Map<Object, Object>, List<Object>, Object> {
 
 	@Override
-	public DocumentArray<Map<Object, Object>, List<Object>, Object> createEmptyArray() {
-		List<Object> array = new ArrayList<>(0);
+	public DocumentArray<Map<Object, Object>, List<Object>, Object> createEmptyArray(int capacity) {
+		List<Object> array = new ArrayList<>(capacity);
 		return new TestDocumentArray(array);
 	}
 

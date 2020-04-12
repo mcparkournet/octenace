@@ -26,7 +26,11 @@ package net.mcparkour.octenace.document.array;
 
 public interface DocumentArrayFactory<O, A, V> {
 
-	DocumentArray<O, A, V> createEmptyArray();
+	default DocumentArray<O, A, V> createEmptyArray() {
+		return createEmptyArray(0);
+	}
+
+	DocumentArray<O, A, V> createEmptyArray(int capacity);
 
 	DocumentArray<O, A, V> createArray(A array);
 }

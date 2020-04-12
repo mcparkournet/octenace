@@ -26,7 +26,11 @@ package net.mcparkour.octenace.document.object;
 
 public interface DocumentObjectFactory<O, A, V> {
 
-	DocumentObject<O, A, V> createEmptyObject();
+	default DocumentObject<O, A, V> createEmptyObject() {
+		return createEmptyObject(0);
+	}
+
+	DocumentObject<O, A, V> createEmptyObject(int capacity);
 
 	DocumentObject<O, A, V> createObject(O object);
 }

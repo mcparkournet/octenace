@@ -31,8 +31,8 @@ import java.util.Map;
 public class TestDocumentObjectFactory implements DocumentObjectFactory<Map<Object, Object>, List<Object>, Object> {
 
 	@Override
-	public DocumentObject<Map<Object, Object>, List<Object>, Object> createEmptyObject() {
-		Map<Object, Object> object = new LinkedHashMap<>(0);
+	public DocumentObject<Map<Object, Object>, List<Object>, Object> createEmptyObject(int capacity) {
+		Map<Object, Object> object = new LinkedHashMap<>(capacity);
 		return new TestDocumentObject(object);
 	}
 
