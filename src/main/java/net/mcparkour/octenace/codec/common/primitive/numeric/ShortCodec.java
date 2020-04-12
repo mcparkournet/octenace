@@ -24,21 +24,27 @@
 
 package net.mcparkour.octenace.codec.common.primitive.numeric;
 
-import java.lang.reflect.Type;
-import net.mcparkour.octenace.codec.CommonCodec;
-import net.mcparkour.octenace.mapper.Mapper;
+import net.mcparkour.octenace.codec.Codec;
 import net.mcparkour.octenace.document.value.DocumentValue;
+import net.mcparkour.octenace.mapper.Mapper;
+import net.mcparkour.octenace.mapper.metadata.TypeMetadata;
+import net.mcparkour.octenace.mapper.metadata.ValueMetadata;
 
-public class ShortCodec implements CommonCodec<Short> {
+public class ShortCodec<O, A, V> implements Codec<O, A, V, ValueMetadata, Short> {
 
 	@Override
-	public <O, A, V> DocumentValue<O, A, V> toDocument(Short object, Type type, Mapper<O, A, V> mapper) {
+	public DocumentValue<O, A, V> toDocument(Short object, ValueMetadata metadata, Mapper<O, A, V> mapper) {
 		var valueFactory = mapper.getValueFactory();
 		return valueFactory.createValue(object);
 	}
 
 	@Override
-	public <O, A, V> Short toObject(DocumentValue<O, A, V> document, Type type, Mapper<O, A, V> mapper) {
+	public Short toObject(DocumentValue<O, A, V> document, ValueMetadata metadata, Mapper<O, A, V> mapper) {
 		return document.asShort();
+	}
+
+	@Override
+	public ValueMetadata getMetadata(TypeMetadata type, Mapper<O, A, V> mapper) {
+		return new ValueMetadata();
 	}
 }

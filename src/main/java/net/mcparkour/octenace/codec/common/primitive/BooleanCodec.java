@@ -24,22 +24,28 @@
 
 package net.mcparkour.octenace.codec.common.primitive;
 
-import java.lang.reflect.Type;
-import net.mcparkour.octenace.codec.CommonCodec;
-import net.mcparkour.octenace.mapper.Mapper;
+import net.mcparkour.octenace.codec.Codec;
 import net.mcparkour.octenace.document.value.DocumentValue;
 import net.mcparkour.octenace.document.value.DocumentValueFactory;
+import net.mcparkour.octenace.mapper.Mapper;
+import net.mcparkour.octenace.mapper.metadata.TypeMetadata;
+import net.mcparkour.octenace.mapper.metadata.ValueMetadata;
 
-public class BooleanCodec implements CommonCodec<Boolean> {
+public class BooleanCodec<O, A, V> implements Codec<O, A, V, ValueMetadata, Boolean> {
 
 	@Override
-	public <O, A, V> DocumentValue<O, A, V> toDocument(Boolean object, Type type, Mapper<O, A, V> mapper) {
+	public DocumentValue<O, A, V> toDocument(Boolean object, ValueMetadata metadata, Mapper<O, A, V> mapper) {
 		DocumentValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
 		return valueFactory.createValue(object);
 	}
 
 	@Override
-	public <O, A, V> Boolean toObject(DocumentValue<O, A, V> document, Type type, Mapper<O, A, V> mapper) {
+	public Boolean toObject(DocumentValue<O, A, V> document, ValueMetadata metadata, Mapper<O, A, V> mapper) {
 		return document.asBoolean();
+	}
+
+	@Override
+	public ValueMetadata getMetadata(TypeMetadata type, Mapper<O, A, V> mapper) {
+		return new ValueMetadata();
 	}
 }

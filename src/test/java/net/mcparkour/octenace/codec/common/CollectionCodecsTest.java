@@ -24,9 +24,9 @@
 
 package net.mcparkour.octenace.codec.common;
 
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -34,79 +34,82 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import net.mcparkour.common.reflection.Reflections;
-import net.mcparkour.octenace.codec.CommonCodec;
-import net.mcparkour.octenace.codec.common.collection.CollectionCodecs;
-import net.mcparkour.octenace.mapper.TestMapper;
+import net.mcparkour.octenace.codec.common.collection.ArrayCodec;
+import net.mcparkour.octenace.codec.common.collection.ArrayListCodec;
+import net.mcparkour.octenace.codec.common.collection.HashMapCodec;
+import net.mcparkour.octenace.codec.common.collection.HashSetCodec;
+import net.mcparkour.octenace.codec.common.collection.LinkedHashMapCodec;
+import net.mcparkour.octenace.codec.common.collection.LinkedHashSetCodec;
 import net.mcparkour.octenace.document.value.TestDocumentValue;
+import net.mcparkour.octenace.mapper.TestMapper;
+import net.mcparkour.octenace.mapper.metadata.TypeMetadata;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class CollectionCodecsTest {
 
-	@SuppressWarnings("unused")
-	private static final Collection<String> STRING_COLLECTION = List.of();
-	@SuppressWarnings("unused")
-	private static final Map<String, String> STRING_MAP = Map.of();
 	private static final List<String> TEST_COLLECTION = List.of("foo", "bar", "foobar");
 	private static final Map<String, String> TEST_MAP = Map.of("foo", "bar", "bar", "foo", "foobar", "barfoo");
 
 	private TestMapper mapper;
-	private Type stringCollectionType;
-	private Type stringMapType;
 
 	@BeforeEach
 	public void setUp() {
 		this.mapper = new TestMapper();
-		this.stringCollectionType = Reflections.getField(CollectionCodecsTest.class, "STRING_COLLECTION").getGenericType();
-		this.stringMapType = Reflections.getField(CollectionCodecsTest.class, "STRING_MAP").getGenericType();
 	}
 
 	@Test
 	public void testArrayCodecEncode() {
-		CommonCodec<Object[]> codec = CollectionCodecs.ARRAY_CODEC;
+		ArrayCodec<Map<Object, Object>, List<Object>, Object> codec = new ArrayCodec<>();
 		String[] array = {"foo", "bar", "foobar"};
-		var encoded = codec.toDocument(array, String[].class, this.mapper);
+		var metadata = codec.getMetadata(new TypeMetadata(String[].class), this.mapper);
+		var encoded = codec.toDocument(array, metadata, this.mapper);
 		Object value = encoded.getValue();
 		Assertions.assertEquals(List.of(array), value);
 	}
 
 	@Test
 	public void testArrayCodecDecode() {
-		CommonCodec<Object[]> codec = CollectionCodecs.ARRAY_CODEC;
+		ArrayCodec<Map<Object, Object>, List<Object>, Object> codec = new ArrayCodec<>();
 		String[] array = {"foo", "bar", "foobar"};
 		TestDocumentValue value = new TestDocumentValue(List.of(array));
-		var decoded = codec.toObject(value, String[].class, this.mapper);
+		var metadata = codec.getMetadata(new TypeMetadata(String[].class), this.mapper);
+		var decoded = codec.toObject(value, metadata, this.mapper);
 		Assertions.assertArrayEquals(array, decoded);
 	}
 
 	@Test
 	public void testArrayListCodecEncode() {
-		CommonCodec<Collection<?>> codec = CollectionCodecs.ARRAY_LIST_CODEC;
-		List<String> list = new ArrayList<>(3);
+		ArrayListCodec<Map<Object, Object>, List<Object>, Object> codec = new ArrayListCodec<>();
+		ArrayList<String> list = new ArrayList<>(3);
 		list.addAll(TEST_COLLECTION);
-		var encoded = codec.toDocument(list, ArrayList.class, this.mapper);
+		var metadata = codec.getMetadata(new TypeMetadata(ArrayList.class, new GenericTypes(String.class)), this.mapper);
+		var encoded = codec.toDocument(list, metadata, this.mapper);
 		Object value = encoded.getValue();
 		Assertions.assertEquals(list, value);
 	}
 
 	@Test
 	public void testArrayListCodecDecode() {
-		CommonCodec<Collection<?>> codec = CollectionCodecs.ARRAY_LIST_CODEC;
+		ArrayListCodec<Map<Object, Object>, List<Object>, Object> codec = new ArrayListCodec<>();
 		List<Object> list = new ArrayList<>(3);
 		list.addAll(TEST_COLLECTION);
 		TestDocumentValue value = new TestDocumentValue(list);
-		var decoded = codec.toObject(value, this.stringCollectionType, this.mapper);
+		TypeMetadata type = new TypeMetadata(ArrayList.class, new GenericTypes(String.class));
+		var metadata = codec.getMetadata(type, this.mapper);
+		var decoded = codec.toObject(value, metadata, this.mapper);
 		Assertions.assertEquals(list, decoded);
 	}
 
 	@Test
 	public void testHashSetCodecEncode() {
-		CommonCodec<Collection<?>> codec = CollectionCodecs.HASH_SET_CODEC;
-		Set<String> set = new HashSet<>(3);
+		HashSetCodec<Map<Object, Object>, List<Object>, Object> codec = new HashSetCodec<>();
+		HashSet<String> set = new HashSet<>(3);
 		set.addAll(TEST_COLLECTION);
-		var encoded = codec.toDocument(set, HashSet.class, this.mapper);
+		TypeMetadata type = new TypeMetadata(HashSet.class, new GenericTypes(String.class));
+		var metadata = codec.getMetadata(type, this.mapper);
+		var encoded = codec.toDocument(set, metadata, this.mapper);
 		Object value = encoded.getValue();
 		Iterable<?> iterable = (Iterable<?>) value;
 		Assertions.assertIterableEquals(set, iterable);
@@ -114,21 +117,25 @@ public class CollectionCodecsTest {
 
 	@Test
 	public void testHashSetCodecDecode() {
-		CommonCodec<Collection<?>> codec = CollectionCodecs.HASH_SET_CODEC;
+		HashSetCodec<Map<Object, Object>, List<Object>, Object> codec = new HashSetCodec<>();
 		Set<Object> set = new HashSet<>(3);
 		set.addAll(TEST_COLLECTION);
 		List<Object> objects = List.copyOf(set);
 		TestDocumentValue value = new TestDocumentValue(objects);
-		var decoded = codec.toObject(value, this.stringCollectionType, this.mapper);
+		TypeMetadata type = new TypeMetadata(HashSet.class, new GenericTypes(String.class));
+		var metadata = codec.getMetadata(type, this.mapper);
+		var decoded = codec.toObject(value, metadata, this.mapper);
 		Assertions.assertEquals(set, decoded);
 	}
 
 	@Test
 	public void testLinkedHashSetCodecEncode() {
-		CommonCodec<Collection<?>> codec = CollectionCodecs.LINKED_HASH_SET_CODEC;
-		Set<String> set = new LinkedHashSet<>(3);
+		LinkedHashSetCodec<Map<Object, Object>, List<Object>, Object> codec = new LinkedHashSetCodec<>();
+		LinkedHashSet<String> set = new LinkedHashSet<>(3);
 		set.addAll(TEST_COLLECTION);
-		var encoded = codec.toDocument(set, LinkedHashSet.class, this.mapper);
+		TypeMetadata type = new TypeMetadata(LinkedHashSet.class, new GenericTypes(String.class));
+		var metadata = codec.getMetadata(type, this.mapper);
+		var encoded = codec.toDocument(set, metadata, this.mapper);
 		Object value = encoded.getValue();
 		Iterable<?> iterable = (Iterable<?>) value;
 		Assertions.assertIterableEquals(set, iterable);
@@ -136,52 +143,86 @@ public class CollectionCodecsTest {
 
 	@Test
 	public void testLinkedHashSetCodecDecode() {
-		CommonCodec<Collection<?>> codec = CollectionCodecs.LINKED_HASH_SET_CODEC;
+		LinkedHashSetCodec<Map<Object, Object>, List<Object>, Object> codec = new LinkedHashSetCodec<>();
 		Set<Object> set = new LinkedHashSet<>(3);
 		set.addAll(TEST_COLLECTION);
 		List<Object> objects = List.copyOf(set);
 		TestDocumentValue value = new TestDocumentValue(objects);
-		var decoded = codec.toObject(value, this.stringCollectionType, this.mapper);
+		TypeMetadata type = new TypeMetadata(LinkedHashSet.class, new GenericTypes(String.class));
+		var metadata = codec.getMetadata(type, this.mapper);
+		var decoded = codec.toObject(value, metadata, this.mapper);
 		Assertions.assertEquals(set, decoded);
 	}
 
 	@Test
 	public void testHashMapCodecEncode() {
-		CommonCodec<Map<?, ?>> codec = CollectionCodecs.HASH_MAP_CODEC;
-		Map<String, String> map = new HashMap<>(3);
+		HashMapCodec<Map<Object, Object>, List<Object>, Object> codec = new HashMapCodec<>();
+		HashMap<String, String> map = new HashMap<>(3);
 		map.putAll(TEST_MAP);
-		var encoded = codec.toDocument(map, HashMap.class, this.mapper);
+		TypeMetadata type = new TypeMetadata(HashMap.class, new GenericTypes(String.class, String.class));
+		var metadata = codec.getMetadata(type, this.mapper);
+		var encoded = codec.toDocument(map, metadata, this.mapper);
 		Object value = encoded.getValue();
 		Assertions.assertEquals(map, value);
 	}
 
 	@Test
 	public void testHashMapCodecDecode() {
-		CommonCodec<Map<?, ?>> codec = CollectionCodecs.HASH_MAP_CODEC;
+		HashMapCodec<Map<Object, Object>, List<Object>, Object> codec = new HashMapCodec<>();
 		Map<Object, Object> map = new HashMap<>(3);
 		map.putAll(TEST_MAP);
 		TestDocumentValue value = new TestDocumentValue(map);
-		var decoded = codec.toObject(value, this.stringMapType, this.mapper);
+		TypeMetadata type = new TypeMetadata(HashMap.class, new GenericTypes(String.class, String.class));
+		var metadata = codec.getMetadata(type, this.mapper);
+		var decoded = codec.toObject(value, metadata, this.mapper);
 		Assertions.assertEquals(map, decoded);
 	}
 
 	@Test
 	public void testLinkedHashMapCodecEncode() {
-		CommonCodec<Map<?, ?>> codec = CollectionCodecs.LINKED_HASH_MAP_CODEC;
-		Map<String, String> map = new LinkedHashMap<>(3);
+		LinkedHashMapCodec<Map<Object, Object>, List<Object>, Object> codec = new LinkedHashMapCodec<>();
+		LinkedHashMap<String, String> map = new LinkedHashMap<>(3);
 		map.putAll(TEST_MAP);
-		var encoded = codec.toDocument(map, LinkedHashMap.class, this.mapper);
+		TypeMetadata type = new TypeMetadata(LinkedHashMap.class, new GenericTypes(String.class, String.class));
+		var metadata = codec.getMetadata(type, this.mapper);
+		var encoded = codec.toDocument(map, metadata, this.mapper);
 		Object value = encoded.getValue();
 		Assertions.assertEquals(map, value);
 	}
 
 	@Test
 	public void testLinkedHashMapCodecDecode() {
-		CommonCodec<Map<?, ?>> codec = CollectionCodecs.LINKED_HASH_MAP_CODEC;
+		LinkedHashMapCodec<Map<Object, Object>, List<Object>, Object> codec = new LinkedHashMapCodec<>();
 		Map<Object, Object> map = new LinkedHashMap<>(3);
 		map.putAll(TEST_MAP);
 		TestDocumentValue value = new TestDocumentValue(map);
-		var decoded = codec.toObject(value, this.stringMapType, this.mapper);
+		TypeMetadata type = new TypeMetadata(LinkedHashMap.class, new GenericTypes(String.class, String.class));
+		var metadata = codec.getMetadata(type, this.mapper);
+		var decoded = codec.toObject(value, metadata, this.mapper);
 		Assertions.assertEquals(map, decoded);
+	}
+
+	private static final class GenericTypes implements ParameterizedType {
+
+		private Type[] genericTypes;
+
+		private GenericTypes(Type... genericTypes) {
+			this.genericTypes = genericTypes;
+		}
+
+		@Override
+		public Type[] getActualTypeArguments() {
+			return this.genericTypes;
+		}
+
+		@Override
+		public Type getRawType() {
+			return void.class;
+		}
+
+		@Override
+		public Type getOwnerType() {
+			return void.class;
+		}
 	}
 }

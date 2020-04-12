@@ -27,33 +27,28 @@ package net.mcparkour.octenace.codec.registry;
 import java.util.HashMap;
 import java.util.Map;
 import net.mcparkour.octenace.codec.Codec;
-import net.mcparkour.octenace.codec.CommonCodec;
+import net.mcparkour.octenace.mapper.metadata.Metadata;
 
-public class CodecRegistryBuilder {
+public class CodecRegistryBuilder<O, A, V> {
 
-	private Map<Class<?>, Codec<?, ?, ?, ?>> codecs;
+	private Map<Class<?>, Codec<O, A, V, ? extends Metadata, ?>> codecs;
 
 	public CodecRegistryBuilder() {
 		this.codecs = new HashMap<>(0);
 	}
 
-	public CodecRegistryBuilder registry(CodecRegistry registry) {
-		Map<Class<?>, Codec<?, ?, ?, ?>> codecs = registry.getCodecs();
+	public CodecRegistryBuilder<O, A, V> registry(CodecRegistry<O, A, V> registry) {
+		Map<Class<?>, Codec<O, A, V, ? extends Metadata, ?>> codecs = registry.getCodecs();
 		this.codecs.putAll(codecs);
 		return this;
 	}
 
-	public CodecRegistryBuilder codec(CommonCodec<?> codec, Class<?> type) {
-		CommonCodecWrapper<?, ?, ?, ?> wrapper = new CommonCodecWrapper<>(codec);
-		return codec(wrapper, type);
-	}
-
-	public CodecRegistryBuilder codec(Codec<?, ?, ?, ?> codec, Class<?> type) {
+	public CodecRegistryBuilder<O, A, V> codec(Class<?> type, Codec<O, A, V, ? extends Metadata, ?> codec) {
 		this.codecs.put(type, codec);
 		return this;
 	}
 
-	public CodecRegistry build() {
-		return new CodecRegistry(this.codecs);
+	public CodecRegistry<O, A, V> build() {
+		return new CodecRegistry<>(this.codecs);
 	}
 }

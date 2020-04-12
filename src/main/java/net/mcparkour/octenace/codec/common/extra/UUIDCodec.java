@@ -24,25 +24,31 @@
 
 package net.mcparkour.octenace.codec.common.extra;
 
-import java.lang.reflect.Type;
 import java.util.UUID;
-import net.mcparkour.octenace.codec.CommonCodec;
-import net.mcparkour.octenace.mapper.Mapper;
+import net.mcparkour.octenace.codec.Codec;
 import net.mcparkour.octenace.document.value.DocumentValue;
 import net.mcparkour.octenace.document.value.DocumentValueFactory;
+import net.mcparkour.octenace.mapper.Mapper;
+import net.mcparkour.octenace.mapper.metadata.TypeMetadata;
+import net.mcparkour.octenace.mapper.metadata.ValueMetadata;
 
-public class UUIDCodec implements CommonCodec<UUID> {
+public class UUIDCodec<O, A, V> implements Codec<O, A, V, ValueMetadata, UUID> {
 
 	@Override
-	public <O, A, V> DocumentValue<O, A, V> toDocument(UUID object, Type type, Mapper<O, A, V> mapper) {
+	public DocumentValue<O, A, V> toDocument(UUID object, ValueMetadata metadata, Mapper<O, A, V> mapper) {
 		DocumentValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
 		String uuidString = object.toString();
 		return valueFactory.createValue(uuidString);
 	}
 
 	@Override
-	public <O, A, V> UUID toObject(DocumentValue<O, A, V> document, Type type, Mapper<O, A, V> mapper) {
+	public UUID toObject(DocumentValue<O, A, V> document, ValueMetadata metadata, Mapper<O, A, V> mapper) {
 		String uuidString = document.asString();
 		return UUID.fromString(uuidString);
+	}
+
+	@Override
+	public ValueMetadata getMetadata(TypeMetadata type, Mapper<O, A, V> mapper) {
+		return new ValueMetadata();
 	}
 }

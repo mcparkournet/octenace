@@ -22,30 +22,14 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.codec.common;
+package net.mcparkour.octenace.codec.common.collection;
 
-import net.mcparkour.octenace.codec.Codec;
-import net.mcparkour.octenace.document.value.DocumentValue;
-import net.mcparkour.octenace.document.value.DocumentValueFactory;
-import net.mcparkour.octenace.mapper.Mapper;
-import net.mcparkour.octenace.mapper.metadata.TypeMetadata;
-import net.mcparkour.octenace.mapper.metadata.ValueMetadata;
+import java.util.LinkedHashSet;
 
-public class StringCodec<O, A, V> implements Codec<O, A, V, ValueMetadata, String> {
+public class LinkedHashSetCodec<O, A, V> extends CollectionCodec<O, A, V, LinkedHashSet<?>> {
 
 	@Override
-	public DocumentValue<O, A, V> toDocument(String object, ValueMetadata metadata, Mapper<O, A, V> mapper) {
-		DocumentValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
-		return valueFactory.createValue(object);
-	}
-
-	@Override
-	public String toObject(DocumentValue<O, A, V> document, ValueMetadata metadata, Mapper<O, A, V> mapper) {
-		return document.asString();
-	}
-
-	@Override
-	public ValueMetadata getMetadata(TypeMetadata type, Mapper<O, A, V> mapper) {
-		return new ValueMetadata();
+	public LinkedHashSet<?> createCollection(int size) {
+		return new LinkedHashSet<>(size);
 	}
 }

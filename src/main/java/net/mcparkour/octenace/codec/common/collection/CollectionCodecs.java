@@ -25,7 +25,6 @@
 package net.mcparkour.octenace.codec.common.collection;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -33,32 +32,32 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import net.mcparkour.octenace.codec.CommonCodec;
 import net.mcparkour.octenace.codec.registry.CodecRegistry;
 import net.mcparkour.octenace.codec.registry.CodecRegistryBuilder;
 
 public final class CollectionCodecs {
 
-	public static final CommonCodec<Object[]> ARRAY_CODEC = new ArrayCodec();
-	public static final CommonCodec<Collection<?>> ARRAY_LIST_CODEC = new CollectionCodec(ArrayList::new);
-	public static final CommonCodec<Collection<?>> HASH_SET_CODEC = new CollectionCodec(HashSet::new);
-	public static final CommonCodec<Collection<?>> LINKED_HASH_SET_CODEC = new CollectionCodec(LinkedHashSet::new);
-	public static final CommonCodec<Map<?, ?>> HASH_MAP_CODEC = new MapCodec(HashMap::new);
-	public static final CommonCodec<Map<?, ?>> LINKED_HASH_MAP_CODEC = new MapCodec(LinkedHashMap::new);
-
-	public static final CodecRegistry COLLECTION_CODEC_REGISTRY = new CodecRegistryBuilder()
-		.codec(ARRAY_CODEC, Object[].class)
-		.codec(ARRAY_LIST_CODEC, ArrayList.class)
-		.codec(ARRAY_LIST_CODEC, List.class)
-		.codec(LINKED_HASH_SET_CODEC, LinkedHashSet.class)
-		.codec(HASH_SET_CODEC, HashSet.class)
-		.codec(HASH_SET_CODEC, Set.class)
-		.codec(LINKED_HASH_MAP_CODEC, LinkedHashMap.class)
-		.codec(HASH_MAP_CODEC, HashMap.class)
-		.codec(HASH_MAP_CODEC, Map.class)
-		.build();
-
 	private CollectionCodecs() {
 		throw new UnsupportedOperationException("Cannot create an instance of this class");
+	}
+
+	public static <O, A, V> CodecRegistry<O, A, V> createCollectionCodecRegistry() {
+		ArrayCodec<O, A, V> arrayCodec = new ArrayCodec<>();
+		ArrayListCodec<O, A, V> arrayListCodec = new ArrayListCodec<>();
+		HashSetCodec<O, A, V> hashSetCodec = new HashSetCodec<>();
+		LinkedHashSetCodec<O, A, V> linkedHashSetCodec = new LinkedHashSetCodec<>();
+		HashMapCodec<O, A, V> hashMapCodec = new HashMapCodec<>();
+		LinkedHashMapCodec<O, A, V> linkedHashMapCodec = new LinkedHashMapCodec<>();
+		return new CodecRegistryBuilder<O, A, V>()
+			.codec(Object[].class, arrayCodec)
+			.codec(ArrayList.class, arrayListCodec)
+			.codec(List.class, arrayListCodec)
+			.codec(LinkedHashSet.class, linkedHashSetCodec)
+			.codec(HashSet.class, hashSetCodec)
+			.codec(Set.class, hashSetCodec)
+			.codec(LinkedHashMap.class, linkedHashMapCodec)
+			.codec(HashMap.class, hashMapCodec)
+			.codec(Map.class, hashMapCodec)
+			.build();
 	}
 }

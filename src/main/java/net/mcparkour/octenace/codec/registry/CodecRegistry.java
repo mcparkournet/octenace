@@ -30,21 +30,21 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 import net.mcparkour.octenace.codec.Codec;
+import net.mcparkour.octenace.mapper.metadata.Metadata;
 import org.jetbrains.annotations.Nullable;
 
-public class CodecRegistry {
+public class CodecRegistry<O, A, V> {
 
-	private static final Comparator<Entry<Class<?>, Codec<?, ?, ?, ?>>> INHERITANCE_DEPTH_COMPARATOR = Comparator.comparingInt(CodecRegistry::getEntryInheritanceDepth).reversed();
+	private Map<Class<?>, Codec<O, A, V, ? extends Metadata, ?>> codecs;
 
-	private Map<Class<?>, Codec<?, ?, ?, ?>> codecs;
-
-	public CodecRegistry(Map<Class<?>, Codec<?, ?, ?, ?>> codecs) {
+	public CodecRegistry(Map<Class<?>, Codec<O, A, V, ? extends Metadata, ?>> codecs) {
+		var comparator = Comparator.comparingInt(this::getEntryInheritanceDepth).reversed();
 		this.codecs = codecs.entrySet().stream()
-			.sorted(INHERITANCE_DEPTH_COMPARATOR)
+			.sorted(comparator)
 			.collect(Collectors.toMap(Entry::getKey, Entry::getValue, (codec1, codec2) -> codec1, LinkedHashMap::new));
 	}
 
-	private static int getEntryInheritanceDepth(Entry<Class<?>, Codec<?, ?, ?, ?>> entry) {
+	private int getEntryInheritanceDepth(Entry<Class<?>, Codec<O, A, V, ? extends Metadata, ?>> entry) {
 		Class<?> key = entry.getKey();
 		return getInheritanceDepth(key);
 	}
@@ -62,13 +62,14 @@ public class CodecRegistry {
 		return depth;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Nullable
-	public Codec<?, ?, ?, ?> get(Class<?> type) {
-		return this.codecs.computeIfAbsent(type, this::computeCodec);
+	public <T> Codec<O, A, V, ? extends Metadata, T> get(Class<T> type) {
+		return (Codec<O, A, V, ? extends Metadata, T>) this.codecs.computeIfAbsent(type, this::computeCodec);
 	}
 
 	@Nullable
-	private Codec<?, ?, ?, ?> computeCodec(Class<?> type) {
+	private Codec<O, A, V, ? extends Metadata, ?> computeCodec(Class<?> type) {
 		return this.codecs.entrySet().stream()
 			.filter(entry -> entry.getKey().isAssignableFrom(type))
 			.findFirst()
@@ -76,7 +77,7 @@ public class CodecRegistry {
 			.orElse(null);
 	}
 
-	Map<Class<?>, Codec<?, ?, ?, ?>> getCodecs() {
+	Map<Class<?>, Codec<O, A, V, ? extends Metadata, ?>> getCodecs() {
 		return Map.copyOf(this.codecs);
 	}
 }

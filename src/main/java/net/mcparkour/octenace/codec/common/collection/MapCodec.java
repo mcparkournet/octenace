@@ -24,72 +24,82 @@
 
 package net.mcparkour.octenace.codec.common.collection;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.Map;
-import net.mcparkour.common.reflection.type.Types;
-import net.mcparkour.octenace.codec.CommonCodec;
-import net.mcparkour.octenace.mapper.Mapper;
+import java.util.Map.Entry;
+import java.util.Set;
+import net.mcparkour.octenace.codec.Codec;
 import net.mcparkour.octenace.document.object.DocumentObject;
 import net.mcparkour.octenace.document.object.DocumentObjectFactory;
 import net.mcparkour.octenace.document.value.DocumentValue;
 import net.mcparkour.octenace.document.value.DocumentValueFactory;
+import net.mcparkour.octenace.mapper.Mapper;
+import net.mcparkour.octenace.mapper.metadata.Element;
+import net.mcparkour.octenace.mapper.metadata.MapMetadata;
+import net.mcparkour.octenace.mapper.metadata.Metadata;
+import net.mcparkour.octenace.mapper.metadata.TypeMetadata;
 
-public class MapCodec implements CommonCodec<Map<?, ?>> {
-
-	private CollectionSupplier<? extends Map<Object, Object>> mapSupplier;
-
-	public MapCodec(CollectionSupplier<? extends Map<Object, Object>> mapSupplier) {
-		this.mapSupplier = mapSupplier;
-	}
+public abstract class MapCodec<O, A, V, T extends Map<?, ?>> implements Codec<O, A, V, MapMetadata<O, A, V>, T> {
 
 	@Override
-	public <O, A, V> DocumentValue<O, A, V> toDocument(Map<?, ?> object, Type type, Mapper<O, A, V> mapper) {
-		DocumentObjectFactory<O, A, V> objectFactory = mapper.getObjectFactory();
-		DocumentObject<O, A, V> documentObject = objectFactory.createEmptyObject();
-		for (Map.Entry<?, ?> entry : object.entrySet()) {
-			DocumentValue<O, A, V> modelKey = getModelKey(entry, mapper);
-			DocumentValue<O, A, V> documentValue = getModelValue(entry, mapper);
-			documentObject.set(modelKey, documentValue);
-		}
+	public DocumentValue<O, A, V> toDocument(T object, MapMetadata<O, A, V> metadata, Mapper<O, A, V> mapper) {
 		DocumentValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
+		DocumentObjectFactory<O, A, V> objectFactory = mapper.getObjectFactory();
+		int size = object.size();
+		DocumentObject<O, A, V> documentObject = objectFactory.createEmptyObject(size);
+		Element<O, A, V> keyElement = metadata.getKeyElement();
+		Element<O, A, V> valueElement = metadata.getValueElement();
+		Codec<O, A, V, Metadata, Object> keyCodec = keyElement.getObjectCodec();
+		Codec<O, A, V, Metadata, Object> valueCodec = valueElement.getObjectCodec();
+		Metadata keyElementMetadata = keyElement.getMetadata();
+		Metadata valueElementMetadata = valueElement.getMetadata();
+		Set<? extends Entry<?, ?>> entries = object.entrySet();
+		for (Map.Entry<?, ?> entry : entries) {
+			Object key = entry.getKey();
+			Object value = entry.getValue();
+			DocumentValue<O, A, V> valueKey = keyCodec.toDocument(key, keyElementMetadata, mapper);
+			DocumentValue<O, A, V> valueValue = valueCodec.toDocument(value, valueElementMetadata, mapper);
+			documentObject.set(valueKey, valueValue);
+		}
 		return valueFactory.createObjectValue(documentObject);
 	}
 
-	private <O, A, V> DocumentValue<O, A, V> getModelKey(Map.Entry<?, ?> entry, Mapper<O, A, V> mapper) {
-		Object key = entry.getKey();
-		Class<?> keyType = key.getClass();
-		return mapper.toDocument(key, keyType);
-	}
-
-	private <O, A, V> DocumentValue<O, A, V> getModelValue(Map.Entry<?, ?> entry, Mapper<O, A, V> mapper) {
-		Object value = entry.getValue();
-		Class<?> valueType = value.getClass();
-		return mapper.toDocument(value, valueType);
-	}
-
+	@SuppressWarnings("unchecked")
 	@Override
-	public <O, A, V> Map<?, ?> toObject(DocumentValue<O, A, V> document, Type type, Mapper<O, A, V> mapper) {
+	public T toObject(DocumentValue<O, A, V> document, MapMetadata<O, A, V> metadata, Mapper<O, A, V> mapper) {
 		DocumentObjectFactory<O, A, V> objectFactory = mapper.getObjectFactory();
 		O rawObject = document.asObject();
 		DocumentObject<O, A, V> object = objectFactory.createObject(rawObject);
-		Type[] genericTypes = getGenericTypes(type);
-		Type keyType = genericTypes[0];
-		Type valueType = genericTypes[1];
+		Element<O, A, V> keyElement = metadata.getKeyElement();
+		Element<O, A, V> valueElement = metadata.getValueElement();
+		Codec<O, A, V, Metadata, Object> keyCodec = keyElement.getObjectCodec();
+		Codec<O, A, V, Metadata, Object> valueCodec = valueElement.getObjectCodec();
+		Metadata keyElementMetadata = keyElement.getMetadata();
+		Metadata valueElementMetadata = valueElement.getMetadata();
 		int size = object.getSize();
-		Map<Object, Object> map = this.mapSupplier.supply(size);
-		for (Map.Entry<DocumentValue<O, A, V>, DocumentValue<O, A, V>> entry : object) {
+		Map<Object, Object> map = (Map<Object, Object>) createMap(size);
+		for (var entry : object) {
 			DocumentValue<O, A, V> entryKey = entry.getKey();
-			Object mapKey = mapper.toObject(entryKey, keyType);
 			DocumentValue<O, A, V> entryValue = entry.getValue();
-			Object mapValue = mapper.toObject(entryValue, valueType);
-			map.put(mapKey, mapValue);
+			Object key = keyCodec.toObject(entryKey, keyElementMetadata, mapper);
+			Object value = valueCodec.toObject(entryValue, valueElementMetadata, mapper);
+			map.put(key, value);
 		}
-		return map;
+		return (T) map;
 	}
 
-	private Type[] getGenericTypes(Type type) {
-		ParameterizedType parameterizedType = Types.asParametrizedType(type);
-		return parameterizedType.getActualTypeArguments();
+	public abstract T createMap(int size);
+
+	@Override
+	public MapMetadata<O, A, V> getMetadata(TypeMetadata type, Mapper<O, A, V> mapper) {
+		Entry<Class<?>, Class<?>> genericTypes = type.getGenericTypesPair();
+		Class<?> keyType = genericTypes.getKey();
+		Class<?> valueType = genericTypes.getValue();
+		var keyCodec = mapper.getObjectCodec(keyType);
+		var valueCodec = mapper.getObjectCodec(valueType);
+		Metadata keyMetadata = keyCodec.getMetadata(new TypeMetadata(keyType), mapper);
+		Metadata valueMetadata = valueCodec.getMetadata(new TypeMetadata(valueType), mapper);
+		Element<O, A, V> keyElement = new Element<>(keyType, keyCodec, keyMetadata);
+		Element<O, A, V> valueElement = new Element<>(valueType, valueCodec, valueMetadata);
+		return new MapMetadata<>(keyElement, valueElement);
 	}
 }

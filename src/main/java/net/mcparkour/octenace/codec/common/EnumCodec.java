@@ -25,41 +25,50 @@
 package net.mcparkour.octenace.codec.common;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Type;
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import net.mcparkour.common.reflection.Reflections;
-import net.mcparkour.common.reflection.type.Types;
-import net.mcparkour.octenace.codec.CommonCodec;
-import net.mcparkour.octenace.mapper.Mapper;
+import net.mcparkour.octenace.codec.Codec;
 import net.mcparkour.octenace.document.value.DocumentValue;
 import net.mcparkour.octenace.document.value.DocumentValueFactory;
+import net.mcparkour.octenace.mapper.Mapper;
+import net.mcparkour.octenace.mapper.metadata.EnumMetadata;
+import net.mcparkour.octenace.mapper.metadata.TypeMetadata;
 
-public class EnumCodec implements CommonCodec<Enum<?>> {
+public class EnumCodec<O, A, V> implements Codec<O, A, V, EnumMetadata, Enum<?>> {
 
 	@Override
-	public <O, A, V> DocumentValue<O, A, V> toDocument(Enum<?> object, Type type, Mapper<O, A, V> mapper) {
+	public DocumentValue<O, A, V> toDocument(Enum<?> object, EnumMetadata metadata, Mapper<O, A, V> mapper) {
 		DocumentValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
-		String name = getEnumName(object, mapper);
+		String name = metadata.getName(object);
 		return valueFactory.createValue(name);
+	}
+
+	@Override
+	public Enum<?> toObject(DocumentValue<O, A, V> document, EnumMetadata metadata, Mapper<O, A, V> mapper) {
+		String valueString = document.asString();
+		return metadata.getEnum(valueString);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public <O, A, V> Enum<?> toObject(DocumentValue<O, A, V> document, Type type, Mapper<O, A, V> mapper) {
-		Type rawType = Types.getRawType(type);
-		Class<?> classType = Types.asClassType(rawType);
+	public EnumMetadata getMetadata(TypeMetadata type, Mapper<O, A, V> mapper) {
+		Class<?> classType = type.getClassType();
 		Class<? extends Enum<?>> enumType = (Class<? extends Enum<?>>) classType;
 		Enum<?>[] enumConstants = enumType.getEnumConstants();
-		String valueString = document.asString();
-		return Arrays.stream(enumConstants)
-			.filter(enumConstant -> valueString.equals(getEnumName(enumConstant, mapper)))
-			.findFirst()
-			.orElseThrow();
+		int length = enumConstants.length;
+		Map<Enum<?>, String> enumToNameMap = new HashMap<>(length);
+		Map<String, Enum<?>> nameToEnumMap = new HashMap<>(length);
+		for (Enum<?> enumConstant : enumConstants) {
+			String enumName = getEnumName(enumType, enumConstant, mapper);
+			enumToNameMap.put(enumConstant, enumName);
+			nameToEnumMap.put(enumName, enumConstant);
+		}
+		return new EnumMetadata(enumType, enumToNameMap, nameToEnumMap);
 	}
 
-	private <O, A, V> String getEnumName(Enum<?> object, Mapper<O, A, V> mapper) {
-		Class<? extends Enum<?>> type = object.getDeclaringClass();
-		String name = object.name();
+	private String getEnumName(Class<? extends Enum<?>> type, Enum<?> enumConstant, Mapper<O, A, V> mapper) {
+		String name = enumConstant.name();
 		Field field = Reflections.getField(type, name);
 		return mapper.getFieldName(field);
 	}

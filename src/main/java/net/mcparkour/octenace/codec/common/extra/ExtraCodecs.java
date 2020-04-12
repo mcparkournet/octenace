@@ -26,21 +26,21 @@ package net.mcparkour.octenace.codec.common.extra;
 
 import java.util.Locale;
 import java.util.UUID;
-import net.mcparkour.octenace.codec.CommonCodec;
 import net.mcparkour.octenace.codec.registry.CodecRegistry;
 import net.mcparkour.octenace.codec.registry.CodecRegistryBuilder;
 
 public final class ExtraCodecs {
 
-	public static final CommonCodec<UUID> UUID_CODEC = new UUIDCodec();
-	public static final CommonCodec<Locale> LOCALE_CODEC = new LocaleCodec();
-
-	public static final CodecRegistry EXTRA_CODEC_REGISTRY = new CodecRegistryBuilder()
-		.codec(UUID_CODEC, UUID.class)
-		.codec(LOCALE_CODEC, Locale.class)
-		.build();
-
 	private ExtraCodecs() {
 		throw new UnsupportedOperationException("Cannot create an instance of this class");
+	}
+
+	public static <O, A, V> CodecRegistry<O, A, V> createExtraCodecRegistry() {
+		UUIDCodec<O, A, V> uuidCodec = new UUIDCodec<>();
+		LocaleCodec<O, A, V> localeCodec = new LocaleCodec<>();
+		return new CodecRegistryBuilder<O, A, V>()
+			.codec(UUID.class, uuidCodec)
+			.codec(Locale.class, localeCodec)
+			.build();
 	}
 }

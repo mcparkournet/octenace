@@ -22,30 +22,31 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.codec.common;
+package net.mcparkour.octenace.mapper.metadata;
 
-import net.mcparkour.octenace.codec.Codec;
-import net.mcparkour.octenace.document.value.DocumentValue;
-import net.mcparkour.octenace.document.value.DocumentValueFactory;
-import net.mcparkour.octenace.mapper.Mapper;
-import net.mcparkour.octenace.mapper.metadata.TypeMetadata;
-import net.mcparkour.octenace.mapper.metadata.ValueMetadata;
+import java.lang.reflect.Field;
 
-public class StringCodec<O, A, V> implements Codec<O, A, V, ValueMetadata, String> {
+public class Property<O, A, V> {
 
-	@Override
-	public DocumentValue<O, A, V> toDocument(String object, ValueMetadata metadata, Mapper<O, A, V> mapper) {
-		DocumentValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
-		return valueFactory.createValue(object);
+	private String name;
+	private Field field;
+	private Element<O, A, V> element;
+
+	public Property(String name, Field field, Element<O, A, V> element) {
+		this.name = name;
+		this.field = field;
+		this.element = element;
 	}
 
-	@Override
-	public String toObject(DocumentValue<O, A, V> document, ValueMetadata metadata, Mapper<O, A, V> mapper) {
-		return document.asString();
+	public String getName() {
+		return this.name;
 	}
 
-	@Override
-	public ValueMetadata getMetadata(TypeMetadata type, Mapper<O, A, V> mapper) {
-		return new ValueMetadata();
+	public Field getField() {
+		return this.field;
+	}
+
+	public Element<O, A, V> getElement() {
+		return this.element;
 	}
 }

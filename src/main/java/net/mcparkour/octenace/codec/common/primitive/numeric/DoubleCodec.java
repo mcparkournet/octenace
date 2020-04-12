@@ -24,21 +24,27 @@
 
 package net.mcparkour.octenace.codec.common.primitive.numeric;
 
-import java.lang.reflect.Type;
-import net.mcparkour.octenace.codec.CommonCodec;
-import net.mcparkour.octenace.mapper.Mapper;
+import net.mcparkour.octenace.codec.Codec;
 import net.mcparkour.octenace.document.value.DocumentValue;
+import net.mcparkour.octenace.mapper.Mapper;
+import net.mcparkour.octenace.mapper.metadata.TypeMetadata;
+import net.mcparkour.octenace.mapper.metadata.ValueMetadata;
 
-public class DoubleCodec implements CommonCodec<Double> {
+public class DoubleCodec<O, A, V> implements Codec<O, A, V, ValueMetadata, Double> {
 
 	@Override
-	public <O, A, V> DocumentValue<O, A, V> toDocument(Double object, Type type, Mapper<O, A, V> mapper) {
+	public DocumentValue<O, A, V> toDocument(Double object, ValueMetadata metadata, Mapper<O, A, V> mapper) {
 		var valueFactory = mapper.getValueFactory();
 		return valueFactory.createValue(object);
 	}
 
 	@Override
-	public <O, A, V> Double toObject(DocumentValue<O, A, V> document, Type type, Mapper<O, A, V> mapper) {
+	public Double toObject(DocumentValue<O, A, V> document, ValueMetadata metadata, Mapper<O, A, V> mapper) {
 		return document.asDouble();
+	}
+
+	@Override
+	public ValueMetadata getMetadata(TypeMetadata type, Mapper<O, A, V> mapper) {
+		return new ValueMetadata();
 	}
 }

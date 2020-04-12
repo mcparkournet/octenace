@@ -22,30 +22,31 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.codec.common;
+package net.mcparkour.octenace.mapper.metadata;
 
-import net.mcparkour.octenace.codec.Codec;
-import net.mcparkour.octenace.document.value.DocumentValue;
-import net.mcparkour.octenace.document.value.DocumentValueFactory;
-import net.mcparkour.octenace.mapper.Mapper;
-import net.mcparkour.octenace.mapper.metadata.TypeMetadata;
-import net.mcparkour.octenace.mapper.metadata.ValueMetadata;
+import java.util.Map;
 
-public class StringCodec<O, A, V> implements Codec<O, A, V, ValueMetadata, String> {
+public class EnumMetadata extends Metadata {
 
-	@Override
-	public DocumentValue<O, A, V> toDocument(String object, ValueMetadata metadata, Mapper<O, A, V> mapper) {
-		DocumentValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
-		return valueFactory.createValue(object);
+	private Class<? extends Enum<?>> type;
+	private Map<? extends Enum<?>, String> enumToNameMap;
+	private Map<String, ? extends Enum<?>> nameToEnumMap;
+
+	public EnumMetadata(Class<? extends Enum<?>> type, Map<? extends Enum<?>, String> enumToNameMap, Map<String, ? extends Enum<?>> nameToEnumMap) {
+		this.type = type;
+		this.enumToNameMap = enumToNameMap;
+		this.nameToEnumMap = nameToEnumMap;
 	}
 
-	@Override
-	public String toObject(DocumentValue<O, A, V> document, ValueMetadata metadata, Mapper<O, A, V> mapper) {
-		return document.asString();
+	public Enum<?> getEnum(String name) {
+		return this.nameToEnumMap.get(name);
 	}
 
-	@Override
-	public ValueMetadata getMetadata(TypeMetadata type, Mapper<O, A, V> mapper) {
-		return new ValueMetadata();
+	public String getName(Enum<?> enumConstant) {
+		return this.enumToNameMap.get(enumConstant);
+	}
+
+	public Class<? extends Enum<?>> getType() {
+		return this.type;
 	}
 }

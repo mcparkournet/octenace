@@ -24,25 +24,25 @@
 
 package net.mcparkour.octenace.codec.common.primitive;
 
-import net.mcparkour.octenace.codec.CommonCodec;
 import net.mcparkour.octenace.codec.common.primitive.numeric.NumericCodecs;
 import net.mcparkour.octenace.codec.registry.CodecRegistry;
 import net.mcparkour.octenace.codec.registry.CodecRegistryBuilder;
 
 public final class PrimitiveCodecs {
 
-	public static final CommonCodec<Boolean> BOOLEAN_CODEC = new BooleanCodec();
-	public static final CommonCodec<Character> CHAR_CODEC = new CharCodec();
-
-	public static final CodecRegistry PRIMITIVE_CODEC_REGISTRY = new CodecRegistryBuilder()
-		.registry(NumericCodecs.NUMERIC_CODEC_REGISTRY)
-		.codec(BOOLEAN_CODEC, boolean.class)
-		.codec(BOOLEAN_CODEC, Boolean.class)
-		.codec(CHAR_CODEC, char.class)
-		.codec(CHAR_CODEC, Character.class)
-		.build();
-
 	private PrimitiveCodecs() {
 		throw new UnsupportedOperationException("Cannot create an instance of this class");
+	}
+
+	public static <O, A, V> CodecRegistry<O, A, V> createPrimitiveCodecRegistry() {
+		BooleanCodec<O, A, V> booleanCodec = new BooleanCodec<>();
+		CharCodec<O, A, V> charCodec = new CharCodec<>();
+		return new CodecRegistryBuilder<O, A, V>()
+			.registry(NumericCodecs.createNumericCodecRegistry())
+			.codec(boolean.class, booleanCodec)
+			.codec(Boolean.class, booleanCodec)
+			.codec(char.class, charCodec)
+			.codec(Character.class, charCodec)
+			.build();
 	}
 }

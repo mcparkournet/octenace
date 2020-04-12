@@ -22,9 +22,23 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.codec.common.collection;
+package net.mcparkour.octenace.mapper.metadata;
 
-public interface CollectionSupplier<T> {
+public class MapMetadata<O, A, V> extends Metadata {
 
-	T supply(int size);
+	private Element<O, A, V> keyElement;
+	private Element<O, A, V> valueElement;
+
+	public MapMetadata(Element<O, A, V> keyElement, Element<O, A, V> valueElement) {
+		this.keyElement = keyElement;
+		this.valueElement = valueElement;
+	}
+
+	public Element<O, A, V> getKeyElement() {
+		return this.keyElement;
+	}
+
+	public Element<O, A, V> getValueElement() {
+		return this.valueElement;
+	}
 }

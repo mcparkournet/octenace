@@ -22,15 +22,6 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.codec;
+package net.mcparkour.octenace.mapper.metadata;
 
-import java.lang.reflect.Type;
-import net.mcparkour.octenace.mapper.Mapper;
-import net.mcparkour.octenace.document.value.DocumentValue;
-
-public interface CommonCodec<T> {
-
-	<O, A, V> DocumentValue<O, A, V> toDocument(T object, Type type, Mapper<O, A, V> mapper);
-
-	<O, A, V> T toObject(DocumentValue<O, A, V> document, Type type, Mapper<O, A, V> mapper);
-}
+public class ValueMetadata extends Metadata {}

@@ -27,66 +27,94 @@ package net.mcparkour.octenace.codec.common;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
 import net.mcparkour.common.reflection.Reflections;
 import net.mcparkour.common.reflection.type.Types;
-import net.mcparkour.octenace.codec.CommonCodec;
+import net.mcparkour.octenace.codec.Codec;
 import net.mcparkour.octenace.document.object.DocumentObject;
+import net.mcparkour.octenace.document.object.DocumentObjectFactory;
 import net.mcparkour.octenace.document.value.DocumentValue;
+import net.mcparkour.octenace.document.value.DocumentValueFactory;
 import net.mcparkour.octenace.mapper.Mapper;
+import net.mcparkour.octenace.mapper.metadata.Element;
+import net.mcparkour.octenace.mapper.metadata.Metadata;
+import net.mcparkour.octenace.mapper.metadata.ObjectMetadata;
+import net.mcparkour.octenace.mapper.metadata.Property;
+import net.mcparkour.octenace.mapper.metadata.TypeMetadata;
 
-public class ObjectCodec implements CommonCodec<Object> {
+public class ObjectCodec<O, A, V> implements Codec<O, A, V, ObjectMetadata<O, A, V>, Object> {
 
 	@Override
-	public <O, A, V> DocumentValue<O, A, V> toDocument(Object object, Type type, Mapper<O, A, V> mapper) {
-		DocumentObject<O, A, V> documentObject = toDocument(object, mapper);
-		return mapper.getValueFactory().createObjectValue(documentObject);
-	}
-
-	public <O, A, V> DocumentObject<O, A, V> toDocument(Object object, Mapper<O, A, V> mapper) {
-		DocumentObject<O, A, V> emptyObject = mapper.getObjectFactory().createEmptyObject();
-		Class<?> configurationType = object.getClass();
-		Field[] fields = configurationType.getDeclaredFields();
-		for (Field field : fields) {
-			if (mapper.isFieldValid(field)) {
-				field.trySetAccessible();
-				String fieldName = mapper.getFieldName(field);
-				DocumentValue<O, A, V> modelFieldName = mapper.getValueFactory().createValue(fieldName);
-				Object fieldValue = Reflections.getFieldValue(field, object);
-				Type fieldType = field.getGenericType();
-				DocumentValue<O, A, V> value = mapper.toDocument(fieldValue, fieldType);
-				emptyObject.set(modelFieldName, value);
-			}
+	public DocumentValue<O, A, V> toDocument(Object object, ObjectMetadata<O, A, V> metadata, Mapper<O, A, V> mapper) {
+		DocumentValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
+		DocumentObjectFactory<O, A, V> objectFactory = mapper.getObjectFactory();
+		DocumentObject<O, A, V> documentObject = objectFactory.createEmptyObject();
+		List<Property<O, A, V>> properties = metadata.getProperties();
+		for (Property<O, A, V> property : properties) {
+			Element<O, A, V> element = property.getElement();
+			Codec<O, A, V, Metadata, Object> codec = element.getObjectCodec();
+			Field field = property.getField();
+			Object fieldValue = Reflections.getFieldValue(field, object);
+			String propertyName = property.getName();
+			DocumentValue<O, A, V> modelFieldName = valueFactory.createValue(propertyName);
+			Metadata propertyMetadata = element.getMetadata();
+			DocumentValue<O, A, V> value = fieldValue == null ?
+				valueFactory.createNullValue() :
+				codec.toDocument(fieldValue, propertyMetadata, mapper);
+			documentObject.set(modelFieldName, value);
 		}
-		return emptyObject;
+		return valueFactory.createObjectValue(documentObject);
 	}
 
 	@Override
-	public <O, A, V> Object toObject(DocumentValue<O, A, V> document, Type type, Mapper<O, A, V> mapper) {
+	public Object toObject(DocumentValue<O, A, V> document, ObjectMetadata<O, A, V> metadata, Mapper<O, A, V> mapper) {
+		DocumentValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
+		DocumentObjectFactory<O, A, V> objectFactory = mapper.getObjectFactory();
 		O rawObject = document.asObject();
-		DocumentObject<O, A, V> object = mapper.getObjectFactory().createObject(rawObject);
-		Type rawType = Types.getRawType(type);
-		Class<?> classType = Types.asClassType(rawType);
-		return toObject(object, classType, mapper);
-	}
-
-	public <O, A, V, T> T toObject(DocumentObject<O, A, V> document, Class<T> objectType, Mapper<O, A, V> mapper) {
-		Constructor<T> constructor = Reflections.getSerializationConstructor(objectType);
-		T instance = Reflections.newInstance(constructor);
-		Field[] fields = objectType.getDeclaredFields();
-		for (Field field : fields) {
-			if (mapper.isFieldValid(field)) {
-				field.trySetAccessible();
-				String fieldName = mapper.getFieldName(field);
-				DocumentValue<O, A, V> modelFieldName = mapper.getValueFactory().createValue(fieldName);
-				DocumentValue<O, A, V> value = document.get(modelFieldName);
-				Type fieldType = field.getGenericType();
-				var codecAnnotation = field.getAnnotation(net.mcparkour.octenace.annotation.Codec.class);
-				Object rawObject = codecAnnotation == null ?
-					mapper.toObject(value, fieldType) :
-					mapper.toObject(value, fieldType, codecAnnotation.value());
-				Reflections.setFieldValue(field, instance, rawObject);
-			}
+		DocumentObject<O, A, V> object = objectFactory.createObject(rawObject);
+		Class<?> type = metadata.getType();
+		Constructor<?> constructor = Reflections.getSerializationConstructor(type);
+		Object instance = Reflections.newInstance(constructor);
+		List<Property<O, A, V>> properties = metadata.getProperties();
+		for (Property<O, A, V> property : properties) {
+			String propertyName = property.getName();
+			DocumentValue<O, A, V> modelFieldName = valueFactory.createValue(propertyName);
+			DocumentValue<O, A, V> documentValue = object.get(modelFieldName);
+			Element<O, A, V> element = property.getElement();
+			Codec<O, A, V, Metadata, Object> codec = element.getObjectCodec();
+			Metadata propertyMetadata = element.getMetadata();
+			Field field = property.getField();
+			Object value = documentValue.isNull() ?
+				null :
+				codec.toObject(documentValue, propertyMetadata, mapper);
+			Reflections.setFieldValue(field, instance, value);
 		}
 		return instance;
+	}
+
+	@Override
+	public ObjectMetadata<O, A, V> getMetadata(TypeMetadata type, Mapper<O, A, V> mapper) {
+		Class<?> classType = type.getClassType();
+		Field[] fields = classType.getDeclaredFields();
+		int length = fields.length;
+		List<Property<O, A, V>> properties = new ArrayList<>(length);
+		for (Field field : fields) {
+			if (mapper.isFieldValid(field)) {
+				field.trySetAccessible();
+				String fieldName = mapper.getFieldName(field);
+				Type fieldGenericType = field.getGenericType();
+				var codecAnnotation = field.getAnnotation(net.mcparkour.octenace.annotation.Codec.class);
+				Type propType = codecAnnotation == null ? fieldGenericType : codecAnnotation.value();
+				Type fieldRawType = Types.getRawType(propType);
+				Class<?> fieldClassType = Types.asClassType(fieldRawType);
+				var codec = mapper.getObjectCodec(fieldClassType);
+				Metadata metadata = codec.getMetadata(new TypeMetadata(fieldClassType, fieldGenericType), mapper);
+				Element<O, A, V> element = new Element<>(fieldClassType, codec, metadata);
+				Property<O, A, V> property = new Property<>(fieldName, field, element);
+				properties.add(property);
+			}
+		}
+		return new ObjectMetadata<>(classType, properties);
 	}
 }

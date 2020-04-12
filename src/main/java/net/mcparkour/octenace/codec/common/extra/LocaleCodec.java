@@ -24,25 +24,31 @@
 
 package net.mcparkour.octenace.codec.common.extra;
 
-import java.lang.reflect.Type;
 import java.util.Locale;
-import net.mcparkour.octenace.codec.CommonCodec;
-import net.mcparkour.octenace.mapper.Mapper;
+import net.mcparkour.octenace.codec.Codec;
 import net.mcparkour.octenace.document.value.DocumentValue;
 import net.mcparkour.octenace.document.value.DocumentValueFactory;
+import net.mcparkour.octenace.mapper.Mapper;
+import net.mcparkour.octenace.mapper.metadata.TypeMetadata;
+import net.mcparkour.octenace.mapper.metadata.ValueMetadata;
 
-public class LocaleCodec implements CommonCodec<Locale> {
+public class LocaleCodec<O, A, V> implements Codec<O, A, V, ValueMetadata, Locale> {
 
 	@Override
-	public <O, A, V> DocumentValue<O, A, V> toDocument(Locale object, Type type, Mapper<O, A, V> mapper) {
+	public DocumentValue<O, A, V> toDocument(Locale object, ValueMetadata metadata, Mapper<O, A, V> mapper) {
 		DocumentValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
 		String languageTag = object.toLanguageTag();
 		return valueFactory.createValue(languageTag);
 	}
 
 	@Override
-	public <O, A, V> Locale toObject(DocumentValue<O, A, V> document, Type type, Mapper<O, A, V> mapper) {
+	public Locale toObject(DocumentValue<O, A, V> document, ValueMetadata metadata, Mapper<O, A, V> mapper) {
 		String languageTag = document.asString();
 		return Locale.forLanguageTag(languageTag);
+	}
+
+	@Override
+	public ValueMetadata getMetadata(TypeMetadata type, Mapper<O, A, V> mapper) {
+		return new ValueMetadata();
 	}
 }

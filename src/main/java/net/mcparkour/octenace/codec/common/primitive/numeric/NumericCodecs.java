@@ -24,35 +24,35 @@
 
 package net.mcparkour.octenace.codec.common.primitive.numeric;
 
-import net.mcparkour.octenace.codec.CommonCodec;
 import net.mcparkour.octenace.codec.registry.CodecRegistry;
 import net.mcparkour.octenace.codec.registry.CodecRegistryBuilder;
 
 public final class NumericCodecs {
 
-	public static final CommonCodec<Byte> BYTE_CODEC = new ByteCodec();
-	public static final CommonCodec<Short> SHORT_CODEC = new ShortCodec();
-	public static final CommonCodec<Integer> INT_CODEC = new IntCodec();
-	public static final CommonCodec<Long> LONG_CODEC = new LongCodec();
-	public static final CommonCodec<Float> FLOAT_CODEC = new FloatCodec();
-	public static final CommonCodec<Double> DOUBLE_CODEC = new DoubleCodec();
-
-	public static final CodecRegistry NUMERIC_CODEC_REGISTRY = new CodecRegistryBuilder()
-		.codec(BYTE_CODEC, byte.class)
-		.codec(BYTE_CODEC, Byte.class)
-		.codec(SHORT_CODEC, short.class)
-		.codec(SHORT_CODEC, Short.class)
-		.codec(INT_CODEC, int.class)
-		.codec(INT_CODEC, Integer.class)
-		.codec(LONG_CODEC, long.class)
-		.codec(LONG_CODEC, Long.class)
-		.codec(FLOAT_CODEC, float.class)
-		.codec(FLOAT_CODEC, Float.class)
-		.codec(DOUBLE_CODEC, double.class)
-		.codec(DOUBLE_CODEC, Double.class)
-		.build();
-
 	private NumericCodecs() {
 		throw new UnsupportedOperationException("Cannot create an instance of this class");
+	}
+
+	public static <O, A, V> CodecRegistry<O, A, V> createNumericCodecRegistry() {
+		ByteCodec<O, A, V> byteCodec = new ByteCodec<>();
+		ShortCodec<O, A, V> shortCodec = new ShortCodec<>();
+		IntCodec<O, A, V> intCodec = new IntCodec<>();
+		LongCodec<O, A, V> longCodec = new LongCodec<>();
+		FloatCodec<O, A, V> floatCodec = new FloatCodec<>();
+		DoubleCodec<O, A, V> doubleCodec = new DoubleCodec<>();
+		return new CodecRegistryBuilder<O, A, V>()
+			.codec(byte.class, byteCodec)
+			.codec(Byte.class, byteCodec)
+			.codec(short.class, shortCodec)
+			.codec(Short.class, shortCodec)
+			.codec(int.class, intCodec)
+			.codec(Integer.class, intCodec)
+			.codec(long.class, longCodec)
+			.codec(Long.class, longCodec)
+			.codec(float.class, floatCodec)
+			.codec(Float.class, floatCodec)
+			.codec(double.class, doubleCodec)
+			.codec(Double.class, doubleCodec)
+			.build();
 	}
 }

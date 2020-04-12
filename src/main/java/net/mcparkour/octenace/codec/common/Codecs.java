@@ -24,7 +24,6 @@
 
 package net.mcparkour.octenace.codec.common;
 
-import net.mcparkour.octenace.codec.CommonCodec;
 import net.mcparkour.octenace.codec.common.collection.CollectionCodecs;
 import net.mcparkour.octenace.codec.common.primitive.PrimitiveCodecs;
 import net.mcparkour.octenace.codec.registry.CodecRegistry;
@@ -32,19 +31,20 @@ import net.mcparkour.octenace.codec.registry.CodecRegistryBuilder;
 
 public final class Codecs {
 
-	public static final CommonCodec<Enum<?>> ENUM_CODEC = new EnumCodec();
-	public static final CommonCodec<String> STRING_CODEC = new StringCodec();
-	public static final CommonCodec<Object> OBJECT_CODEC = new ObjectCodec();
-
-	public static final CodecRegistry COMMON_CODEC_REGISTRY = new CodecRegistryBuilder()
-		.registry(CollectionCodecs.COLLECTION_CODEC_REGISTRY)
-		.registry(PrimitiveCodecs.PRIMITIVE_CODEC_REGISTRY)
-		.codec(ENUM_CODEC, Enum.class)
-		.codec(STRING_CODEC, String.class)
-		.codec(OBJECT_CODEC, Object.class)
-		.build();
-
 	private Codecs() {
 		throw new UnsupportedOperationException("Cannot create an instance of this class");
+	}
+
+	public static <O, A, V> CodecRegistry<O, A, V> createCommonCodecRegistry() {
+		EnumCodec<O, A, V> enumCodec = new EnumCodec<>();
+		StringCodec<O, A, V> stringCodec = new StringCodec<>();
+		ObjectCodec<O, A, V> objectCodec = new ObjectCodec<>();
+		return new CodecRegistryBuilder<O, A, V>()
+			.registry(CollectionCodecs.createCollectionCodecRegistry())
+			.registry(PrimitiveCodecs.createPrimitiveCodecRegistry())
+			.codec(Enum.class, enumCodec)
+			.codec(String.class, stringCodec)
+			.codec(Object.class, objectCodec)
+			.build();
 	}
 }

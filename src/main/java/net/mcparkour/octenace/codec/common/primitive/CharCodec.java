@@ -24,22 +24,28 @@
 
 package net.mcparkour.octenace.codec.common.primitive;
 
-import java.lang.reflect.Type;
-import net.mcparkour.octenace.codec.CommonCodec;
-import net.mcparkour.octenace.mapper.Mapper;
+import net.mcparkour.octenace.codec.Codec;
 import net.mcparkour.octenace.document.value.DocumentValue;
 import net.mcparkour.octenace.document.value.DocumentValueFactory;
+import net.mcparkour.octenace.mapper.Mapper;
+import net.mcparkour.octenace.mapper.metadata.TypeMetadata;
+import net.mcparkour.octenace.mapper.metadata.ValueMetadata;
 
-public class CharCodec implements CommonCodec<Character> {
+public class CharCodec<O, A, V> implements Codec<O, A, V, ValueMetadata, Character> {
 
 	@Override
-	public <O, A, V> DocumentValue<O, A, V> toDocument(Character object, Type type, Mapper<O, A, V> mapper) {
+	public DocumentValue<O, A, V> toDocument(Character object, ValueMetadata metadata, Mapper<O, A, V> mapper) {
 		DocumentValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
 		return valueFactory.createValue(object);
 	}
 
 	@Override
-	public <O, A, V> Character toObject(DocumentValue<O, A, V> document, Type type, Mapper<O, A, V> mapper) {
+	public Character toObject(DocumentValue<O, A, V> document, ValueMetadata metadata, Mapper<O, A, V> mapper) {
 		return document.asChar();
+	}
+
+	@Override
+	public ValueMetadata getMetadata(TypeMetadata type, Mapper<O, A, V> mapper) {
+		return new ValueMetadata();
 	}
 }

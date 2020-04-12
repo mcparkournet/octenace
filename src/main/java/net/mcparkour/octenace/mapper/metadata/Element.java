@@ -22,54 +22,36 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.codec.registry;
+package net.mcparkour.octenace.mapper.metadata;
 
-import java.lang.reflect.Type;
-import java.util.Objects;
 import net.mcparkour.octenace.codec.Codec;
-import net.mcparkour.octenace.codec.CommonCodec;
-import net.mcparkour.octenace.mapper.Mapper;
-import net.mcparkour.octenace.document.value.DocumentValue;
 
-class CommonCodecWrapper<O, A, V, T> implements Codec<O, A, V, T> {
+public class Element<O, A, V> {
 
-	private CommonCodec<T> codec;
+	private Class<?> type;
+	private Codec<O, A, V, Metadata, ?> codec;
+	private Metadata metadata;
 
-	CommonCodecWrapper(CommonCodec<T> codec) {
+	public Element(Class<?> type, Codec<O, A, V, Metadata, ?> codec, Metadata metadata) {
+		this.type = type;
 		this.codec = codec;
+		this.metadata = metadata;
 	}
 
-	@Override
-	public DocumentValue<O, A, V> toDocument(T object, Type type, Mapper<O, A, V> mapper) {
-		return this.codec.toDocument(object, type, mapper);
+	@SuppressWarnings("unchecked")
+	public Codec<O, A, V, Metadata, Object> getObjectCodec() {
+		return (Codec<O, A, V, Metadata, Object>) this.codec;
 	}
 
-	@Override
-	public T toObject(DocumentValue<O, A, V> document, Type type, Mapper<O, A, V> mapper) {
-		return this.codec.toObject(document, type, mapper);
+	public Class<?> getType() {
+		return this.type;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (!(obj instanceof CommonCodecWrapper)) {
-			return false;
-		}
-		CommonCodecWrapper<?, ?, ?, ?> that = (CommonCodecWrapper<?, ?, ?, ?>) obj;
-		return Objects.equals(this.codec, that.codec);
+	public Codec<O, A, V, Metadata, ?> getCodec() {
+		return this.codec;
 	}
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(this.codec);
-	}
-
-	@Override
-	public String toString() {
-		return "CommonCodecWrapper{" +
-			"codec=" + this.codec +
-			'}';
+	public Metadata getMetadata() {
+		return this.metadata;
 	}
 }

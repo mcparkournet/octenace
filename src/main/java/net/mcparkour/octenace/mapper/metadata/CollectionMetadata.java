@@ -22,30 +22,17 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.codec.common;
+package net.mcparkour.octenace.mapper.metadata;
 
-import net.mcparkour.octenace.codec.Codec;
-import net.mcparkour.octenace.document.value.DocumentValue;
-import net.mcparkour.octenace.document.value.DocumentValueFactory;
-import net.mcparkour.octenace.mapper.Mapper;
-import net.mcparkour.octenace.mapper.metadata.TypeMetadata;
-import net.mcparkour.octenace.mapper.metadata.ValueMetadata;
+public class CollectionMetadata<O, A, V> extends Metadata {
 
-public class StringCodec<O, A, V> implements Codec<O, A, V, ValueMetadata, String> {
+	private Element<O, A, V> element;
 
-	@Override
-	public DocumentValue<O, A, V> toDocument(String object, ValueMetadata metadata, Mapper<O, A, V> mapper) {
-		DocumentValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
-		return valueFactory.createValue(object);
+	public CollectionMetadata(Element<O, A, V> element) {
+		this.element = element;
 	}
 
-	@Override
-	public String toObject(DocumentValue<O, A, V> document, ValueMetadata metadata, Mapper<O, A, V> mapper) {
-		return document.asString();
-	}
-
-	@Override
-	public ValueMetadata getMetadata(TypeMetadata type, Mapper<O, A, V> mapper) {
-		return new ValueMetadata();
+	public Element<O, A, V> getElement() {
+		return this.element;
 	}
 }

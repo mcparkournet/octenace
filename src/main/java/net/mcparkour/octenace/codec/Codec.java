@@ -24,13 +24,16 @@
 
 package net.mcparkour.octenace.codec;
 
-import java.lang.reflect.Type;
-import net.mcparkour.octenace.mapper.Mapper;
 import net.mcparkour.octenace.document.value.DocumentValue;
+import net.mcparkour.octenace.mapper.Mapper;
+import net.mcparkour.octenace.mapper.metadata.Metadata;
+import net.mcparkour.octenace.mapper.metadata.TypeMetadata;
 
-public interface Codec<O, A, V, T> {
+public interface Codec<O, A, V, M extends Metadata, T> {
 
-	DocumentValue<O, A, V> toDocument(T object, Type type, Mapper<O, A, V> mapper);
+	DocumentValue<O, A, V> toDocument(T object, M metadata, Mapper<O, A, V> mapper);
 
-	T toObject(DocumentValue<O, A, V> document, Type type, Mapper<O, A, V> mapper);
+	T toObject(DocumentValue<O, A, V> document, M metadata, Mapper<O, A, V> mapper);
+
+	M getMetadata(TypeMetadata type, Mapper<O, A, V> mapper);
 }

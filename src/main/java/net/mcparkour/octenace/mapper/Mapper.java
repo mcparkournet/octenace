@@ -25,14 +25,14 @@
 package net.mcparkour.octenace.mapper;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Type;
 import java.util.List;
+import net.mcparkour.octenace.codec.Codec;
 import net.mcparkour.octenace.codec.registry.CodecRegistry;
 import net.mcparkour.octenace.document.array.DocumentArrayFactory;
 import net.mcparkour.octenace.document.object.DocumentObject;
 import net.mcparkour.octenace.document.object.DocumentObjectFactory;
-import net.mcparkour.octenace.document.value.DocumentValue;
 import net.mcparkour.octenace.document.value.DocumentValueFactory;
+import net.mcparkour.octenace.mapper.metadata.Metadata;
 import net.mcparkour.octenace.mapper.property.invalidator.PropertyInvalidator;
 import net.mcparkour.octenace.mapper.property.name.NameConverter;
 import org.jetbrains.annotations.Nullable;
@@ -41,20 +41,19 @@ public interface Mapper<O, A, V> {
 
 	DocumentObject<O, A, V> toDocument(Object object);
 
-	DocumentValue<O, A, V> toDocument(@Nullable Object object, Type type);
-
-	@Nullable
-	<T> T toObject(DocumentObject<O, A, V> document, Class<T> objectType);
-
-	@Nullable
-	Object toObject(DocumentValue<O, A, V> document, Type type);
-
-	@Nullable
-	Object toObject(DocumentValue<O, A, V> value, Type type, Type codecType);
+	@Nullable <T> T toObject(DocumentObject<O, A, V> document, Class<T> objectType);
 
 	boolean isFieldValid(Field field);
 
 	String getFieldName(Field field);
+
+	@SuppressWarnings("unchecked")
+	default Codec<O, A, V, Metadata, Object> getObjectCodec(Class<?> type) {
+		Codec<O, A, V, Metadata, ?> codec = getCodec(type);
+		return (Codec<O, A, V, Metadata, Object>) codec;
+	}
+
+	<T> Codec<O, A, V, Metadata, T> getCodec(Class<T> type);
 
 	DocumentObjectFactory<O, A, V> getObjectFactory();
 
@@ -66,5 +65,5 @@ public interface Mapper<O, A, V> {
 
 	List<PropertyInvalidator> getPropertyInvalidators();
 
-	CodecRegistry getCodecRegistry();
+	CodecRegistry<O, A, V> getCodecRegistry();
 }
