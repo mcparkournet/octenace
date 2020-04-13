@@ -28,9 +28,11 @@ import java.lang.reflect.Field;
 import java.util.List;
 import net.mcparkour.octenace.codec.Codec;
 import net.mcparkour.octenace.codec.registry.CodecRegistry;
+import net.mcparkour.octenace.document.array.DocumentArray;
 import net.mcparkour.octenace.document.array.DocumentArrayFactory;
 import net.mcparkour.octenace.document.object.DocumentObject;
 import net.mcparkour.octenace.document.object.DocumentObjectFactory;
+import net.mcparkour.octenace.document.value.DocumentValue;
 import net.mcparkour.octenace.document.value.DocumentValueFactory;
 import net.mcparkour.octenace.mapper.metadata.Metadata;
 import net.mcparkour.octenace.mapper.property.invalidator.PropertyInvalidator;
@@ -38,9 +40,13 @@ import net.mcparkour.octenace.mapper.property.name.NameConverter;
 
 public interface Mapper<O, A, V, T> {
 
-	DocumentObject<O, A, V> toDocument(T object);
+	DocumentValue<O, A, V> toDocument(T object);
 
 	T toObject(DocumentObject<O, A, V> document);
+
+	T toObject(DocumentArray<O, A, V> document);
+
+	T toObject(DocumentValue<O, A, V> document);
 
 	Codec<O, A, V, Metadata, Object> getObjectCodec(Class<?> type);
 

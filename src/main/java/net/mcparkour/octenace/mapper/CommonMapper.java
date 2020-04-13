@@ -29,6 +29,7 @@ import java.util.List;
 import net.mcparkour.octenace.annotation.Property;
 import net.mcparkour.octenace.codec.Codec;
 import net.mcparkour.octenace.codec.registry.CodecRegistry;
+import net.mcparkour.octenace.document.array.DocumentArray;
 import net.mcparkour.octenace.document.array.DocumentArrayFactory;
 import net.mcparkour.octenace.document.object.DocumentObject;
 import net.mcparkour.octenace.document.object.DocumentObjectFactory;
@@ -66,16 +67,25 @@ public class CommonMapper<O, A, V, T> implements Mapper<O, A, V, T> {
 	}
 
 	@Override
-	public DocumentObject<O, A, V> toDocument(T object) {
-		DocumentValue<O, A, V> document = this.codec.toDocument(object, this.metadata, this);
-		O rawObject = document.asObject();
-		return this.objectFactory.createObject(rawObject);
+	public DocumentValue<O, A, V> toDocument(T object) {
+		return this.codec.toDocument(object, this.metadata, this);
 	}
 
 	@Override
 	public T toObject(DocumentObject<O, A, V> document) {
 		DocumentValue<O, A, V> documentValue = this.valueFactory.createObjectValue(document);
-		return this.codec.toObject(documentValue, this.metadata, this);
+		return toObject(documentValue);
+	}
+
+	@Override
+	public T toObject(DocumentArray<O, A, V> document) {
+		DocumentValue<O, A, V> documentValue = this.valueFactory.createArrayValue(document);
+		return toObject(documentValue);
+	}
+
+	@Override
+	public T toObject(DocumentValue<O, A, V> document) {
+		return this.codec.toObject(document, this.metadata, this);
 	}
 
 	@SuppressWarnings("unchecked")
