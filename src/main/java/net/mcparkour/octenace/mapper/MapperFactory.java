@@ -24,7 +24,27 @@
 
 package net.mcparkour.octenace.mapper;
 
+import java.util.List;
+import net.mcparkour.octenace.codec.registry.CodecRegistry;
+import net.mcparkour.octenace.document.array.DocumentArrayFactory;
+import net.mcparkour.octenace.document.object.DocumentObjectFactory;
+import net.mcparkour.octenace.document.value.DocumentValueFactory;
+import net.mcparkour.octenace.mapper.property.invalidator.PropertyInvalidator;
+import net.mcparkour.octenace.mapper.property.name.NameConverter;
+
 public interface MapperFactory<O, A, V> {
 
 	<T> Mapper<O, A, V, T> createMapper(Class<T> type);
+
+	DocumentObjectFactory<O, A, V> getObjectFactory();
+
+	DocumentArrayFactory<O, A, V> getArrayFactory();
+
+	DocumentValueFactory<O, A, V> getValueFactory();
+
+	NameConverter getNameConverter();
+
+	List<PropertyInvalidator> getPropertyInvalidators();
+
+	CodecRegistry<O, A, V> getCodecRegistry();
 }

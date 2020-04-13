@@ -54,4 +54,34 @@ public class CommonMapperFactory<O, A, V> implements MapperFactory<O, A, V> {
 	public <T> Mapper<O, A, V, T> createMapper(Class<T> type) {
 		return new CommonMapper<>(this.objectFactory, this.arrayFactory, this.valueFactory, this.nameConverter, this.propertyInvalidators, this.codecRegistry, type);
 	}
+
+	@Override
+	public DocumentObjectFactory<O, A, V> getObjectFactory() {
+		return this.objectFactory;
+	}
+
+	@Override
+	public DocumentArrayFactory<O, A, V> getArrayFactory() {
+		return this.arrayFactory;
+	}
+
+	@Override
+	public DocumentValueFactory<O, A, V> getValueFactory() {
+		return this.valueFactory;
+	}
+
+	@Override
+	public NameConverter getNameConverter() {
+		return this.nameConverter;
+	}
+
+	@Override
+	public List<PropertyInvalidator> getPropertyInvalidators() {
+		return List.copyOf(this.propertyInvalidators);
+	}
+
+	@Override
+	public CodecRegistry<O, A, V> getCodecRegistry() {
+		return this.codecRegistry;
+	}
 }
