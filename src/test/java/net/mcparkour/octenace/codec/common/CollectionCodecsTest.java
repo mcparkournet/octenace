@@ -52,19 +52,19 @@ public class CollectionCodecsTest {
 	private static final List<String> TEST_COLLECTION = List.of("foo", "bar", "foobar");
 	private static final Map<String, String> TEST_MAP = Map.of("foo", "bar", "bar", "foo", "foobar", "barfoo");
 
-	private TestMapper<?> mapper;
+	private TestMapper mapper;
 
 	@BeforeEach
 	public void setUp() {
-		this.mapper = new TestMapper<>(Object.class);
+		this.mapper = new TestMapper();
 	}
 
 	@Test
 	public void testArrayCodecEncode() {
 		ArrayCodec<Map<Object, Object>, List<Object>, Object> codec = new ArrayCodec<>();
 		String[] array = {"foo", "bar", "foobar"};
-		var metadata = codec.getMetadata(new TypeMetadata(String[].class), this.mapper);
-		var encoded = codec.toDocument(array, metadata, this.mapper);
+		var metadata = this.mapper.createMetadata(codec, new TypeMetadata(String[].class));
+		var encoded = this.mapper.toDocument(codec, array, metadata);
 		Object value = encoded.getValue();
 		Assertions.assertEquals(List.of(array), value);
 	}
@@ -74,8 +74,8 @@ public class CollectionCodecsTest {
 		ArrayCodec<Map<Object, Object>, List<Object>, Object> codec = new ArrayCodec<>();
 		String[] array = {"foo", "bar", "foobar"};
 		TestDocumentValue value = new TestDocumentValue(List.of(array));
-		var metadata = codec.getMetadata(new TypeMetadata(String[].class), this.mapper);
-		var decoded = codec.toObject(value, metadata, this.mapper);
+		var metadata = this.mapper.createMetadata(codec, new TypeMetadata(String[].class));
+		var decoded = this.mapper.toObject(codec, value, metadata);
 		Assertions.assertArrayEquals(array, decoded);
 	}
 
@@ -84,8 +84,8 @@ public class CollectionCodecsTest {
 		ArrayListCodec<Map<Object, Object>, List<Object>, Object> codec = new ArrayListCodec<>();
 		ArrayList<String> list = new ArrayList<>(3);
 		list.addAll(TEST_COLLECTION);
-		var metadata = codec.getMetadata(new TypeMetadata(ArrayList.class, new GenericTypes(String.class)), this.mapper);
-		var encoded = codec.toDocument(list, metadata, this.mapper);
+		var metadata = this.mapper.createMetadata(codec, new TypeMetadata(ArrayList.class, new GenericTypes(String.class)));
+		var encoded = this.mapper.toDocument(codec, list, metadata);
 		Object value = encoded.getValue();
 		Assertions.assertEquals(list, value);
 	}
@@ -97,8 +97,8 @@ public class CollectionCodecsTest {
 		list.addAll(TEST_COLLECTION);
 		TestDocumentValue value = new TestDocumentValue(list);
 		TypeMetadata type = new TypeMetadata(ArrayList.class, new GenericTypes(String.class));
-		var metadata = codec.getMetadata(type, this.mapper);
-		var decoded = codec.toObject(value, metadata, this.mapper);
+		var metadata = this.mapper.createMetadata(codec, type);
+		var decoded = this.mapper.toObject(codec, value, metadata);
 		Assertions.assertEquals(list, decoded);
 	}
 
@@ -108,8 +108,8 @@ public class CollectionCodecsTest {
 		HashSet<String> set = new HashSet<>(3);
 		set.addAll(TEST_COLLECTION);
 		TypeMetadata type = new TypeMetadata(HashSet.class, new GenericTypes(String.class));
-		var metadata = codec.getMetadata(type, this.mapper);
-		var encoded = codec.toDocument(set, metadata, this.mapper);
+		var metadata = this.mapper.createMetadata(codec, type);
+		var encoded = this.mapper.toDocument(codec, set, metadata);
 		Object value = encoded.getValue();
 		Iterable<?> iterable = (Iterable<?>) value;
 		Assertions.assertIterableEquals(set, iterable);
@@ -123,8 +123,8 @@ public class CollectionCodecsTest {
 		List<Object> objects = List.copyOf(set);
 		TestDocumentValue value = new TestDocumentValue(objects);
 		TypeMetadata type = new TypeMetadata(HashSet.class, new GenericTypes(String.class));
-		var metadata = codec.getMetadata(type, this.mapper);
-		var decoded = codec.toObject(value, metadata, this.mapper);
+		var metadata = this.mapper.createMetadata(codec, type);
+		var decoded = this.mapper.toObject(codec, value, metadata);
 		Assertions.assertEquals(set, decoded);
 	}
 
@@ -134,8 +134,8 @@ public class CollectionCodecsTest {
 		LinkedHashSet<String> set = new LinkedHashSet<>(3);
 		set.addAll(TEST_COLLECTION);
 		TypeMetadata type = new TypeMetadata(LinkedHashSet.class, new GenericTypes(String.class));
-		var metadata = codec.getMetadata(type, this.mapper);
-		var encoded = codec.toDocument(set, metadata, this.mapper);
+		var metadata = this.mapper.createMetadata(codec, type);
+		var encoded = this.mapper.toDocument(codec, set, metadata);
 		Object value = encoded.getValue();
 		Iterable<?> iterable = (Iterable<?>) value;
 		Assertions.assertIterableEquals(set, iterable);
@@ -149,8 +149,8 @@ public class CollectionCodecsTest {
 		List<Object> objects = List.copyOf(set);
 		TestDocumentValue value = new TestDocumentValue(objects);
 		TypeMetadata type = new TypeMetadata(LinkedHashSet.class, new GenericTypes(String.class));
-		var metadata = codec.getMetadata(type, this.mapper);
-		var decoded = codec.toObject(value, metadata, this.mapper);
+		var metadata = this.mapper.createMetadata(codec, type);
+		var decoded = this.mapper.toObject(codec, value, metadata);
 		Assertions.assertEquals(set, decoded);
 	}
 
@@ -160,8 +160,8 @@ public class CollectionCodecsTest {
 		HashMap<String, String> map = new HashMap<>(3);
 		map.putAll(TEST_MAP);
 		TypeMetadata type = new TypeMetadata(HashMap.class, new GenericTypes(String.class, String.class));
-		var metadata = codec.getMetadata(type, this.mapper);
-		var encoded = codec.toDocument(map, metadata, this.mapper);
+		var metadata = this.mapper.createMetadata(codec, type);
+		var encoded = this.mapper.toDocument(codec, map, metadata);
 		Object value = encoded.getValue();
 		Assertions.assertEquals(map, value);
 	}
@@ -173,8 +173,8 @@ public class CollectionCodecsTest {
 		map.putAll(TEST_MAP);
 		TestDocumentValue value = new TestDocumentValue(map);
 		TypeMetadata type = new TypeMetadata(HashMap.class, new GenericTypes(String.class, String.class));
-		var metadata = codec.getMetadata(type, this.mapper);
-		var decoded = codec.toObject(value, metadata, this.mapper);
+		var metadata = this.mapper.createMetadata(codec, type);
+		var decoded = this.mapper.toObject(codec, value, metadata);
 		Assertions.assertEquals(map, decoded);
 	}
 
@@ -184,8 +184,8 @@ public class CollectionCodecsTest {
 		LinkedHashMap<String, String> map = new LinkedHashMap<>(3);
 		map.putAll(TEST_MAP);
 		TypeMetadata type = new TypeMetadata(LinkedHashMap.class, new GenericTypes(String.class, String.class));
-		var metadata = codec.getMetadata(type, this.mapper);
-		var encoded = codec.toDocument(map, metadata, this.mapper);
+		var metadata = this.mapper.createMetadata(codec, type);
+		var encoded = this.mapper.toDocument(codec, map, metadata);
 		Object value = encoded.getValue();
 		Assertions.assertEquals(map, value);
 	}
@@ -197,8 +197,8 @@ public class CollectionCodecsTest {
 		map.putAll(TEST_MAP);
 		TestDocumentValue value = new TestDocumentValue(map);
 		TypeMetadata type = new TypeMetadata(LinkedHashMap.class, new GenericTypes(String.class, String.class));
-		var metadata = codec.getMetadata(type, this.mapper);
-		var decoded = codec.toObject(value, metadata, this.mapper);
+		var metadata = this.mapper.createMetadata(codec, type);
+		var decoded = this.mapper.toObject(codec, value, metadata);
 		Assertions.assertEquals(map, decoded);
 	}
 

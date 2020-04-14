@@ -24,27 +24,31 @@
 
 package net.mcparkour.octenace.mapper;
 
-import java.util.List;
-import net.mcparkour.octenace.codec.registry.CodecRegistry;
-import net.mcparkour.octenace.document.array.DocumentArrayFactory;
-import net.mcparkour.octenace.document.object.DocumentObjectFactory;
-import net.mcparkour.octenace.document.value.DocumentValueFactory;
-import net.mcparkour.octenace.mapper.property.invalidator.PropertyInvalidator;
-import net.mcparkour.octenace.mapper.property.name.NameConverter;
+import net.mcparkour.octenace.codec.Codec;
+import net.mcparkour.octenace.document.array.DocumentArray;
+import net.mcparkour.octenace.document.object.DocumentObject;
+import net.mcparkour.octenace.document.value.DocumentValue;
+import net.mcparkour.octenace.mapper.metadata.Metadata;
+import org.jetbrains.annotations.Nullable;
 
-public interface MapperFactory<O, A, V> {
+public interface DocumentMapper<O, A, V, T> {
 
-	<T> Mapper<O, A, V, T> createMapper(Class<T> type);
+	DocumentValue<O, A, V> toDocument(@Nullable T object);
 
-	DocumentObjectFactory<O, A, V> getObjectFactory();
+	@Nullable
+	T toObject(DocumentObject<O, A, V> document);
 
-	DocumentArrayFactory<O, A, V> getArrayFactory();
+	@Nullable
+	T toObject(DocumentArray<O, A, V> document);
 
-	DocumentValueFactory<O, A, V> getValueFactory();
+	@Nullable
+	T toObject(DocumentValue<O, A, V> document);
 
-	NameConverter getNameConverter();
+	Mapper<O, A, V> getMapper();
 
-	List<PropertyInvalidator> getPropertyInvalidators();
+	Class<T> getType();
 
-	CodecRegistry<O, A, V> getCodecRegistry();
+	Codec<O, A, V, Metadata, T> getCodec();
+
+	Metadata getMetadata();
 }

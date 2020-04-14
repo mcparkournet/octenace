@@ -28,27 +28,27 @@ import java.lang.reflect.Field;
 import java.util.List;
 import net.mcparkour.octenace.codec.Codec;
 import net.mcparkour.octenace.codec.registry.CodecRegistry;
-import net.mcparkour.octenace.document.array.DocumentArray;
 import net.mcparkour.octenace.document.array.DocumentArrayFactory;
-import net.mcparkour.octenace.document.object.DocumentObject;
 import net.mcparkour.octenace.document.object.DocumentObjectFactory;
 import net.mcparkour.octenace.document.value.DocumentValue;
 import net.mcparkour.octenace.document.value.DocumentValueFactory;
 import net.mcparkour.octenace.mapper.metadata.Metadata;
+import net.mcparkour.octenace.mapper.metadata.TypeMetadata;
 import net.mcparkour.octenace.mapper.property.invalidator.PropertyInvalidator;
 import net.mcparkour.octenace.mapper.property.name.NameConverter;
+import org.jetbrains.annotations.Nullable;
 
-public interface Mapper<O, A, V, T> {
+public interface Mapper<O, A, V> {
 
-	DocumentValue<O, A, V> toDocument(T object);
+	<T, M extends Metadata> DocumentValue<O, A, V> toDocument(Codec<O, A, V, M, T> codec, @Nullable T object, M metadata);
 
-	T toObject(DocumentObject<O, A, V> document);
+	@Nullable <T, M extends Metadata> T toObject(Codec<O, A, V, M, T> codec, DocumentValue<O, A, V> document, M metadata);
 
-	T toObject(DocumentArray<O, A, V> document);
-
-	T toObject(DocumentValue<O, A, V> document);
+	<T, M extends Metadata> M createMetadata(Codec<O, A, V, M, T> codec, TypeMetadata type);
 
 	Codec<O, A, V, Metadata, Object> getObjectCodec(Class<?> type);
+
+	<T, M extends Metadata> Codec<O, A, V, M, T> getCodec(Class<T> type);
 
 	boolean isFieldValid(Field field);
 
@@ -65,8 +65,4 @@ public interface Mapper<O, A, V, T> {
 	List<PropertyInvalidator> getPropertyInvalidators();
 
 	CodecRegistry<O, A, V> getCodecRegistry();
-
-	Class<T> getType();
-
-	Metadata getMetadata();
 }

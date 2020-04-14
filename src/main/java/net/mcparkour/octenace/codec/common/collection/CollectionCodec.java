@@ -40,8 +40,7 @@ import net.mcparkour.octenace.mapper.metadata.TypeMetadata;
 public abstract class CollectionCodec<O, A, V, T extends Collection<?>> implements Codec<O, A, V, CollectionMetadata<O, A, V>, T> {
 
 	@Override
-	public DocumentValue<O, A, V> toDocument(T object, CollectionMetadata<O, A, V> metadata, Mapper<O, A, V, ?> mapper) {
-		DocumentValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
+	public DocumentValue<O, A, V> toDocument(T object, CollectionMetadata<O, A, V> metadata, Mapper<O, A, V> mapper) {
 		DocumentArrayFactory<O, A, V> arrayFactory = mapper.getArrayFactory();
 		int size = object.size();
 		DocumentArray<O, A, V> arrayDocument = arrayFactory.createEmptyArray(size);
@@ -49,24 +48,26 @@ public abstract class CollectionCodec<O, A, V, T extends Collection<?>> implemen
 		var codec = metadataElement.getObjectCodec();
 		Metadata elementMetadata = metadataElement.getMetadata();
 		for (Object objectElement : object) {
-			DocumentValue<O, A, V> elementValue = codec.toDocument(objectElement, elementMetadata, mapper);
+			DocumentValue<O, A, V> elementValue = mapper.toDocument(codec, objectElement, elementMetadata);
 			arrayDocument.add(elementValue);
 		}
+		DocumentValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
 		return valueFactory.createArrayValue(arrayDocument);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public T toObject(DocumentValue<O, A, V> document, CollectionMetadata<O, A, V> metadata, Mapper<O, A, V, ?> mapper) {
+	public T toObject(DocumentValue<O, A, V> document, CollectionMetadata<O, A, V> metadata, Mapper<O, A, V> mapper) {
 		DocumentArrayFactory<O, A, V> arrayFactory = mapper.getArrayFactory();
 		A rawArray = document.asArray();
 		DocumentArray<O, A, V> array = arrayFactory.createArray(rawArray);
 		int size = array.getSize();
 		Element<O, A, V> element = metadata.getElement();
 		var elementCodec = element.getObjectCodec();
+		Metadata elementMetadata = element.getMetadata();
 		Collection<Object> collection = (Collection<Object>) createCollection(size);
 		for (DocumentValue<O, A, V> elementValue : array) {
-			Object object = elementCodec.toObject(elementValue, element.getMetadata(), mapper);
+			Object object = mapper.toObject(elementCodec, elementValue, elementMetadata);
 			collection.add(object);
 		}
 		return (T) collection;
@@ -75,10 +76,10 @@ public abstract class CollectionCodec<O, A, V, T extends Collection<?>> implemen
 	public abstract T createCollection(int size);
 
 	@Override
-	public CollectionMetadata<O, A, V> getMetadata(TypeMetadata type, Mapper<O, A, V, ?> mapper) {
+	public CollectionMetadata<O, A, V> createMetadata(TypeMetadata type, Mapper<O, A, V> mapper) {
 		Class<?> elementType = type.getFirstGenericType();
 		var codec = mapper.getObjectCodec(elementType);
-		Metadata metadata = codec.getMetadata(new TypeMetadata(elementType), mapper);
+		Metadata metadata = mapper.createMetadata(codec, new TypeMetadata(elementType));
 		Class<?> elementClassType = Types.asClassType(elementType);
 		Element<O, A, V> element = new Element<>(elementClassType, codec, metadata);
 		return new CollectionMetadata<>(element);

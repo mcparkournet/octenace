@@ -29,9 +29,7 @@ import java.util.List;
 import net.mcparkour.octenace.annotation.Property;
 import net.mcparkour.octenace.codec.Codec;
 import net.mcparkour.octenace.codec.registry.CodecRegistry;
-import net.mcparkour.octenace.document.array.DocumentArray;
 import net.mcparkour.octenace.document.array.DocumentArrayFactory;
-import net.mcparkour.octenace.document.object.DocumentObject;
 import net.mcparkour.octenace.document.object.DocumentObjectFactory;
 import net.mcparkour.octenace.document.value.DocumentValue;
 import net.mcparkour.octenace.document.value.DocumentValueFactory;
@@ -39,8 +37,9 @@ import net.mcparkour.octenace.mapper.metadata.Metadata;
 import net.mcparkour.octenace.mapper.metadata.TypeMetadata;
 import net.mcparkour.octenace.mapper.property.invalidator.PropertyInvalidator;
 import net.mcparkour.octenace.mapper.property.name.NameConverter;
+import org.jetbrains.annotations.Nullable;
 
-public class CommonMapper<O, A, V, T> implements Mapper<O, A, V, T> {
+public class CommonMapper<O, A, V> implements Mapper<O, A, V> {
 
 	private DocumentObjectFactory<O, A, V> objectFactory;
 	private DocumentArrayFactory<O, A, V> arrayFactory;
@@ -48,44 +47,36 @@ public class CommonMapper<O, A, V, T> implements Mapper<O, A, V, T> {
 	private NameConverter nameConverter;
 	private List<PropertyInvalidator> propertyInvalidators;
 	private CodecRegistry<O, A, V> codecRegistry;
-	private Class<T> type;
-	private Codec<O, A, V, Metadata, T> codec;
-	private Metadata metadata;
 
-	public CommonMapper(DocumentObjectFactory<O, A, V> objectFactory, DocumentArrayFactory<O, A, V> arrayFactory, DocumentValueFactory<O, A, V> valueFactory, NameConverter nameConverter, List<PropertyInvalidator> propertyInvalidators, CodecRegistry<O, A, V> codecRegistry, Class<T> type) {
+	public CommonMapper(DocumentObjectFactory<O, A, V> objectFactory, DocumentArrayFactory<O, A, V> arrayFactory, DocumentValueFactory<O, A, V> valueFactory, NameConverter nameConverter, List<PropertyInvalidator> propertyInvalidators, CodecRegistry<O, A, V> codecRegistry) {
 		this.objectFactory = objectFactory;
 		this.arrayFactory = arrayFactory;
 		this.valueFactory = valueFactory;
 		this.nameConverter = nameConverter;
 		this.propertyInvalidators = propertyInvalidators;
 		this.codecRegistry = codecRegistry;
-		this.type = type;
-		Codec<O, A, V, Metadata, T> codec = getCodec(type);
-		this.codec = codec;
-		TypeMetadata typeMetadata = new TypeMetadata(type);
-		this.metadata = codec.getMetadata(typeMetadata, this);
 	}
 
 	@Override
-	public DocumentValue<O, A, V> toDocument(T object) {
-		return this.codec.toDocument(object, this.metadata, this);
+	public <T, M extends Metadata> DocumentValue<O, A, V> toDocument(Codec<O, A, V, M, T> codec, @Nullable T object, M metadata) {
+		if (object == null) {
+			return this.valueFactory.createNullValue();
+		}
+		return codec.toDocument(object, metadata, this);
 	}
 
 	@Override
-	public T toObject(DocumentObject<O, A, V> document) {
-		DocumentValue<O, A, V> documentValue = this.valueFactory.createObjectValue(document);
-		return toObject(documentValue);
+	@Nullable
+	public <T, M extends Metadata> T toObject(Codec<O, A, V, M, T> codec, DocumentValue<O, A, V> document, M metadata) {
+		if (document.isNull()) {
+			return null;
+		}
+		return codec.toObject(document, metadata, this);
 	}
 
 	@Override
-	public T toObject(DocumentArray<O, A, V> document) {
-		DocumentValue<O, A, V> documentValue = this.valueFactory.createArrayValue(document);
-		return toObject(documentValue);
-	}
-
-	@Override
-	public T toObject(DocumentValue<O, A, V> document) {
-		return this.codec.toObject(document, this.metadata, this);
+	public <T, M extends Metadata> M createMetadata(Codec<O, A, V, M, T> codec, TypeMetadata type) {
+		return codec.createMetadata(type, this);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -96,12 +87,13 @@ public class CommonMapper<O, A, V, T> implements Mapper<O, A, V, T> {
 	}
 
 	@SuppressWarnings("unchecked")
-	private <U> Codec<O, A, V, Metadata, U> getCodec(Class<U> type) {
-		Codec<O, A, V, ? extends Metadata, U> codec = this.codecRegistry.get(type);
+	@Override
+	public <T, M extends Metadata> Codec<O, A, V, M, T> getCodec(Class<T> type) {
+		Codec<O, A, V, ? extends Metadata, T> codec = this.codecRegistry.get(type);
 		if (codec == null) {
 			throw new CodecNotFoundException(type);
 		}
-		return (Codec<O, A, V, Metadata, U>) codec;
+		return (Codec<O, A, V, M, T>) codec;
 	}
 
 	@Override
@@ -142,21 +134,11 @@ public class CommonMapper<O, A, V, T> implements Mapper<O, A, V, T> {
 
 	@Override
 	public List<PropertyInvalidator> getPropertyInvalidators() {
-		return List.copyOf(this.propertyInvalidators);
+		return this.propertyInvalidators;
 	}
 
 	@Override
 	public CodecRegistry<O, A, V> getCodecRegistry() {
 		return this.codecRegistry;
-	}
-
-	@Override
-	public Class<T> getType() {
-		return this.type;
-	}
-
-	@Override
-	public Metadata getMetadata() {
-		return this.metadata;
 	}
 }

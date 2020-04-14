@@ -33,18 +33,18 @@ import net.mcparkour.octenace.mapper.metadata.ValueMetadata;
 public class IntCodec<O, A, V> implements Codec<O, A, V, ValueMetadata, Integer> {
 
 	@Override
-	public DocumentValue<O, A, V> toDocument(Integer object, ValueMetadata metadata, Mapper<O, A, V, ?> mapper) {
+	public DocumentValue<O, A, V> toDocument(Integer object, ValueMetadata metadata, Mapper<O, A, V> mapper) {
 		var valueFactory = mapper.getValueFactory();
 		return valueFactory.createValue(object);
 	}
 
 	@Override
-	public Integer toObject(DocumentValue<O, A, V> document, ValueMetadata metadata, Mapper<O, A, V, ?> mapper) {
+	public Integer toObject(DocumentValue<O, A, V> document, ValueMetadata metadata, Mapper<O, A, V> mapper) {
 		return document.asInt();
 	}
 
 	@Override
-	public ValueMetadata getMetadata(TypeMetadata type, Mapper<O, A, V, ?> mapper) {
+	public ValueMetadata createMetadata(TypeMetadata type, Mapper<O, A, V> mapper) {
 		return new ValueMetadata();
 	}
 }

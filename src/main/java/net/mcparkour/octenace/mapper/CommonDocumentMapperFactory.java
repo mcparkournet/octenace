@@ -22,29 +22,36 @@
  * SOFTWARE.
  */
 
-package net.mcparkour.octenace.codec.common.primitive.numeric;
+package net.mcparkour.octenace.mapper;
 
 import net.mcparkour.octenace.codec.Codec;
-import net.mcparkour.octenace.document.value.DocumentValue;
-import net.mcparkour.octenace.mapper.Mapper;
-import net.mcparkour.octenace.mapper.metadata.TypeMetadata;
-import net.mcparkour.octenace.mapper.metadata.ValueMetadata;
+import net.mcparkour.octenace.mapper.metadata.Metadata;
 
-public class ShortCodec<O, A, V> implements Codec<O, A, V, ValueMetadata, Short> {
+public class CommonDocumentMapperFactory<O, A, V> implements DocumentMapperFactory<O, A, V> {
 
-	@Override
-	public DocumentValue<O, A, V> toDocument(Short object, ValueMetadata metadata, Mapper<O, A, V> mapper) {
-		var valueFactory = mapper.getValueFactory();
-		return valueFactory.createValue(object);
+	private Mapper<O, A, V> mapper;
+
+	public CommonDocumentMapperFactory(Mapper<O, A, V> mapper) {
+		this.mapper = mapper;
 	}
 
 	@Override
-	public Short toObject(DocumentValue<O, A, V> document, ValueMetadata metadata, Mapper<O, A, V> mapper) {
-		return document.asShort();
+	public <T> DocumentMapper<O, A, V, T> createMapper(Class<T> type) {
+		return new CommonDocumentMapper<>(this.mapper, type);
 	}
 
 	@Override
-	public ValueMetadata createMetadata(TypeMetadata type, Mapper<O, A, V> mapper) {
-		return new ValueMetadata();
+	public <T> DocumentMapper<O, A, V, T> createMapper(Class<T> type, Codec<O, A, V, Metadata, T> codec) {
+		return new CommonDocumentMapper<>(this.mapper, type, codec);
+	}
+
+	@Override
+	public <T> DocumentMapper<O, A, V, T> createMapper(Class<T> type, Codec<O, A, V, Metadata, T> codec, Metadata metadata) {
+		return new CommonDocumentMapper<>(this.mapper, type, codec, metadata);
+	}
+
+	@Override
+	public Mapper<O, A, V> getMapper() {
+		return this.mapper;
 	}
 }

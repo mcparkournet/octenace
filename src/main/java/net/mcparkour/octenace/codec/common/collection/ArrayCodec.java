@@ -39,23 +39,23 @@ import net.mcparkour.octenace.mapper.metadata.TypeMetadata;
 public class ArrayCodec<O, A, V> implements Codec<O, A, V, CollectionMetadata<O, A, V>, Object[]> {
 
 	@Override
-	public DocumentValue<O, A, V> toDocument(Object[] object, CollectionMetadata<O, A, V> metadata, Mapper<O, A, V, ?> mapper) {
-		DocumentValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
+	public DocumentValue<O, A, V> toDocument(Object[] object, CollectionMetadata<O, A, V> metadata, Mapper<O, A, V> mapper) {
 		DocumentArrayFactory<O, A, V> arrayFactory = mapper.getArrayFactory();
 		int length = object.length;
 		DocumentArray<O, A, V> array = arrayFactory.createEmptyArray(length);
-		Element<O, A, V> elementMetadata = metadata.getElement();
-		var codec = elementMetadata.getObjectCodec();
-		Metadata elementMetadataMetadata = elementMetadata.getMetadata();
-		for (Object element : object) {
-			DocumentValue<O, A, V> documentValue = codec.toDocument(element, elementMetadataMetadata, mapper);
+		Element<O, A, V> element = metadata.getElement();
+		var elementCodec = element.getObjectCodec();
+		Metadata elementMetadata = element.getMetadata();
+		for (Object arrayElement : object) {
+			DocumentValue<O, A, V> documentValue = mapper.toDocument(elementCodec, arrayElement, elementMetadata);
 			array.add(documentValue);
 		}
+		DocumentValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
 		return valueFactory.createArrayValue(array);
 	}
 
 	@Override
-	public Object[] toObject(DocumentValue<O, A, V> document, CollectionMetadata<O, A, V> metadata, Mapper<O, A, V, ?> mapper) {
+	public Object[] toObject(DocumentValue<O, A, V> document, CollectionMetadata<O, A, V> metadata, Mapper<O, A, V> mapper) {
 		DocumentArrayFactory<O, A, V> arrayFactory = mapper.getArrayFactory();
 		A rawArray = document.asArray();
 		DocumentArray<O, A, V> array = arrayFactory.createArray(rawArray);
@@ -67,16 +67,16 @@ public class ArrayCodec<O, A, V> implements Codec<O, A, V, CollectionMetadata<O,
 		Metadata elementMetadata = element.getMetadata();
 		for (int index = 0; index < size; index++) {
 			DocumentValue<O, A, V> elementValue = array.get(index);
-			resultArray[index] = elementCodec.toObject(elementValue, elementMetadata, mapper);
+			resultArray[index] = mapper.toObject(elementCodec, elementValue, elementMetadata);
 		}
 		return resultArray;
 	}
 
 	@Override
-	public CollectionMetadata<O, A, V> getMetadata(TypeMetadata type, Mapper<O, A, V, ?> mapper) {
+	public CollectionMetadata<O, A, V> createMetadata(TypeMetadata type, Mapper<O, A, V> mapper) {
 		Class<?> elementType = type.getComponentType();
 		var codec = mapper.getObjectCodec(elementType);
-		Metadata metadata = codec.getMetadata(new TypeMetadata(elementType), mapper);
+		Metadata metadata = mapper.createMetadata(codec, new TypeMetadata(elementType));
 		Element<O, A, V> element = new Element<>(elementType, codec, metadata);
 		return new CollectionMetadata<>(element);
 	}

@@ -41,7 +41,7 @@ import net.mcparkour.octenace.mapper.metadata.TypeMetadata;
 public abstract class MapCodec<O, A, V, T extends Map<?, ?>> implements Codec<O, A, V, MapMetadata<O, A, V>, T> {
 
 	@Override
-	public DocumentValue<O, A, V> toDocument(T object, MapMetadata<O, A, V> metadata, Mapper<O, A, V, ?> mapper) {
+	public DocumentValue<O, A, V> toDocument(T object, MapMetadata<O, A, V> metadata, Mapper<O, A, V> mapper) {
 		DocumentValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
 		DocumentObjectFactory<O, A, V> objectFactory = mapper.getObjectFactory();
 		int size = object.size();
@@ -56,8 +56,8 @@ public abstract class MapCodec<O, A, V, T extends Map<?, ?>> implements Codec<O,
 		for (Map.Entry<?, ?> entry : entries) {
 			Object key = entry.getKey();
 			Object value = entry.getValue();
-			DocumentValue<O, A, V> valueKey = keyCodec.toDocument(key, keyElementMetadata, mapper);
-			DocumentValue<O, A, V> valueValue = valueCodec.toDocument(value, valueElementMetadata, mapper);
+			DocumentValue<O, A, V> valueKey = mapper.toDocument(keyCodec, key, keyElementMetadata);
+			DocumentValue<O, A, V> valueValue = mapper.toDocument(valueCodec, value, valueElementMetadata);
 			documentObject.set(valueKey, valueValue);
 		}
 		return valueFactory.createObjectValue(documentObject);
@@ -65,7 +65,7 @@ public abstract class MapCodec<O, A, V, T extends Map<?, ?>> implements Codec<O,
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public T toObject(DocumentValue<O, A, V> document, MapMetadata<O, A, V> metadata, Mapper<O, A, V, ?> mapper) {
+	public T toObject(DocumentValue<O, A, V> document, MapMetadata<O, A, V> metadata, Mapper<O, A, V> mapper) {
 		DocumentObjectFactory<O, A, V> objectFactory = mapper.getObjectFactory();
 		O rawObject = document.asObject();
 		DocumentObject<O, A, V> object = objectFactory.createObject(rawObject);
@@ -80,8 +80,8 @@ public abstract class MapCodec<O, A, V, T extends Map<?, ?>> implements Codec<O,
 		for (var entry : object) {
 			DocumentValue<O, A, V> entryKey = entry.getKey();
 			DocumentValue<O, A, V> entryValue = entry.getValue();
-			Object key = keyCodec.toObject(entryKey, keyElementMetadata, mapper);
-			Object value = valueCodec.toObject(entryValue, valueElementMetadata, mapper);
+			Object key = mapper.toObject(keyCodec, entryKey, keyElementMetadata);
+			Object value = mapper.toObject(valueCodec, entryValue, valueElementMetadata);
 			map.put(key, value);
 		}
 		return (T) map;
@@ -90,14 +90,14 @@ public abstract class MapCodec<O, A, V, T extends Map<?, ?>> implements Codec<O,
 	public abstract T createMap(int size);
 
 	@Override
-	public MapMetadata<O, A, V> getMetadata(TypeMetadata type, Mapper<O, A, V, ?> mapper) {
+	public MapMetadata<O, A, V> createMetadata(TypeMetadata type, Mapper<O, A, V> mapper) {
 		Entry<Class<?>, Class<?>> genericTypes = type.getGenericTypesPair();
 		Class<?> keyType = genericTypes.getKey();
 		Class<?> valueType = genericTypes.getValue();
 		var keyCodec = mapper.getObjectCodec(keyType);
 		var valueCodec = mapper.getObjectCodec(valueType);
-		Metadata keyMetadata = keyCodec.getMetadata(new TypeMetadata(keyType), mapper);
-		Metadata valueMetadata = valueCodec.getMetadata(new TypeMetadata(valueType), mapper);
+		Metadata keyMetadata = mapper.createMetadata(keyCodec, new TypeMetadata(keyType));
+		Metadata valueMetadata = mapper.createMetadata(valueCodec, new TypeMetadata(valueType));
 		Element<O, A, V> keyElement = new Element<>(keyType, keyCodec, keyMetadata);
 		Element<O, A, V> valueElement = new Element<>(valueType, valueCodec, valueMetadata);
 		return new MapMetadata<>(keyElement, valueElement);

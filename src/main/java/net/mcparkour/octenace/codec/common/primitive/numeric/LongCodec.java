@@ -33,18 +33,18 @@ import net.mcparkour.octenace.mapper.metadata.ValueMetadata;
 public class LongCodec<O, A, V> implements Codec<O, A, V, ValueMetadata, Long> {
 
 	@Override
-	public DocumentValue<O, A, V> toDocument(Long object, ValueMetadata metadata, Mapper<O, A, V, ?> mapper) {
+	public DocumentValue<O, A, V> toDocument(Long object, ValueMetadata metadata, Mapper<O, A, V> mapper) {
 		var valueFactory = mapper.getValueFactory();
 		return valueFactory.createValue(object);
 	}
 
 	@Override
-	public Long toObject(DocumentValue<O, A, V> document, ValueMetadata metadata, Mapper<O, A, V, ?> mapper) {
+	public Long toObject(DocumentValue<O, A, V> document, ValueMetadata metadata, Mapper<O, A, V> mapper) {
 		return document.asLong();
 	}
 
 	@Override
-	public ValueMetadata getMetadata(TypeMetadata type, Mapper<O, A, V, ?> mapper) {
+	public ValueMetadata createMetadata(TypeMetadata type, Mapper<O, A, V> mapper) {
 		return new ValueMetadata();
 	}
 }

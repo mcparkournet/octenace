@@ -46,7 +46,7 @@ import net.mcparkour.octenace.mapper.metadata.TypeMetadata;
 public class ObjectCodec<O, A, V> implements Codec<O, A, V, ObjectMetadata<O, A, V>, Object> {
 
 	@Override
-	public DocumentValue<O, A, V> toDocument(Object object, ObjectMetadata<O, A, V> metadata, Mapper<O, A, V, ?> mapper) {
+	public DocumentValue<O, A, V> toDocument(Object object, ObjectMetadata<O, A, V> metadata, Mapper<O, A, V> mapper) {
 		DocumentValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
 		DocumentObjectFactory<O, A, V> objectFactory = mapper.getObjectFactory();
 		DocumentObject<O, A, V> documentObject = objectFactory.createEmptyObject();
@@ -59,16 +59,14 @@ public class ObjectCodec<O, A, V> implements Codec<O, A, V, ObjectMetadata<O, A,
 			String propertyName = property.getName();
 			DocumentValue<O, A, V> modelFieldName = valueFactory.createValue(propertyName);
 			Metadata propertyMetadata = element.getMetadata();
-			DocumentValue<O, A, V> value = fieldValue == null ?
-				valueFactory.createNullValue() :
-				codec.toDocument(fieldValue, propertyMetadata, mapper);
+			DocumentValue<O, A, V> value = mapper.toDocument(codec, fieldValue, propertyMetadata);
 			documentObject.set(modelFieldName, value);
 		}
 		return valueFactory.createObjectValue(documentObject);
 	}
 
 	@Override
-	public Object toObject(DocumentValue<O, A, V> document, ObjectMetadata<O, A, V> metadata, Mapper<O, A, V, ?> mapper) {
+	public Object toObject(DocumentValue<O, A, V> document, ObjectMetadata<O, A, V> metadata, Mapper<O, A, V> mapper) {
 		DocumentValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
 		DocumentObjectFactory<O, A, V> objectFactory = mapper.getObjectFactory();
 		O rawObject = document.asObject();
@@ -85,16 +83,14 @@ public class ObjectCodec<O, A, V> implements Codec<O, A, V, ObjectMetadata<O, A,
 			Codec<O, A, V, Metadata, Object> codec = element.getObjectCodec();
 			Metadata propertyMetadata = element.getMetadata();
 			Field field = property.getField();
-			Object value = documentValue.isNull() ?
-				null :
-				codec.toObject(documentValue, propertyMetadata, mapper);
+			Object value = mapper.toObject(codec, documentValue, propertyMetadata);
 			Reflections.setFieldValue(field, instance, value);
 		}
 		return instance;
 	}
 
 	@Override
-	public ObjectMetadata<O, A, V> getMetadata(TypeMetadata type, Mapper<O, A, V, ?> mapper) {
+	public ObjectMetadata<O, A, V> createMetadata(TypeMetadata type, Mapper<O, A, V> mapper) {
 		Class<?> classType = type.getClassType();
 		Field[] fields = classType.getDeclaredFields();
 		int length = fields.length;
@@ -109,7 +105,7 @@ public class ObjectCodec<O, A, V> implements Codec<O, A, V, ObjectMetadata<O, A,
 				Type fieldRawType = Types.getRawType(fieldType);
 				Class<?> fieldClassType = Types.asClassType(fieldRawType);
 				var codec = mapper.getObjectCodec(fieldClassType);
-				Metadata metadata = codec.getMetadata(new TypeMetadata(fieldClassType, fieldGenericType), mapper);
+				Metadata metadata = mapper.createMetadata(codec, new TypeMetadata(fieldClassType, fieldGenericType));
 				Element<O, A, V> element = new Element<>(fieldClassType, codec, metadata);
 				Property<O, A, V> property = new Property<>(fieldName, field, element);
 				properties.add(property);

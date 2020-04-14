@@ -35,20 +35,20 @@ import net.mcparkour.octenace.mapper.metadata.ValueMetadata;
 public class LocaleCodec<O, A, V> implements Codec<O, A, V, ValueMetadata, Locale> {
 
 	@Override
-	public DocumentValue<O, A, V> toDocument(Locale object, ValueMetadata metadata, Mapper<O, A, V, ?> mapper) {
+	public DocumentValue<O, A, V> toDocument(Locale object, ValueMetadata metadata, Mapper<O, A, V> mapper) {
 		DocumentValueFactory<O, A, V> valueFactory = mapper.getValueFactory();
 		String languageTag = object.toLanguageTag();
 		return valueFactory.createValue(languageTag);
 	}
 
 	@Override
-	public Locale toObject(DocumentValue<O, A, V> document, ValueMetadata metadata, Mapper<O, A, V, ?> mapper) {
+	public Locale toObject(DocumentValue<O, A, V> document, ValueMetadata metadata, Mapper<O, A, V> mapper) {
 		String languageTag = document.asString();
 		return Locale.forLanguageTag(languageTag);
 	}
 
 	@Override
-	public ValueMetadata getMetadata(TypeMetadata type, Mapper<O, A, V, ?> mapper) {
+	public ValueMetadata createMetadata(TypeMetadata type, Mapper<O, A, V> mapper) {
 		return new ValueMetadata();
 	}
 }
