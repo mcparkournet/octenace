@@ -24,10 +24,10 @@
 
 package net.mcparkour.octenace.codec.common.primitive.numeric;
 
+import java.lang.reflect.Type;
 import net.mcparkour.octenace.codec.Codec;
 import net.mcparkour.octenace.document.value.DocumentValue;
 import net.mcparkour.octenace.mapper.Mapper;
-import net.mcparkour.octenace.mapper.metadata.TypeMetadata;
 import net.mcparkour.octenace.mapper.metadata.ValueMetadata;
 
 public class ShortCodec<O, A, V> implements Codec<O, A, V, ValueMetadata, Short> {
@@ -44,7 +44,7 @@ public class ShortCodec<O, A, V> implements Codec<O, A, V, ValueMetadata, Short>
 	}
 
 	@Override
-	public ValueMetadata createMetadata(TypeMetadata type, Mapper<O, A, V> mapper) {
+	public ValueMetadata createMetadata(Type type, Mapper<O, A, V> mapper) {
 		return new ValueMetadata();
 	}
 }

@@ -25,6 +25,7 @@
 package net.mcparkour.octenace.mapper;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.util.List;
 import net.mcparkour.octenace.annotation.Property;
 import net.mcparkour.octenace.codec.Codec;
@@ -34,7 +35,6 @@ import net.mcparkour.octenace.document.object.DocumentObjectFactory;
 import net.mcparkour.octenace.document.value.DocumentValue;
 import net.mcparkour.octenace.document.value.DocumentValueFactory;
 import net.mcparkour.octenace.mapper.metadata.Metadata;
-import net.mcparkour.octenace.mapper.metadata.TypeMetadata;
 import net.mcparkour.octenace.mapper.property.invalidator.PropertyInvalidator;
 import net.mcparkour.octenace.mapper.property.name.NameConverter;
 import org.jetbrains.annotations.Nullable;
@@ -75,7 +75,7 @@ public class CommonMapper<O, A, V> implements Mapper<O, A, V> {
 	}
 
 	@Override
-	public <T, M extends Metadata> M createMetadata(Codec<O, A, V, M, T> codec, TypeMetadata type) {
+	public <T, M extends Metadata> M createMetadata(Codec<O, A, V, M, T> codec, Type type) {
 		return codec.createMetadata(type, this);
 	}
 

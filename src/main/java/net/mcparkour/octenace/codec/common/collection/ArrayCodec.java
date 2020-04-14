@@ -25,6 +25,8 @@
 package net.mcparkour.octenace.codec.common.collection;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Type;
+import net.mcparkour.common.reflection.type.Types;
 import net.mcparkour.octenace.codec.Codec;
 import net.mcparkour.octenace.document.array.DocumentArray;
 import net.mcparkour.octenace.document.array.DocumentArrayFactory;
@@ -34,7 +36,6 @@ import net.mcparkour.octenace.mapper.Mapper;
 import net.mcparkour.octenace.mapper.metadata.CollectionMetadata;
 import net.mcparkour.octenace.mapper.metadata.Element;
 import net.mcparkour.octenace.mapper.metadata.Metadata;
-import net.mcparkour.octenace.mapper.metadata.TypeMetadata;
 
 public class ArrayCodec<O, A, V> implements Codec<O, A, V, CollectionMetadata<O, A, V>, Object[]> {
 
@@ -73,10 +74,11 @@ public class ArrayCodec<O, A, V> implements Codec<O, A, V, CollectionMetadata<O,
 	}
 
 	@Override
-	public CollectionMetadata<O, A, V> createMetadata(TypeMetadata type, Mapper<O, A, V> mapper) {
-		Class<?> elementType = type.getComponentType();
+	public CollectionMetadata<O, A, V> createMetadata(Type type, Mapper<O, A, V> mapper) {
+		Class<?> rawClassType = Types.getRawClassType(type);
+		Class<?> elementType = rawClassType.getComponentType();
 		var codec = mapper.getObjectCodec(elementType);
-		Metadata metadata = mapper.createMetadata(codec, new TypeMetadata(elementType));
+		Metadata metadata = mapper.createMetadata(codec, elementType);
 		Element<O, A, V> element = new Element<>(elementType, codec, metadata);
 		return new CollectionMetadata<>(element);
 	}

@@ -25,6 +25,7 @@
 package net.mcparkour.octenace.mapper;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.util.List;
 import net.mcparkour.octenace.codec.Codec;
 import net.mcparkour.octenace.codec.registry.CodecRegistry;
@@ -33,7 +34,6 @@ import net.mcparkour.octenace.document.object.DocumentObjectFactory;
 import net.mcparkour.octenace.document.value.DocumentValue;
 import net.mcparkour.octenace.document.value.DocumentValueFactory;
 import net.mcparkour.octenace.mapper.metadata.Metadata;
-import net.mcparkour.octenace.mapper.metadata.TypeMetadata;
 import net.mcparkour.octenace.mapper.property.invalidator.PropertyInvalidator;
 import net.mcparkour.octenace.mapper.property.name.NameConverter;
 import org.jetbrains.annotations.Nullable;
@@ -44,7 +44,7 @@ public interface Mapper<O, A, V> {
 
 	@Nullable <T, M extends Metadata> T toObject(Codec<O, A, V, M, T> codec, DocumentValue<O, A, V> document, M metadata);
 
-	<T, M extends Metadata> M createMetadata(Codec<O, A, V, M, T> codec, TypeMetadata type);
+	<T, M extends Metadata> M createMetadata(Codec<O, A, V, M, T> codec, Type type);
 
 	Codec<O, A, V, Metadata, Object> getObjectCodec(Class<?> type);
 

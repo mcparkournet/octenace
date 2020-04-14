@@ -27,35 +27,51 @@ package net.mcparkour.octenace.mapper;
 import java.util.Map;
 import java.util.Objects;
 import net.mcparkour.octenace.TestObject;
+import net.mcparkour.octenace.TestSubObject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 public class MapperTest {
 
-	private TestDocumentMapper<TestObject> mapper;
+	private TestDocumentMapper<TestObject> objectMapper;
+	private TestDocumentMapper<TestSubObject> subObjectMapper;
 
 	@BeforeEach
 	public void setUp() {
-		this.mapper = new TestDocumentMapper<>(TestObject.class);
+		this.objectMapper = new TestDocumentMapper<>(TestObject.class);
+		this.subObjectMapper = new TestDocumentMapper<>(TestSubObject.class);
 	}
 
 	@Test
-	@Order(1)
-	public void testFromDocument() {
-		TestObject object = new TestObject();
-		var documentValue = this.mapper.toDocument(object);
+	public void testSubObjectToDocument() {
+		TestSubObject object = new TestSubObject();
+		var documentValue = this.subObjectMapper.toDocument(object);
 		Map<Object, Object> document = documentValue.asObject();
 		Assertions.assertEquals(object.toString(), document.toString());
 	}
 
 	@Test
-	@Order(2)
-	public void testToDocument() {
+	public void testSubObjectToObject() {
+		TestSubObject originObject = new TestSubObject();
+		var documentValue = this.subObjectMapper.toDocument(originObject);
+		TestSubObject object = this.subObjectMapper.toObject(documentValue);
+		Assertions.assertEquals(originObject.toString(), Objects.requireNonNull(object).toString());
+	}
+
+	@Test
+	public void testObjectToDocument() {
+		TestObject object = new TestObject();
+		var documentValue = this.objectMapper.toDocument(object);
+		Map<Object, Object> document = documentValue.asObject();
+		Assertions.assertEquals(object.toString(), document.toString());
+	}
+
+	@Test
+	public void testObjectToObject() {
 		TestObject originObject = new TestObject();
-		var documentValue = this.mapper.toDocument(originObject);
-		TestObject object = this.mapper.toObject(documentValue);
+		var documentValue = this.objectMapper.toDocument(originObject);
+		TestObject object = this.objectMapper.toObject(documentValue);
 		Assertions.assertEquals(originObject.toString(), Objects.requireNonNull(object).toString());
 	}
 }

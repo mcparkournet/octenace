@@ -97,11 +97,15 @@ public class TestObject {
 	@Codec(LinkedHashMap.class)
 	private Map<String, TestSubObject> objectMap;
 
+	private List<List<String>> listList;
+	@Codec(LinkedHashMap.class)
+	private Map<String, LinkedHashMap<String, String>> mapMap;
+
 	public TestObject() {
-		this(true, true, 'c', 'c', (byte) 1, (byte) 1, (short) 1, (short) 1, 1, 1, 1L, 1L, 0.1F, 0.1F, 0.1, 0.1, "string", null, "foobar", new TestSubObject(), TestEnum.TWO, TestEnum.THREE, new String[] {"1", "2", "3"}, new TestSubObject[] {new TestSubObject(), new TestSubObject(), new TestSubObject()}, Collections.createLinkedSet(TestEnum.ONE, TestEnum.TWO, TestEnum.THREE), Collections.createLinkedSet("1", "2", "3"), Collections.createLinkedSet(new TestSubObject(), new TestSubObject(), new TestSubObject()), List.of("1", "2", "3"), List.of(new TestSubObject(), new TestSubObject(), new TestSubObject()), Collections.createLinkedMap("foo", "1", "bar", "2", "foobar", "3"), Collections.createLinkedMap("foo", new TestSubObject(), "bar", new TestSubObject(), "foobar", new TestSubObject()));
+		this(true, true, 'c', 'c', (byte) 1, (byte) 1, (short) 1, (short) 1, 1, 1, 1L, 1L, 0.1F, 0.1F, 0.1, 0.1, "string", null, "foobar", new TestSubObject(), TestEnum.TWO, TestEnum.THREE, new String[] {"1", "2", "3"}, new TestSubObject[] {new TestSubObject(), new TestSubObject(), new TestSubObject()}, Collections.createLinkedSet(TestEnum.ONE, TestEnum.TWO, TestEnum.THREE), Collections.createLinkedSet("1", "2", "3"), Collections.createLinkedSet(new TestSubObject(), new TestSubObject(), new TestSubObject()), List.of("1", "2", "3"), List.of(new TestSubObject(), new TestSubObject(), new TestSubObject()), Collections.createLinkedMap("foo", "1", "bar", "2", "foobar", "3"), Collections.createLinkedMap("foo", new TestSubObject(), "bar", new TestSubObject(), "foobar", new TestSubObject()), List.of(List.of("1", "2", "3"), List.of("1", "2", "3"), List.of("1", "2", "3")), Collections.createLinkedMap("foo", Collections.createLinkedMap("foo", "1", "bar", "2", "foobar", "3"), "bar", Collections.createLinkedMap("foo", "1", "bar", "2", "foobar", "3"), "foobar", Collections.createLinkedMap("foo", "1", "bar", "2", "foobar", "3")));
 	}
 
-	public TestObject(boolean primitiveBoolean, Boolean wrapperBoolean, char primitiveCharacter, Character wrapperCharacter, byte primitiveByte, Byte wrapperByte, short primitiveShort, Short wrapperShort, int primitiveInteger, Integer wrapperInteger, long primitiveLong, Long wrapperLong, float primitiveFloat, Float wrapperFloat, double primitiveDouble, Double wrapperDouble, String string, @Nullable String nullString, String foo, TestSubObject subConfiguration, TestEnum testEnum, TestEnum testEnum2, String[] stringArray, TestSubObject[] objectArray, Set<TestEnum> enumSet, Set<String> stringSet, Set<TestSubObject> objectSet, List<String> stringList, List<TestSubObject> objectList, Map<String, String> stringMap, Map<String, TestSubObject> objectMap) {
+	public TestObject(boolean primitiveBoolean, Boolean wrapperBoolean, char primitiveCharacter, Character wrapperCharacter, byte primitiveByte, Byte wrapperByte, short primitiveShort, Short wrapperShort, int primitiveInteger, Integer wrapperInteger, long primitiveLong, Long wrapperLong, float primitiveFloat, Float wrapperFloat, double primitiveDouble, Double wrapperDouble, String string, @Nullable String nullString, String foo, TestSubObject subConfiguration, TestEnum testEnum, TestEnum testEnum2, String[] stringArray, TestSubObject[] objectArray, Set<TestEnum> enumSet, Set<String> stringSet, Set<TestSubObject> objectSet, List<String> stringList, List<TestSubObject> objectList, Map<String, String> stringMap, Map<String, TestSubObject> objectMap, List<List<String>> listList, Map<String, LinkedHashMap<String, String>> mapMap) {
 		this.primitiveBoolean = primitiveBoolean;
 		this.wrapperBoolean = wrapperBoolean;
 		this.primitiveCharacter = primitiveCharacter;
@@ -133,17 +137,19 @@ public class TestObject {
 		this.objectList = objectList;
 		this.stringMap = stringMap;
 		this.objectMap = objectMap;
+		this.listList = listList;
+		this.mapMap = mapMap;
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
+	public boolean equals(Object o) {
+		if (this == o) {
 			return true;
 		}
-		if (!(obj instanceof TestObject)) {
+		if (!(o instanceof TestObject)) {
 			return false;
 		}
-		TestObject that = (TestObject) obj;
+		TestObject that = (TestObject) o;
 		return this.primitiveBoolean == that.primitiveBoolean &&
 			this.primitiveCharacter == that.primitiveCharacter &&
 			this.primitiveByte == that.primitiveByte &&
@@ -175,12 +181,14 @@ public class TestObject {
 			Objects.equals(this.stringList, that.stringList) &&
 			Objects.equals(this.objectList, that.objectList) &&
 			Objects.equals(this.stringMap, that.stringMap) &&
-			Objects.equals(this.objectMap, that.objectMap);
+			Objects.equals(this.objectMap, that.objectMap) &&
+			Objects.equals(this.listList, that.listList) &&
+			Objects.equals(this.mapMap, that.mapMap);
 	}
 
 	@Override
 	public int hashCode() {
-		int result = Objects.hash(this.primitiveBoolean, this.wrapperBoolean, this.primitiveCharacter, this.wrapperCharacter, this.primitiveByte, this.wrapperByte, this.primitiveShort, this.wrapperShort, this.primitiveInteger, this.wrapperInteger, this.primitiveLong, this.wrapperLong, this.primitiveFloat, this.wrapperFloat, this.primitiveDouble, this.wrapperDouble, this.string, this.nullString, this.foo, this.ignored, this.subConfiguration, this.testEnum, this.testEnum2, this.enumSet, this.stringSet, this.objectSet, this.stringList, this.objectList, this.stringMap, this.objectMap);
+		int result = Objects.hash(this.primitiveBoolean, this.wrapperBoolean, this.primitiveCharacter, this.wrapperCharacter, this.primitiveByte, this.wrapperByte, this.primitiveShort, this.wrapperShort, this.primitiveInteger, this.wrapperInteger, this.primitiveLong, this.wrapperLong, this.primitiveFloat, this.wrapperFloat, this.primitiveDouble, this.wrapperDouble, this.string, this.nullString, this.foo, this.ignored, this.subConfiguration, this.testEnum, this.testEnum2, this.enumSet, this.stringSet, this.objectSet, this.stringList, this.objectList, this.stringMap, this.objectMap, this.listList, this.mapMap);
 		result = 31 * result + Arrays.hashCode(this.stringArray);
 		result = 31 * result + Arrays.hashCode(this.objectArray);
 		return result;
@@ -221,6 +229,8 @@ public class TestObject {
 			", objectList=" + this.objectList +
 			", stringMap=" + this.stringMap +
 			", objectMap=" + this.objectMap +
+			", listList=" + this.listList +
+			", mapMap=" + this.mapMap +
 			'}';
 	}
 

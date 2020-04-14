@@ -26,8 +26,6 @@ package net.mcparkour.octenace;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
 
 final class Collections {
 
@@ -35,16 +33,16 @@ final class Collections {
 		throw new UnsupportedOperationException("Cannot create an instance of this class");
 	}
 
-	public static <K, V> Map<K, V> createLinkedMap(K key1, V value1, K key2, V value2, K key3, V value3) {
-		Map<K, V> map = new LinkedHashMap<>(3);
+	public static <K, V> LinkedHashMap<K, V> createLinkedMap(K key1, V value1, K key2, V value2, K key3, V value3) {
+		LinkedHashMap<K, V> map = new LinkedHashMap<>(3);
 		map.put(key1, value1);
 		map.put(key2, value2);
 		map.put(key3, value3);
-		return java.util.Collections.unmodifiableMap(map);
+		return map;
 	}
 
-	public static <E> Set<E> createLinkedSet(E element1, E element2, E element3) {
-		Set<E> set = new LinkedHashSet<>(3);
+	public static <E> LinkedHashSet<E> createLinkedSet(E element1, E element2, E element3) {
+		LinkedHashSet<E> set = new LinkedHashSet<>(3);
 		set.add(element1);
 		set.add(element2);
 		set.add(element3);

@@ -25,15 +25,16 @@
 package net.mcparkour.octenace.codec.common;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import net.mcparkour.common.reflection.Reflections;
+import net.mcparkour.common.reflection.type.Types;
 import net.mcparkour.octenace.codec.Codec;
 import net.mcparkour.octenace.document.value.DocumentValue;
 import net.mcparkour.octenace.document.value.DocumentValueFactory;
 import net.mcparkour.octenace.mapper.Mapper;
 import net.mcparkour.octenace.mapper.metadata.EnumMetadata;
-import net.mcparkour.octenace.mapper.metadata.TypeMetadata;
 
 public class EnumCodec<O, A, V> implements Codec<O, A, V, EnumMetadata, Enum<?>> {
 
@@ -52,8 +53,8 @@ public class EnumCodec<O, A, V> implements Codec<O, A, V, EnumMetadata, Enum<?>>
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public EnumMetadata createMetadata(TypeMetadata type, Mapper<O, A, V> mapper) {
-		Class<?> classType = type.getClassType();
+	public EnumMetadata createMetadata(Type type, Mapper<O, A, V> mapper) {
+		Class<?> classType = Types.getRawClassType(type);
 		Class<? extends Enum<?>> enumType = (Class<? extends Enum<?>>) classType;
 		Enum<?>[] enumConstants = enumType.getEnumConstants();
 		int length = enumConstants.length;

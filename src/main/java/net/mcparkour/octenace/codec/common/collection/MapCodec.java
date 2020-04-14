@@ -24,9 +24,12 @@
 
 package net.mcparkour.octenace.codec.common.collection;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import net.mcparkour.common.reflection.type.Types;
 import net.mcparkour.octenace.codec.Codec;
 import net.mcparkour.octenace.document.object.DocumentObject;
 import net.mcparkour.octenace.document.object.DocumentObjectFactory;
@@ -36,7 +39,6 @@ import net.mcparkour.octenace.mapper.Mapper;
 import net.mcparkour.octenace.mapper.metadata.Element;
 import net.mcparkour.octenace.mapper.metadata.MapMetadata;
 import net.mcparkour.octenace.mapper.metadata.Metadata;
-import net.mcparkour.octenace.mapper.metadata.TypeMetadata;
 
 public abstract class MapCodec<O, A, V, T extends Map<?, ?>> implements Codec<O, A, V, MapMetadata<O, A, V>, T> {
 
@@ -90,16 +92,19 @@ public abstract class MapCodec<O, A, V, T extends Map<?, ?>> implements Codec<O,
 	public abstract T createMap(int size);
 
 	@Override
-	public MapMetadata<O, A, V> createMetadata(TypeMetadata type, Mapper<O, A, V> mapper) {
-		Entry<Class<?>, Class<?>> genericTypes = type.getGenericTypesPair();
-		Class<?> keyType = genericTypes.getKey();
-		Class<?> valueType = genericTypes.getValue();
-		var keyCodec = mapper.getObjectCodec(keyType);
-		var valueCodec = mapper.getObjectCodec(valueType);
-		Metadata keyMetadata = mapper.createMetadata(keyCodec, new TypeMetadata(keyType));
-		Metadata valueMetadata = mapper.createMetadata(valueCodec, new TypeMetadata(valueType));
-		Element<O, A, V> keyElement = new Element<>(keyType, keyCodec, keyMetadata);
-		Element<O, A, V> valueElement = new Element<>(valueType, valueCodec, valueMetadata);
+	public MapMetadata<O, A, V> createMetadata(Type type, Mapper<O, A, V> mapper) {
+		ParameterizedType parameterizedType = Types.asParametrizedType(type);
+		Type[] typeArguments = parameterizedType.getActualTypeArguments();
+		Type keyType = typeArguments[0];
+		Type valueType = typeArguments[1];
+		Class<?> rawKeyType = Types.getRawClassType(keyType);
+		Class<?> rawValueType = Types.getRawClassType(valueType);
+		var keyCodec = mapper.getObjectCodec(rawKeyType);
+		var valueCodec = mapper.getObjectCodec(rawValueType);
+		Metadata keyMetadata = mapper.createMetadata(keyCodec, keyType);
+		Metadata valueMetadata = mapper.createMetadata(valueCodec, valueType);
+		Element<O, A, V> keyElement = new Element<>(rawKeyType, keyCodec, keyMetadata);
+		Element<O, A, V> valueElement = new Element<>(rawValueType, valueCodec, valueMetadata);
 		return new MapMetadata<>(keyElement, valueElement);
 	}
 }

@@ -41,7 +41,6 @@ import net.mcparkour.octenace.mapper.metadata.Element;
 import net.mcparkour.octenace.mapper.metadata.Metadata;
 import net.mcparkour.octenace.mapper.metadata.ObjectMetadata;
 import net.mcparkour.octenace.mapper.metadata.Property;
-import net.mcparkour.octenace.mapper.metadata.TypeMetadata;
 
 public class ObjectCodec<O, A, V> implements Codec<O, A, V, ObjectMetadata<O, A, V>, Object> {
 
@@ -53,11 +52,11 @@ public class ObjectCodec<O, A, V> implements Codec<O, A, V, ObjectMetadata<O, A,
 		List<Property<O, A, V>> properties = metadata.getProperties();
 		for (Property<O, A, V> property : properties) {
 			Element<O, A, V> element = property.getElement();
+			String propertyName = property.getName();
+			DocumentValue<O, A, V> modelFieldName = valueFactory.createValue(propertyName);
 			Codec<O, A, V, Metadata, Object> codec = element.getObjectCodec();
 			Field field = property.getField();
 			Object fieldValue = Reflections.getFieldValue(field, object);
-			String propertyName = property.getName();
-			DocumentValue<O, A, V> modelFieldName = valueFactory.createValue(propertyName);
 			Metadata propertyMetadata = element.getMetadata();
 			DocumentValue<O, A, V> value = mapper.toDocument(codec, fieldValue, propertyMetadata);
 			documentObject.set(modelFieldName, value);
@@ -90,8 +89,8 @@ public class ObjectCodec<O, A, V> implements Codec<O, A, V, ObjectMetadata<O, A,
 	}
 
 	@Override
-	public ObjectMetadata<O, A, V> createMetadata(TypeMetadata type, Mapper<O, A, V> mapper) {
-		Class<?> classType = type.getClassType();
+	public ObjectMetadata<O, A, V> createMetadata(Type type, Mapper<O, A, V> mapper) {
+		Class<?> classType = Types.getRawClassType(type);
 		Field[] fields = classType.getDeclaredFields();
 		int length = fields.length;
 		List<Property<O, A, V>> properties = new ArrayList<>(length);
@@ -100,17 +99,23 @@ public class ObjectCodec<O, A, V> implements Codec<O, A, V, ObjectMetadata<O, A,
 				field.trySetAccessible();
 				String fieldName = mapper.getFieldName(field);
 				Type fieldGenericType = field.getGenericType();
-				var codecAnnotation = field.getAnnotation(net.mcparkour.octenace.annotation.Codec.class);
-				Type fieldType = codecAnnotation == null ? fieldGenericType : codecAnnotation.value();
-				Type fieldRawType = Types.getRawType(fieldType);
-				Class<?> fieldClassType = Types.asClassType(fieldRawType);
-				var codec = mapper.getObjectCodec(fieldClassType);
-				Metadata metadata = mapper.createMetadata(codec, new TypeMetadata(fieldClassType, fieldGenericType));
-				Element<O, A, V> element = new Element<>(fieldClassType, codec, metadata);
+				Class<?> fieldType = field.getType();
+				Class<?> codecType = getCodecType(field);
+				var codec = mapper.getObjectCodec(codecType);
+				Metadata metadata = mapper.createMetadata(codec, fieldGenericType);
+				Element<O, A, V> element = new Element<>(fieldType, codec, metadata);
 				Property<O, A, V> property = new Property<>(fieldName, field, element);
 				properties.add(property);
 			}
 		}
 		return new ObjectMetadata<>(classType, properties);
+	}
+
+	private Class<?> getCodecType(Field field) {
+		var codecAnnotation = field.getAnnotation(net.mcparkour.octenace.annotation.Codec.class);
+		if (codecAnnotation != null) {
+			return codecAnnotation.value();
+		}
+		return field.getType();
 	}
 }

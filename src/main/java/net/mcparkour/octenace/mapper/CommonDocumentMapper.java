@@ -29,7 +29,6 @@ import net.mcparkour.octenace.document.array.DocumentArray;
 import net.mcparkour.octenace.document.object.DocumentObject;
 import net.mcparkour.octenace.document.value.DocumentValue;
 import net.mcparkour.octenace.mapper.metadata.Metadata;
-import net.mcparkour.octenace.mapper.metadata.TypeMetadata;
 import org.jetbrains.annotations.Nullable;
 
 public class CommonDocumentMapper<O, A, V, T> implements DocumentMapper<O, A, V, T> {
@@ -44,7 +43,7 @@ public class CommonDocumentMapper<O, A, V, T> implements DocumentMapper<O, A, V,
 	}
 
 	public CommonDocumentMapper(Mapper<O, A, V> mapper, Class<T> type, Codec<O, A, V, Metadata, T> codec) {
-		this(mapper, type, codec, mapper.createMetadata(codec, new TypeMetadata(type)));
+		this(mapper, type, codec, mapper.createMetadata(codec, type));
 	}
 
 	public CommonDocumentMapper(Mapper<O, A, V> mapper, Class<T> type, Codec<O, A, V, Metadata, T> codec, Metadata metadata) {

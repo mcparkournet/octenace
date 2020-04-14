@@ -24,6 +24,8 @@
 
 package net.mcparkour.octenace.codec.common.collection;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Collection;
 import net.mcparkour.common.reflection.type.Types;
 import net.mcparkour.octenace.codec.Codec;
@@ -35,7 +37,6 @@ import net.mcparkour.octenace.mapper.Mapper;
 import net.mcparkour.octenace.mapper.metadata.CollectionMetadata;
 import net.mcparkour.octenace.mapper.metadata.Element;
 import net.mcparkour.octenace.mapper.metadata.Metadata;
-import net.mcparkour.octenace.mapper.metadata.TypeMetadata;
 
 public abstract class CollectionCodec<O, A, V, T extends Collection<?>> implements Codec<O, A, V, CollectionMetadata<O, A, V>, T> {
 
@@ -76,12 +77,14 @@ public abstract class CollectionCodec<O, A, V, T extends Collection<?>> implemen
 	public abstract T createCollection(int size);
 
 	@Override
-	public CollectionMetadata<O, A, V> createMetadata(TypeMetadata type, Mapper<O, A, V> mapper) {
-		Class<?> elementType = type.getFirstGenericType();
-		var codec = mapper.getObjectCodec(elementType);
-		Metadata metadata = mapper.createMetadata(codec, new TypeMetadata(elementType));
-		Class<?> elementClassType = Types.asClassType(elementType);
-		Element<O, A, V> element = new Element<>(elementClassType, codec, metadata);
+	public CollectionMetadata<O, A, V> createMetadata(Type type, Mapper<O, A, V> mapper) {
+		ParameterizedType parameterizedType = Types.asParametrizedType(type);
+		Type[] typeArguments = parameterizedType.getActualTypeArguments();
+		Type elementType = typeArguments[0];
+		Class<?> elementRawType = Types.getRawClassType(elementType);
+		var codec = mapper.getObjectCodec(elementRawType);
+		Metadata metadata = mapper.createMetadata(codec, elementType);
+		Element<O, A, V> element = new Element<>(elementRawType, codec, metadata);
 		return new CollectionMetadata<>(element);
 	}
 }

@@ -32,7 +32,6 @@ import net.mcparkour.octenace.codec.common.extra.LocaleCodec;
 import net.mcparkour.octenace.codec.common.extra.UUIDCodec;
 import net.mcparkour.octenace.document.value.TestDocumentValue;
 import net.mcparkour.octenace.mapper.TestMapper;
-import net.mcparkour.octenace.mapper.metadata.TypeMetadata;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -50,7 +49,7 @@ public class ExtraCodecsTest {
 	public void testUUIDCodecEncode() {
 		UUIDCodec<Map<Object, Object>, List<Object>, Object> codec = new UUIDCodec<>();
 		UUID uuid = UUID.fromString("00000000-1000-0100-0010-000000000001");
-		var metadata = this.mapper.createMetadata(codec, new TypeMetadata(UUID.class));
+		var metadata = this.mapper.createMetadata(codec, UUID.class);
 		var encoded = this.mapper.toDocument(codec, uuid, metadata);
 		Object value = encoded.getValue();
 		Assertions.assertEquals(uuid.toString(), value);
@@ -61,7 +60,7 @@ public class ExtraCodecsTest {
 		UUIDCodec<Map<Object, Object>, List<Object>, Object> codec = new UUIDCodec<>();
 		UUID uuid = UUID.fromString("00000000-1000-0100-0010-000000000001");
 		TestDocumentValue value = new TestDocumentValue(uuid.toString());
-		var metadata = this.mapper.createMetadata(codec, new TypeMetadata(UUID.class));
+		var metadata = this.mapper.createMetadata(codec, UUID.class);
 		var decoded = this.mapper.toObject(codec, value, metadata);
 		Assertions.assertEquals(uuid, decoded);
 	}
@@ -70,7 +69,7 @@ public class ExtraCodecsTest {
 	public void testLocaleCodecEncode() {
 		LocaleCodec<Map<Object, Object>, List<Object>, Object> codec = new LocaleCodec<>();
 		Locale locale = Locale.US;
-		var metadata = this.mapper.createMetadata(codec, new TypeMetadata(Locale.class));
+		var metadata = this.mapper.createMetadata(codec, Locale.class);
 		var encoded = this.mapper.toDocument(codec, locale, metadata);
 		Object value = encoded.getValue();
 		Assertions.assertEquals(locale.toLanguageTag(), value);
@@ -81,7 +80,7 @@ public class ExtraCodecsTest {
 		LocaleCodec<Map<Object, Object>, List<Object>, Object> codec = new LocaleCodec<>();
 		Locale locale = Locale.US;
 		TestDocumentValue value = new TestDocumentValue(locale.toLanguageTag());
-		var metadata = this.mapper.createMetadata(codec, new TypeMetadata(Locale.class));
+		var metadata = this.mapper.createMetadata(codec, Locale.class);
 		var decoded = this.mapper.toObject(codec, value, metadata);
 		Assertions.assertEquals(locale, decoded);
 	}
